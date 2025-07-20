@@ -1,6 +1,6 @@
 {
     "/api": {
-      "target": "https://logidoo-projet-aide-au-chargement.onrender.com",
+      "target": "https://logidoo.onrender.com",
       "secure": false,
       "changeOrigin": true,
       "logLevel": "debug"
