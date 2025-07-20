@@ -1,4 +1,4 @@
-# Logidoo
+# MEAN Stack Project
 
 This repository contains a **MEAN** (MongoDB, Express, Angular, Node.js) application split into two main directories:
 
@@ -141,7 +141,11 @@ This project supports SSR via Angular Universal:
 ## 📦 Deployment
 
 * **Backend**: Deploy to any Node.js host (Heroku, AWS, DigitalOcean) with environment variables set.
+
+  * **API URL**: [https://logidoo.onrender.com](https://logidoo.onrender.com)
 * **Frontend (Static)**: Build with `ng build --prod` and serve via CDN or static host (Netlify, Vercel).
+
+  * **App URL**: [https://logidoo.netlify.app/](https://logidoo.netlify.app/)
 * **SSR**: Deploy both bundles together via Node.js host.
 
 ---
