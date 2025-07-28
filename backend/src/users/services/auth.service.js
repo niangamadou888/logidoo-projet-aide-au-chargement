@@ -45,7 +45,7 @@ async function logoutUser(token) {
       logoutTime: new Date().toISOString()
     };
   } catch (error) {
-    // Gestion plus détaillée des erreurs
+    
     if (error.name === 'TokenExpiredError') {
       throw new Error('Token expiré - Déconnexion automatique');
     }
