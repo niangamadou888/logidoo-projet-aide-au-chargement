@@ -1,18 +1,43 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const routes = require('./src/routes');
 
 const app = express();
+
+// Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// CORS middleware (simple version)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  
+  next();
+});
 
 // Connexion à MongoDB
-mongoose.connect(process.env.MONGO_URI, {})
-.then(() => console.log('MongoDB connecté'))
-.catch(err => console.error(err));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB connecté'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
-// Exemple de route
-app.get('/api/ping', (req, res) => {
-  res.json({ message: 'pong' });
+// API Routes
+app.use('/api', routes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: 'Server error',
+    error: process.env.NODE_ENV === 'development' ? err.message : 'An error occurred'
+  });
 });
 
 const PORT = process.env.PORT || 3000;
