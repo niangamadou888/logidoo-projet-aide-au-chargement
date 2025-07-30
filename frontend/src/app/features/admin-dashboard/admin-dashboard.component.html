@@ -1,0 +1,125 @@
+<div class="admin-dashboard-container">
+  <mat-toolbar color="primary" class="toolbar">
+    <div class="logo-section">
+      <img src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo">
+      <span class="app-title">Admin Dashboard</span>
+    </div>
+    
+    <div class="toolbar-spacer"></div>
+    
+    <div class="user-section" *ngIf="currentUser">
+      <span class="username">{{ currentUser.username }}</span>
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    </div>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" opened class="sidenav">
+      <mat-nav-list>
+        <a mat-list-item>
+          <mat-icon matListItemIcon>dashboard</mat-icon>
+          <span matListItemTitle>Dashboard</span>
+        </a>
+        <a mat-list-item>
+          <mat-icon matListItemIcon>people</mat-icon>
+          <span matListItemTitle>Users</span>
+        </a>
+        <a mat-list-item>
+          <mat-icon matListItemIcon>inventory_2</mat-icon>
+          <span matListItemTitle>Containers</span>
+        </a>
+        <a mat-list-item>
+          <mat-icon matListItemIcon>inventory</mat-icon>
+          <span matListItemTitle>Packages</span>
+        </a>
+        <a mat-list-item>
+          <mat-icon matListItemIcon>assignment</mat-icon>
+          <span matListItemTitle>Projects</span>
+        </a>
+        <a mat-list-item>
+          <mat-icon matListItemIcon>settings</mat-icon>
+          <span matListItemTitle>Settings</span>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+    
+    <mat-sidenav-content class="sidenav-content">
+      <div class="content-container">
+        <div class="dashboard-header">
+          <h1>Welcome, Admin</h1>
+          <p>Manage your shipping optimization system</p>
+        </div>
+        
+        <div class="dashboard-cards">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>people</mat-icon>
+              <mat-card-title>Users</mat-card-title>
+              <mat-card-subtitle>User Management</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p>Manage system users and permissions</p>
+              <div class="card-value">25</div>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary">VIEW ALL</button>
+            </mat-card-actions>
+          </mat-card>
+          
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>inventory_2</mat-icon>
+              <mat-card-title>Containers</mat-card-title>
+              <mat-card-subtitle>Container Management</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p>Manage available containers</p>
+              <div class="card-value">12</div>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary">VIEW ALL</button>
+            </mat-card-actions>
+          </mat-card>
+          
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>assignment</mat-icon>
+              <mat-card-title>Projects</mat-card-title>
+              <mat-card-subtitle>Project Management</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p>Manage loading optimization projects</p>
+              <div class="card-value">8</div>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary">VIEW ALL</button>
+            </mat-card-actions>
+          </mat-card>
+          
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>settings</mat-icon>
+              <mat-card-title>System</mat-card-title>
+              <mat-card-subtitle>System Settings</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p>Configure system settings</p>
+              <div class="card-value"><mat-icon>tune</mat-icon></div>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary">CONFIGURE</button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

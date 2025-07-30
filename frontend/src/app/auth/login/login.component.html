@@ -1,0 +1,48 @@
+<div class="login-container">
+  <div class="login-card-container">
+    <mat-card class="login-card">
+      <mat-card-header>
+        <div class="logo-container">
+          <img src="assets/images/logo-logidoo.png" alt="Logidoo Logo" class="logo">
+        </div>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <h2 class="login-title">Sign In</h2>
+        
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email" placeholder="Enter your email">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="formControls['email']?.errors?.['required']">Email is required</mat-error>
+            <mat-error *ngIf="formControls['email']?.errors?.['email']">Please enter a valid email address</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Enter your password">
+            <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="formControls['password']?.errors?.['required']">Password is required</mat-error>
+            <mat-error *ngIf="formControls['password']?.errors?.['minlength']">
+              Password must be at least 6 characters
+            </mat-error>
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || loading" class="login-button">
+              <span *ngIf="!loading">Login</span>
+              <span *ngIf="loading">Logging in...</span>
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+      
+      <mat-card-actions class="register-link">
+        <p>Don't have an account? <a routerLink="/auth/register">Register here</a></p>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

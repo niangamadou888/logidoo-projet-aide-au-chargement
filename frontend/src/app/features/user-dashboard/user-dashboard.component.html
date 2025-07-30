@@ -1,0 +1,128 @@
+<div class="user-dashboard-container">
+  <mat-toolbar color="primary" class="toolbar">
+    <div class="logo-section">
+      <img src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo">
+      <span class="app-title">Logidoo</span>
+    </div>
+    
+    <div class="toolbar-spacer"></div>
+    
+    <div class="user-section" *ngIf="currentUser">
+      <span class="username">{{ currentUser.username }}</span>
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    </div>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" opened class="sidenav">
+      <mat-nav-list>
+        <a mat-list-item>
+          <mat-icon matListItemIcon>dashboard</mat-icon>
+          <span matListItemTitle>Dashboard</span>
+        </a>
+        <a mat-list-item>
+          <mat-icon matListItemIcon>inventory_2</mat-icon>
+          <span matListItemTitle>My Projects</span>
+        </a>
+        <a mat-list-item>
+          <mat-icon matListItemIcon>add_box</mat-icon>
+          <span matListItemTitle>New Project</span>
+        </a>
+        <a mat-list-item>
+          <mat-icon matListItemIcon>history</mat-icon>
+          <span matListItemTitle>History</span>
+        </a>
+        <a mat-list-item>
+          <mat-icon matListItemIcon>settings</mat-icon>
+          <span matListItemTitle>Settings</span>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+    
+    <mat-sidenav-content class="sidenav-content">
+      <div class="content-container">
+        <div class="dashboard-header">
+          <h1>Welcome, {{ currentUser?.username || 'User' }}</h1>
+          <p>Optimize your shipping and loading operations</p>
+        </div>
+        
+        <div class="dashboard-cards">
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>add_box</mat-icon>
+              <mat-card-title>Start New Project</mat-card-title>
+              <mat-card-subtitle>Create a new loading optimization</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p>Start a new loading optimization project by adding packages and selecting containers</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-raised-button color="primary">CREATE PROJECT</button>
+            </mat-card-actions>
+          </mat-card>
+          
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>folder</mat-icon>
+              <mat-card-title>Recent Projects</mat-card-title>
+              <mat-card-subtitle>Continue your work</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content class="recent-projects">
+              <div class="recent-project-item">
+                <mat-icon>description</mat-icon>
+                <span>Shipping Project #123</span>
+                <span class="recent-date">Yesterday</span>
+              </div>
+              <div class="recent-project-item">
+                <mat-icon>description</mat-icon>
+                <span>Container Load #456</span>
+                <span class="recent-date">3 days ago</span>
+              </div>
+              <div class="recent-project-item">
+                <mat-icon>description</mat-icon>
+                <span>Export Shipment #789</span>
+                <span class="recent-date">1 week ago</span>
+              </div>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary">VIEW ALL</button>
+            </mat-card-actions>
+          </mat-card>
+          
+          <mat-card class="dashboard-card">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>help</mat-icon>
+              <mat-card-title>Help & Resources</mat-card-title>
+              <mat-card-subtitle>Learn how to use the system</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content class="help-resources">
+              <div class="help-resource-item">
+                <mat-icon>play_circle_filled</mat-icon>
+                <span>Getting Started Guide</span>
+              </div>
+              <div class="help-resource-item">
+                <mat-icon>menu_book</mat-icon>
+                <span>User Manual</span>
+              </div>
+              <div class="help-resource-item">
+                <mat-icon>contact_support</mat-icon>
+                <span>Contact Support</span>
+              </div>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary">MORE RESOURCES</button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
