@@ -31,6 +31,37 @@ import { User } from '../../core/models/user.model';
 export class AdminDashboardComponent implements OnInit {
   currentUser: User | null = null;
   
+  // Admin dashboard statistics
+  dashboardStats = {
+    totalUsers: 126,
+    totalSimulations: 854,
+    topUsers: [
+      { name: 'John Doe', simulations: 78 },
+      { name: 'Sarah Smith', simulations: 65 },
+      { name: 'Robert Johnson', simulations: 52 }
+    ],
+    avgFillRate: {
+      volume: 86,
+      weight: 79
+    },
+    simulationsByPeriod: {
+      day: 24,
+      week: 135,
+      month: 425
+    },
+    mostUsedContainers: [
+      { type: "Container 20'", count: 312, percentage: 37 },
+      { type: "Container 40'", count: 267, percentage: 31 },
+      { type: 'Truck', count: 198, percentage: 23 },
+      { type: 'Other', count: 77, percentage: 9 }
+    ],
+    countriesData: [
+      { country: 'Sénégal', users: 58, simulations: 410 },
+      { country: 'Maroc', users: 42, simulations: 328 },
+      { country: 'Other', users: 26, simulations: 116 }
+    ]
+  };
+  
   constructor(
     private authService: AuthService,
     private router: Router

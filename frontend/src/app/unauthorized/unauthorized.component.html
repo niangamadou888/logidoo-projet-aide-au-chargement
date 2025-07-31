@@ -1,0 +1,18 @@
+<div class="unauthorized-container">
+  <div class="unauthorized-content">
+    <div class="icon">
+      <i class="material-icons">error_outline</i>
+    </div>
+    <h1>Access Denied</h1>
+    <p>You don't have permission to access this page.</p>
+    <p>Your role is <strong>{{ roleText }}</strong> and you can't access this area.</p>
+    <div class="actions">
+      <button class="redirect-button" [routerLink]="dashboardPath">
+        Go to {{ roleText }} dashboard
+      </button>
+      <button class="secondary-button" routerLink="/">
+        Back to Home
+      </button>
+    </div>
+  </div>
+</div>

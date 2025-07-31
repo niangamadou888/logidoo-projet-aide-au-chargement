@@ -23,6 +23,17 @@ export class AuthService {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+    this.initAuthFromStorage();
+  }
+  
+  // Initialize authentication state from localStorage on app startup
+  private initAuthFromStorage(): void {
+    if (this.isBrowser) {
+      const user = this.getUserFromStorage();
+      if (user) {
+        this.currentUserSubject.next(user);
+      }
+    }
   }
 
   register(username: string, email: string, password: string): Observable<AuthResponse> {
@@ -34,6 +45,9 @@ export class AuthService {
       tap(response => {
         if (response.success && response.token && response.user) {
           this.setSession(response.token, response.user);
+          
+          // Navigate to user dashboard after registration (new users are always regular users)
+          this.router.navigate(['/dashboard/user']);
         }
       })
     );
@@ -47,6 +61,12 @@ export class AuthService {
       tap(response => {
         if (response.success && response.token && response.user) {
           this.setSession(response.token, response.user);
+          
+          // Navigate to the appropriate dashboard based on user role
+          const dashboardUrl = response.user.role === 'admin' 
+            ? '/dashboard/admin' 
+            : '/dashboard/user';
+          this.router.navigate([dashboardUrl]);
         }
       })
     );

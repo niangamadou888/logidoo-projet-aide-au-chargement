@@ -58,66 +58,110 @@
           <p>Manage your shipping optimization system</p>
         </div>
         
-        <div class="dashboard-cards">
-          <mat-card class="dashboard-card">
-            <mat-card-header>
-              <mat-icon mat-card-avatar>people</mat-icon>
-              <mat-card-title>Users</mat-card-title>
-              <mat-card-subtitle>User Management</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <p>Manage system users and permissions</p>
-              <div class="card-value">25</div>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-button color="primary">VIEW ALL</button>
-            </mat-card-actions>
-          </mat-card>
-          
-          <mat-card class="dashboard-card">
-            <mat-card-header>
-              <mat-icon mat-card-avatar>inventory_2</mat-icon>
-              <mat-card-title>Containers</mat-card-title>
-              <mat-card-subtitle>Container Management</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <p>Manage available containers</p>
-              <div class="card-value">12</div>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-button color="primary">VIEW ALL</button>
-            </mat-card-actions>
-          </mat-card>
-          
-          <mat-card class="dashboard-card">
-            <mat-card-header>
-              <mat-icon mat-card-avatar>assignment</mat-icon>
-              <mat-card-title>Projects</mat-card-title>
-              <mat-card-subtitle>Project Management</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <p>Manage loading optimization projects</p>
-              <div class="card-value">8</div>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-button color="primary">VIEW ALL</button>
-            </mat-card-actions>
-          </mat-card>
-          
-          <mat-card class="dashboard-card">
-            <mat-card-header>
-              <mat-icon mat-card-avatar>settings</mat-icon>
-              <mat-card-title>System</mat-card-title>
-              <mat-card-subtitle>System Settings</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <p>Configure system settings</p>
-              <div class="card-value"><mat-icon>tune</mat-icon></div>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-button color="primary">CONFIGURE</button>
-            </mat-card-actions>
-          </mat-card>
+        <div class="dashboard-grid">
+          <!-- First row - Key metrics -->
+          <div class="dashboard-row">
+            <mat-card class="dashboard-card metric-card">
+              <mat-card-header>
+                <mat-icon mat-card-avatar>people</mat-icon>
+                <mat-card-title>Users</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="card-value">{{ dashboardStats.totalUsers }}</div>
+                <p class="metric-label">Total Users</p>
+              </mat-card-content>
+            </mat-card>
+            
+            <mat-card class="dashboard-card metric-card">
+              <mat-card-header>
+                <mat-icon mat-card-avatar>bar_chart</mat-icon>
+                <mat-card-title>Simulations</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="card-value">{{ dashboardStats.totalSimulations }}</div>
+                <p class="metric-label">Total Simulations</p>
+              </mat-card-content>
+            </mat-card>
+            
+            <mat-card class="dashboard-card metric-card">
+              <mat-card-header>
+                <mat-icon mat-card-avatar>horizontal_split</mat-icon>
+                <mat-card-title>Fill Rate</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="card-value">{{ dashboardStats.avgFillRate.volume }}%</div>
+                <p class="metric-label">Average Volume</p>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="dashboard-card metric-card">
+              <mat-card-header>
+                <mat-icon mat-card-avatar>horizontal_split</mat-icon>
+                <mat-card-title>Weight Fill</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="card-value">{{ dashboardStats.avgFillRate.weight }}%</div>
+                <p class="metric-label">Average Weight</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <!-- Second row - Simulations by Period -->
+          <div class="dashboard-row">
+            <mat-card class="dashboard-card period-card">
+              <mat-card-header>
+                <mat-icon mat-card-avatar>trending_up</mat-icon>
+                <mat-card-title>Simulations by Period</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="period-stats">
+                  <div class="period-stat-item">
+                    <div class="period-value">{{ dashboardStats.simulationsByPeriod.day }}</div>
+                    <div class="period-label">Today</div>
+                  </div>
+                  <div class="period-stat-item">
+                    <div class="period-value">{{ dashboardStats.simulationsByPeriod.week }}</div>
+                    <div class="period-label">This Week</div>
+                  </div>
+                  <div class="period-stat-item">
+                    <div class="period-value">{{ dashboardStats.simulationsByPeriod.month }}</div>
+                    <div class="period-label">This Month</div>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+
+            <!-- Top Active Users -->
+            <mat-card class="dashboard-card users-card">
+              <mat-card-header>
+                <mat-icon mat-card-avatar>stars</mat-icon>
+                <mat-card-title>Top Active Users</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="top-users-list">
+                  <div *ngFor="let user of dashboardStats.topUsers; let i = index" class="top-user-item">
+                    <span class="top-user-rank">{{ i + 1 }}</span>
+                    <span class="top-user-name">{{ user.name }}</span>
+                    <span class="top-user-sims">{{ user.simulations }}</span>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+
+            <!-- Container Usage -->
+            <mat-card class="dashboard-card container-card">
+              <mat-card-header>
+                <mat-icon mat-card-avatar>inventory_2</mat-icon>
+                <mat-card-title>Container Usage</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div *ngFor="let container of dashboardStats.mostUsedContainers" class="container-stat-item">
+                  <span>{{ container.type }}</span>
+                  <span class="container-stat-count">{{ container.percentage }}%</span>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
         </div>
       </div>
     </mat-sidenav-content>

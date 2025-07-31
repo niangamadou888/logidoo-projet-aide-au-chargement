@@ -31,6 +31,21 @@ import { User } from '../../core/models/user.model';
 export class UserDashboardComponent implements OnInit {
   currentUser: User | null = null;
   
+  // User dashboard statistics
+  userStats = {
+    totalSimulations: 28,
+    avgFillRate: {
+      volume: 83,
+      weight: 76
+    },
+    preferredContainer: "Container 20'",
+    recentSimulations: [
+      { id: 'SIM-12345', date: '2023-07-15', containerType: "Container 20'", fillRate: 92, packageCount: 145 },
+      { id: 'SIM-12328', date: '2023-07-10', containerType: "Container 40'", fillRate: 86, packageCount: 230 },
+      { id: 'SIM-12315', date: '2023-07-05', containerType: "Truck", fillRate: 79, packageCount: 78 }
+    ]
+  };
+  
   constructor(
     private authService: AuthService,
     private router: Router

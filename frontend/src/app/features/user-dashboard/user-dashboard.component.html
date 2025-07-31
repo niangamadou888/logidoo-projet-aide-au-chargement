@@ -55,45 +55,96 @@
         </div>
         
         <div class="dashboard-cards">
-          <mat-card class="dashboard-card">
+          <mat-card class="dashboard-card highlight-card">
             <mat-card-header>
               <mat-icon mat-card-avatar>add_box</mat-icon>
-              <mat-card-title>Start New Project</mat-card-title>
-              <mat-card-subtitle>Create a new loading optimization</mat-card-subtitle>
+              <mat-card-title>New Simulation</mat-card-title>
+              <mat-card-subtitle>Start a new loading optimization</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
-              <p>Start a new loading optimization project by adding packages and selecting containers</p>
+              <p>Create a new loading simulation to optimize your container space</p>
+              <div class="action-button-container">
+                <button mat-raised-button color="primary" class="action-button">
+                  <mat-icon>add</mat-icon>
+                  START NEW SIMULATION
+                </button>
+              </div>
             </mat-card-content>
-            <mat-card-actions>
-              <button mat-raised-button color="primary">CREATE PROJECT</button>
-            </mat-card-actions>
           </mat-card>
           
           <mat-card class="dashboard-card">
             <mat-card-header>
-              <mat-icon mat-card-avatar>folder</mat-icon>
-              <mat-card-title>Recent Projects</mat-card-title>
-              <mat-card-subtitle>Continue your work</mat-card-subtitle>
+              <mat-icon mat-card-avatar>analytics</mat-icon>
+              <mat-card-title>Your Statistics</mat-card-title>
+              <mat-card-subtitle>Performance metrics</mat-card-subtitle>
             </mat-card-header>
-            <mat-card-content class="recent-projects">
-              <div class="recent-project-item">
-                <mat-icon>description</mat-icon>
-                <span>Shipping Project #123</span>
-                <span class="recent-date">Yesterday</span>
+            <mat-card-content class="stats-content">
+              <div class="stat-item">
+                <div class="stat-label">Total Simulations</div>
+                <div class="stat-value">{{ userStats.totalSimulations }}</div>
               </div>
-              <div class="recent-project-item">
-                <mat-icon>description</mat-icon>
-                <span>Container Load #456</span>
-                <span class="recent-date">3 days ago</span>
+              
+              <div class="stat-item">
+                <div class="stat-label">Average Fill Rate (Volume)</div>
+                <div class="stat-value">{{ userStats.avgFillRate.volume }}%</div>
               </div>
-              <div class="recent-project-item">
-                <mat-icon>description</mat-icon>
-                <span>Export Shipment #789</span>
-                <span class="recent-date">1 week ago</span>
+              
+              <div class="stat-item">
+                <div class="stat-label">Average Fill Rate (Weight)</div>
+                <div class="stat-value">{{ userStats.avgFillRate.weight }}%</div>
+              </div>
+              
+              <div class="stat-item">
+                <div class="stat-label">Preferred Container Type</div>
+                <div class="stat-value">{{ userStats.preferredContainer }}</div>
               </div>
             </mat-card-content>
+          </mat-card>
+          
+          <mat-card class="dashboard-card wide-card">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>history</mat-icon>
+              <mat-card-title>Recent Simulations</mat-card-title>
+              <mat-card-subtitle>Your latest work</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <table class="simulations-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Container</th>
+                    <th>Fill Rate</th>
+                    <th>Packages</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let sim of userStats.recentSimulations">
+                    <td>{{ sim.id }}</td>
+                    <td>{{ sim.date }}</td>
+                    <td>{{ sim.containerType }}</td>
+                    <td>
+                      <div class="fill-rate-bar">
+                        <div class="fill-rate-progress" [style.width.%]="sim.fillRate"></div>
+                        <span>{{ sim.fillRate }}%</span>
+                      </div>
+                    </td>
+                    <td>{{ sim.packageCount }}</td>
+                    <td class="action-buttons">
+                      <button mat-icon-button color="primary" title="View">
+                        <mat-icon>visibility</mat-icon>
+                      </button>
+                      <button mat-icon-button color="primary" title="Export PDF">
+                        <mat-icon>picture_as_pdf</mat-icon>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </mat-card-content>
             <mat-card-actions>
-              <button mat-button color="primary">VIEW ALL</button>
+              <button mat-button color="primary">VIEW ALL SIMULATIONS</button>
             </mat-card-actions>
           </mat-card>
           

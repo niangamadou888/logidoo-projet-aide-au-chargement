@@ -80,37 +80,159 @@
   }
 }
 
-.dashboard-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
+.dashboard-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dashboard-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
 }
 
 .dashboard-card {
-  height: 100%;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  mat-card-header {
+    padding: 16px 16px 0;
+    
+    mat-card-title {
+      margin-bottom: 0;
+      font-size: 18px;
+    }
+  }
   
   mat-card-content {
-    min-height: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    padding: 16px;
     
     p {
       color: #666;
     }
+  }
+}
+
+/* Metric cards (first row) */
+.metric-card {
+  flex: 1;
+  min-width: 160px;
+  
+  mat-card-content {
+    text-align: center;
     
     .card-value {
-      font-size: 36px;
+      font-size: 32px;
       font-weight: 500;
       color: #3f51b5;
+      margin: 8px 0;
+    }
+    
+    .metric-label {
       text-align: center;
-      margin-top: 16px;
+      font-size: 14px;
+      color: #666;
+      margin: 0;
+    }
+  }
+}
+
+/* Period card */
+.period-card {
+  flex: 1;
+  min-width: 250px;
+  
+  .period-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0;
+    
+    .period-stat-item {
+      text-align: center;
       
-      mat-icon {
-        font-size: 36px;
-        height: 36px;
-        width: 36px;
+      .period-value {
+        font-size: 24px;
+        font-weight: 500;
+        color: #3f51b5;
       }
+      
+      .period-label {
+        font-size: 13px;
+        color: #666;
+      }
+    }
+  }
+}
+
+/* Users card */
+.users-card {
+  flex: 1;
+  min-width: 250px;
+  
+  .top-users-list {
+    .top-user-item {
+      display: flex;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      .top-user-rank {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background-color: #3f51b5;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        font-weight: 500;
+        font-size: 14px;
+      }
+      
+      .top-user-name {
+        flex: 1;
+        font-size: 14px;
+      }
+      
+      .top-user-sims {
+        font-weight: 500;
+        color: #3f51b5;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+/* Container card */
+.container-card {
+  flex: 1;
+  min-width: 250px;
+  
+  .container-stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .container-stat-count {
+      font-weight: 500;
+      color: #3f51b5;
     }
   }
 }

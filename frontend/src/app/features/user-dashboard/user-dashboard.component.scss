@@ -84,17 +84,130 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px;
+  margin-bottom: 24px;
 }
 
 .dashboard-card {
   height: 100%;
 }
 
-.recent-projects, .help-resources {
+.highlight-card {
+  background: linear-gradient(135deg, #6a1b9a 0%, #4a148c 100%);
+  
+  mat-card-header {
+    color: white;
+  }
+  
+  mat-card-title, mat-card-subtitle {
+    color: white;
+  }
+  
+  mat-icon {
+    color: white;
+  }
+  
+  p {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .action-button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    
+    .action-button {
+      padding: 8px 24px;
+      font-weight: 500;
+    }
+  }
+}
+
+.wide-card {
+  grid-column: span 2;
+  
+  @media (max-width: 768px) {
+    grid-column: span 1;
+  }
+}
+
+.stats-content {
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .stat-label {
+      color: #666;
+    }
+    
+    .stat-value {
+      font-size: 18px;
+      font-weight: 500;
+      color: #3f51b5;
+    }
+  }
+}
+
+.simulations-table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  th, td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  th {
+    color: #666;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  .fill-rate-bar {
+    position: relative;
+    height: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+    
+    .fill-rate-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background-color: #3f51b5;
+    }
+    
+    span {
+      position: relative;
+      display: block;
+      text-align: center;
+      color: white;
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 500;
+      text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    }
+  }
+  
+  .action-buttons {
+    white-space: nowrap;
+  }
+}
+
+.help-resources {
   margin-top: 16px;
 }
 
-.recent-project-item, .help-resource-item {
+.help-resource-item {
   display: flex;
   align-items: center;
   padding: 8px 0;
@@ -111,11 +224,5 @@
   
   span {
     flex: 1;
-  }
-  
-  .recent-date {
-    flex: 0;
-    color: #999;
-    font-size: 12px;
   }
 }
