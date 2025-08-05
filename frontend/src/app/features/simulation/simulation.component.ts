@@ -126,32 +126,40 @@ const exemple = 'Carton;30;25;20;2.5;1;Jean Dupont;123 Rue de la Paix;0123456789
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          // Ici vous ajouteriez la logique pour parser Excel/CSV
-          // Pour l'exemple, on simule l'import
-          const colisImportes: Colis[] = [
-            {
-              id: Date.now(),
-              type: 'Carton importé',
-              longueur: 30,
-              largeur: 25,
-              hauteur: 20,
-              poids: 2.5,
-              quantite: 1,
-              nomDestinataire: 'Client Excel',
-              adresse: '456 Avenue Import',
-              telephone: '0987654321'
-            }
-          ];
-          
-          this.listeColis.push(...colisImportes);
-          alert(`${colisImportes.length} colis importé(s) depuis ${file.name}`);
-        } catch (error) {
-          console.error('Erreur lors de l\'import:', error);
-          alert('Erreur lors de l\'import du fichier');
-        }
+    reader.onload = (e) => {
+  try {
+    const text = e.target?.result as string;
+
+    const lignes = text.split('\n').filter(line => line.trim() !== '');
+
+    // Supprime la première ligne (les entêtes)
+    lignes.shift();
+
+    const colisImportes: Colis[] = lignes.map((ligne, index) => {
+      const colonnes = ligne.split(';'); // ou ',' selon ton séparateur
+
+      return {
+        id: Date.now() + index,
+        type: colonnes[0]?.trim(),
+        longueur: Number(colonnes[1]),
+        largeur: Number(colonnes[2]),
+        hauteur: Number(colonnes[3]),
+        poids: Number(colonnes[4]),
+        quantite: Number(colonnes[5]),
+        nomDestinataire: colonnes[6]?.trim(),
+        adresse: colonnes[7]?.trim(),
+        telephone: colonnes[8]?.trim()
       };
+    });
+
+    this.listeColis.push(...colisImportes);
+    alert(`${colisImportes.length} colis importé(s) depuis ${file.name}`);
+  } catch (error) {
+    console.error('Erreur lors de l\'import:', error);
+    alert('Erreur lors de l\'import du fichier');
+  }
+};
+
       reader.readAsText(file);
     }
     
