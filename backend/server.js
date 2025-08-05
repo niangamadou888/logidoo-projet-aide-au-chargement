@@ -30,6 +30,9 @@ mongoose.connect(process.env.MONGO_URI)
 // API Routes
 app.use('/api', routes);
 
+const authRoutes = require('./src/routes/auth'); // ← assure-toi que ce chemin est correct
+app.use('/auth', authRoutes); // → /api/auth/register, /api/auth/login
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -39,6 +42,11 @@ app.use((err, req, res, next) => {
     error: process.env.NODE_ENV === 'development' ? err.message : 'An error occurred'
   });
 });
+
+const simulationRoutes = require('./src/routes/simulationRoutes');
+
+app.use('/api/simulations', simulationRoutes); // ← accessible via /api/simulations
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
