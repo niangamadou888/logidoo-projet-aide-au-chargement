@@ -108,8 +108,9 @@ export class SimulationComponent {
     console.log('Téléchargement du modèle Excel...');
     
     // Exemple de création d'un CSV simple
-    const headers = 'Type,Longueur(cm),Largeur(cm),Hauteur(cm),Poids(kg),Quantité,Destinataire,Adresse,Téléphone\n';
-    const exemple = 'Carton,30,25,20,2.5,1,Adiaratou Oumy Fall,Medina rue 6,778128426\n';
+  const headers = 'Type;Longueur(cm);Largeur(cm);Hauteur(cm);Poids(kg);Quantité;Destinataire;Adresse;Téléphone\n';
+const exemple = 'Carton;30;25;20;2.5;1;Jean Dupont;123 Rue de la Paix;0123456789\n';
+
     const csvContent = headers + exemple;
     
     const blob = new Blob([csvContent], { type: 'text/csv' });
