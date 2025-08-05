@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { authGuard, adminGuard } from '../core/guards/auth.guard';
+import { SimulationComponent } from './simulation/simulation.component';
 
 export const DASHBOARD_ROUTES: Routes = [
   {

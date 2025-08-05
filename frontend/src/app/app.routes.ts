@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AUTH_ROUTES } from './auth/auth.routes';
 import { DASHBOARD_ROUTES } from './features/dashboard.routes';
 import { authGuard } from './core/guards/auth.guard';
+import { SimulationComponent } from './features/simulation/simulation.component';
 
 export const routes: Routes = [
   {
@@ -18,8 +19,10 @@ export const routes: Routes = [
     redirectTo: '/dashboard',
     pathMatch: 'full'
   },
-  {
-    path: '**',
-    redirectTo: '/auth/login'
-  }
+ {
+  path: 'simulation',
+  component: SimulationComponent,
+  canActivate: [authGuard] 
+},
+ 
 ];
