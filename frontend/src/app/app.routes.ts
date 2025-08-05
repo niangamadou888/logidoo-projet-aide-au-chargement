@@ -3,6 +3,7 @@ import { Routes, Router } from '@angular/router';
 import { AUTH_ROUTES } from './auth/auth.routes';
 import { DASHBOARD_ROUTES } from './features/dashboard.routes';
 import { authGuard } from './core/guards/auth.guard';
+import { SimulationComponent } from './features/simulation/simulation.component';
 import { AuthService } from './core/services/auth.service';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
@@ -47,6 +48,12 @@ export const routes: Routes = [
     component: LandingPageComponent,
     pathMatch: 'full'
   },
+ {
+  path: 'simulation',
+  component: SimulationComponent,
+  canActivate: [authGuard] 
+},
+ 
   {
     path: '**',
     redirectTo: '/'
