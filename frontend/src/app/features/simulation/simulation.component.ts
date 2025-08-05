@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
+
 
 interface Colis {
   id?: number;
@@ -107,7 +109,7 @@ export class SimulationComponent {
     
     // Exemple de création d'un CSV simple
     const headers = 'Type,Longueur(cm),Largeur(cm),Hauteur(cm),Poids(kg),Quantité,Destinataire,Adresse,Téléphone\n';
-    const exemple = 'Carton,30,25,20,2.5,1,Jean Dupont,123 Rue de la Paix,0123456789\n';
+    const exemple = 'Carton,30,25,20,2.5,1,Adiaratou Oumy Fall,Medina rue 6,778128426\n';
     const csvContent = headers + exemple;
     
     const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -181,7 +183,12 @@ export class SimulationComponent {
       next: (response) => {
         console.log('Simulation sauvegardée:', response);
         this.simulations.push(simulation);
-        alert(`Simulation "${simulation.nom}" validée avec ${simulation.colis.length} colis!`);
+        Swal.fire({
+          icon: 'success',
+          title: `Simulation "${simulation.nom}" validée !`,
+          text: `${simulation.colis.length} colis ajoutés.`,
+          confirmButtonText: 'OK'
+        });
         this.nouvellSimulation();
       },
       error: (error) => {
