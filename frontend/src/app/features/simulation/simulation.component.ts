@@ -177,7 +177,7 @@ export class SimulationComponent {
     };
 
     // Envoyer au backend
-    this.http.post('/api/simulations', simulation).subscribe({
+    this.http.post('http://localhost:3000/api/simulations', simulation).subscribe({
       next: (response) => {
         console.log('Simulation sauvegardée:', response);
         this.simulations.push(simulation);
