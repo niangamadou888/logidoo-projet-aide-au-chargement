@@ -1,0 +1,247 @@
+<div class="logidoo-container">
+  <!-- Header -->
+  <div class="header">
+    <button class="back-btn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    <div class="logo-container">
+      <div class="logo">
+        <span class="logo-text">Logid</span>
+        <span class="logo-infinity">∞</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="title-section">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9,22 9,12 15,12 15,22"/>
+    </svg>
+    <h1>Nouvelle Simulation</h1>
+  </div>
+
+  <!-- Informations Simulation -->
+  <div class="simulation-info">
+    <!-- Ajoutez cette ligne dans votre module Angular (simulation.module.ts ou app.module.ts) :
+    import { ReactiveFormsModule } from '@angular/forms';
+    @NgModule({
+        imports: [
+            ReactiveFormsModule,
+            // ... autres imports
+        ],
+    })
+    export class SimulationModule { }
+    -->
+
+    <form [formGroup]="simulationForm" class="simulation-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Nom de la simulation *</label>
+                <input 
+                    type="text" 
+                    formControlName="nom" 
+                    placeholder="Ex: Livraison Paris - Janvier 2025"
+                    class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Description (optionnel)</label>
+                <input 
+                    type="text" 
+                    formControlName="description" 
+                    placeholder="Description de la simulation"
+                    class="form-control">
+            </div>
+        </div>
+    </form>
+  </div>
+
+  <div class="main-content">
+    <!-- Formulaire d'ajout de colis -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon add-icon">+</div>
+        <h2>Ajouter un colis</h2>
+      </div>
+
+      <form [formGroup]="colisForm" class="colis-form">
+        <div class="form-group">
+          <label>Type de colis *</label>
+          <input 
+            type="text" 
+            formControlName="type" 
+            placeholder="Ex: Carton, Palette, Sac ..."
+            class="form-control">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Longueur (cm) *</label>
+            <input 
+              type="number" 
+              formControlName="longueur" 
+              class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Largeur (cm) *</label>
+            <input 
+              type="number" 
+              formControlName="largeur" 
+              class="form-control">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Hauteur (cm) *</label>
+            <input 
+              type="number" 
+              formControlName="hauteur" 
+              class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Poids (kg) *</label>
+            <input 
+              type="number" 
+              step="0.1" 
+              formControlName="poids" 
+              class="form-control">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Quantité *</label>
+          <input 
+            type="number" 
+            formControlName="quantite" 
+            class="form-control">
+        </div>
+
+        <!-- Champs destinataire (optionnels) -->
+        <div class="destinataire-section">
+          <h4>Informations destinataire (optionnel)</h4>
+          <div class="form-group">
+            <label>Nom Destinataire</label>
+            <input 
+              type="text" 
+              formControlName="nomDestinataire" 
+              class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Adresse</label>
+            <input 
+              type="text" 
+              formControlName="adresse" 
+              class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Téléphone</label>
+            <input 
+              type="tel" 
+              formControlName="telephone" 
+              class="form-control">
+          </div>
+        </div>
+
+        <button 
+          type="button" 
+          (click)="ajouterColis()" 
+          class="btn-primary full-width"
+          [disabled]="!colisForm.valid">
+          Ajouter le colis
+        </button>
+      </form>
+    </div>
+
+    <!-- Section Import Excel -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon excel-icon">📊</div>
+        <h2>Import Excel</h2>
+      </div>
+
+      <p class="excel-description">
+        Télécharger d'abord le modèle Excel avec les colonnes attendues
+      </p>
+
+      <button 
+        (click)="telechargerModele()" 
+        class="btn-download">
+        📥 Télécharger le modèle
+      </button>
+
+      <p class="excel-description">
+        Sélectionnez votre fichier Excel complété
+      </p>
+
+      <label class="btn-import">
+        📤 Importer Excel
+        <input 
+          type="file" 
+          (change)="importerDepuisExcel($event)" 
+          accept=".xlsx,.xls,.csv"
+          style="display: none;">
+      </label>
+
+      <div class="excel-columns">
+        <p><strong>Colonnes attendues :</strong></p>
+        <ul>
+          <li>• Type de colis (texte)</li>
+          <li>• Longueur (cm) (nombre)</li>
+          <li>• Largeur (cm) (nombre)</li>
+          <li>• Hauteur (cm) (nombre)</li>
+          <li>• Poids (kg) (nombre)</li>
+          <li>• Quantité (nombre, optionnel)</li>
+        </ul>
+      </div>
+
+      <div class="status-section">
+        <div class="status-icon">📦</div>
+        <p *ngIf="listeColis.length === 0" class="status-text">
+          Aucun colis ajouté pour le moment<br>
+          Commencer par ajouter des colis à votre simulation
+        </p>
+        <p *ngIf="listeColis.length > 0" class="status-text">
+          {{ getNombreColisTotal() }} colis ajouté{{ getNombreColisTotal() > 1 ? 's' : '' }}<br>
+          Poids total: {{ calculerPoidsTotal() | number:'1.1-1' }} kg<br>
+          Volume total: {{ calculerVolumeTotal() | number:'1.2-2' }} m³
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Liste des colis -->
+  <div *ngIf="listeColis.length > 0" class="card colis-list">
+    <h3>Colis de la simulation ({{ listeColis.length }})</h3>
+    <div class="colis-items">
+      <div *ngFor="let colis of listeColis; let i = index" class="colis-item">
+        <div class="colis-info">
+          <span class="colis-type">{{ colis.type }}</span>
+          <span class="colis-dimensions">
+            {{ colis.longueur }}×{{ colis.largeur }}×{{ colis.hauteur }}cm - {{ colis.poids }}kg
+          </span>
+          <span *ngIf="colis.quantite > 1" class="colis-quantity">
+            Qté: {{ colis.quantite }}
+          </span>
+          <div *ngIf="colis.nomDestinataire" class="colis-destinataire">
+            Destinataire: {{ colis.nomDestinataire }} - {{ colis.adresse }} - {{ colis.telephone }}
+          </div>
+        </div>
+        <button 
+          (click)="supprimerColis(i)" 
+          class="btn-delete">
+          Supprimer
+        </button>
+      </div>
+    </div>
+
+    <button 
+      (click)="validerSimulation()" 
+      class="btn-validate full-width"
+      [disabled]="!simulationForm.valid">
+      Valider la simulation
+    </button>
+  </div>
+</div>
