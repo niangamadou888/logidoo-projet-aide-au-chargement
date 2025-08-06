@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 
 
@@ -34,9 +35,11 @@ interface Simulation {
   selector: 'app-simulation',
   templateUrl: './simulation.component.html',
   styleUrls: ['./simulation.component.scss'],
-   imports: [
+  standalone: true,
+  imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule
   ]
 })
 
