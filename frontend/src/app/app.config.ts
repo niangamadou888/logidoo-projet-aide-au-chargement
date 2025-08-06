@@ -45,7 +45,7 @@ export const appConfig: ApplicationConfig = {
       FormsModule,
       CommonModule,
       HttpClientModule,
-    )
+    ),
     { 
       provide: HTTP_INTERCEPTORS, 
       useClass: AuthInterceptor, 
