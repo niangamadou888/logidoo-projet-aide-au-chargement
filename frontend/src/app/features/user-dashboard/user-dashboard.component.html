@@ -32,9 +32,9 @@
           <mat-icon matListItemIcon>inventory_2</mat-icon>
           <span matListItemTitle>My Projects</span>
         </a>
-        <a mat-list-item>
+        <a mat-list-item routerLink="/simulation">
           <mat-icon matListItemIcon>add_box</mat-icon>
-          <span matListItemTitle>New Project</span>
+          <span matListItemTitle>New Simulation</span>
         </a>
         <a mat-list-item>
           <mat-icon matListItemIcon>history</mat-icon>
@@ -64,7 +64,7 @@
             <mat-card-content>
               <p>Create a new loading simulation to optimize your container space</p>
               <div class="action-button-container">
-                <button mat-raised-button color="primary" class="action-button">
+                <button mat-raised-button color="primary" class="action-button" routerLink="/simulation">
                   <mat-icon>add</mat-icon>
                   START NEW SIMULATION
                 </button>
