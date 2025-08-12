@@ -26,11 +26,11 @@ module.exports = {
 
   async suggestionCamions(req, res) {
     try {
-      const { articles } = req.body;
-      if (!articles || !Array.isArray(articles)) {
+      const { colis } = req.body;
+      if (!colis || !Array.isArray(colis)) {
         return res.status(400).json({ message: "Liste d'articles requise" });
       }
-      const suggestions = await suggestionService.suggererCamions(articles);
+      const suggestions = await suggestionService.suggererCamions(colis);
       res.json(suggestions);
     } catch (error) {
       res.status(500).json({ message: error.message });
