@@ -5,7 +5,7 @@ const camionSchema = new mongoose.Schema({
    type: {type: String,required: true
   },
   capacite: {
-    volume: { type: Number, required: true,min: 0 }, // ici le volume est en m³
+    volume: { type: Number, required: true,min: 0 }, 
     poidsMax: { type: Number, required: true ,min: 0} 
   },
   dimensions: {
@@ -15,9 +15,7 @@ const camionSchema = new mongoose.Schema({
   },
     capacitePoids: { type: Number, required: true },
   disponible: { type: Boolean, default: true },
-  trackingId: { type: String },
-  conteneurId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Conteneur',require:true}],
-  colisId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Colis' ,require:true}],
+
 
   disponible: { type: Boolean, default: true }
 });
