@@ -2,3 +2,23 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.container {
+  max-width: 1200px;
+}
+
+mat-card {
+  @apply rounded-lg overflow-hidden;
+}
+
+mat-card-header {
+  @apply border-b border-gray-200;
+}
+
+mat-card-content {
+  @apply p-4;
+}
+
+mat-card-actions {
+  @apply border-t border-gray-200;
+}

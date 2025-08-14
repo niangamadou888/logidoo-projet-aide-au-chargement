@@ -8,6 +8,8 @@ import { AuthService } from './core/services/auth.service';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 
+import { CamionsComponent } from './camions/camions.component';
+
 export const routes: Routes = [
   {
     path: 'auth',
@@ -53,7 +55,7 @@ export const routes: Routes = [
   component: SimulationComponent,
   canActivate: [authGuard] 
 },
- 
+
   {
     path: '**',
     redirectTo: '/'

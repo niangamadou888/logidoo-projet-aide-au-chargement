@@ -118,7 +118,36 @@
             formControlName="quantite" 
             class="form-control">
         </div>
-
+        
+        <div class="form-row">
+        <div class="form-group">
+           <label for="containerSelect">Container*</label>
+          <select 
+    id="containerSelect"
+    formControlName="container"
+    class="form-control">
+    
+    <option value="">-- Sélectionner un container --</option>
+    <option *ngFor="let container of container">
+      {{ container.type }} 
+    </option>
+  </select>
+        </div>
+  <div class="form-group">
+     <label for="containerSelect">Camion*</label>
+          <select 
+    id="containerSelect"
+    formControlName="camions"
+    class="form-control">
+     <option value="">-- Sélectionner un camion --</option>
+     <label for="containerSelect">Camion*</label>
+   
+    <option *ngFor="let camions of camions">
+      {{ camions.modele }} -{{camions.type}}
+    </option>
+  </select>
+        </div>
+</div>
         <!-- Champs destinataire (optionnels) -->
         <div class="destinataire-section">
           <h4>Informations destinataire (optionnel)</h4>
@@ -194,6 +223,7 @@
           <li>• Hauteur (cm) (nombre)</li>
           <li>• Poids (kg) (nombre)</li>
           <li>• Quantité (nombre, optionnel)</li>
+          <li>• Container (texte)</li>
         </ul>
       </div>
 

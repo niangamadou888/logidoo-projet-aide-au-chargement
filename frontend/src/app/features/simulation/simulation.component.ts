@@ -7,7 +7,11 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
-
+import { ConteneurService } from '../../services/conteneur.service';
+import { Conteneur } from '../../core/models/conteneur.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Camion } from '../../core/models/camion.model';
+import { CamionsService } from '../../services/camions.service';
 
 interface Colis {
   id?: number;
@@ -45,13 +49,17 @@ interface Simulation {
 
 
 export class SimulationComponent {
+  loading = false;
   colisForm: FormGroup;
   simulationForm: FormGroup;
   listeColis: Colis[] = [];
+    suggestions: Conteneur[] = [];
+  articles:Colis[]=[];
   simulations: Simulation[] = [];
   simulationEnCours: Simulation | null = null;
-
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+ container: Conteneur[]=[];
+  camions: Camion[]=[];
+  constructor(private fb: FormBuilder, private http: HttpClient,private conteneurService:ConteneurService, private snackBar: MatSnackBar,private camionService:CamionsService) {
     this.colisForm = this.fb.group({
       type: ['', Validators.required],
       longueur: ['', [Validators.required, Validators.min(1)]],
@@ -59,6 +67,8 @@ export class SimulationComponent {
       hauteur: ['', [Validators.required, Validators.min(1)]],
       poids: ['', [Validators.required, Validators.min(0.1)]],
       quantite: ['1', [Validators.required, Validators.min(1)]],
+      container:['1',Validators.required],
+      camions:['1',Validators.required],
       nomDestinataire: [''],
       adresse: [''],
       telephone: ['']
@@ -225,4 +235,57 @@ const exemple = 'Carton;30;25;20;2.5;1;Jean Dupont;123 Rue de la Paix;0123456789
   getNombreColisTotal(): number {
     return this.listeColis.reduce((total, colis) => total + colis.quantite, 0);
   }
+
+
+
+  ngOnInit() {
+ this.loadConteneurs();
+ this.loadCamions();
+//  this.getSuggestions()
+}
+ 
+
+
+//  getSuggestions() {
+//     this.conteneurService.suggestionContenants(this.articles).subscribe({
+//       next: (data) => {
+//         this.suggestions = data;
+//         console.log('Suggestions reçues :', this.suggestions);
+//       },
+//       error: (err) => {
+//         console.error('Erreur de suggestion', err);
+//       }
+//     });
+//   }
+
+   loadConteneurs() {
+this.loading=true;
+    this.conteneurService.listerContenants().subscribe({
+      next: (data) => {
+        this.container = data;
+        this.loading=false;
+      },
+      error: (err) => {
+        console.error('Erreur de chargement des container', err);
+        this.snackBar.open('Erreur de chargement des container', 'Fermer', { duration: 3000 });
+        this.loading=false;
+      }
+    });
+  } 
+
+
+     loadCamions() {
+this.loading=true;
+    this.camionService.listerCamions().subscribe({
+      next: (data:Camion[]) => {
+        this.camions = data;
+        this.loading=false;
+      },
+      error: (err) => {
+        console.error('Erreur de chargement des container', err);
+        this.snackBar.open('Erreur de chargement des container', 'Fermer', { duration: 3000 });
+        this.loading=false;
+      }
+    });
+  } 
 }
