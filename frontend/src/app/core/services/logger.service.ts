@@ -20,7 +20,10 @@ export class LoggerService {
       ? NgxLoggerLevel.ERROR 
       : NgxLoggerLevel.DEBUG;
       
-    console.log('Configuring logger with URL:', environment.apiUrl + '/api/logs');
+    // Afficher l'URL de l'API uniquement en développement
+    if (!environment.production) {
+      console.log('Configuring logger with URL:', environment.apiUrl + '/api/logs');
+    }
       
     this.logger.updateConfig({
       level: logLevel,
@@ -29,8 +32,7 @@ export class LoggerService {
       serverLoggingUrl: environment.apiUrl + '/api/logs',
       disableConsoleLogging: false, // Toujours afficher les logs dans la console pour le débogage
       httpResponseType: 'json',
-      // Inclure les détails supplémentaires
-      timestampFormat: 'YYYY-MM-DD HH:mm:ss.SSS',
+      // Pas besoin de timestampFormat car cela nécessite DatePipe
       enableSourceMaps: true
     });
   }

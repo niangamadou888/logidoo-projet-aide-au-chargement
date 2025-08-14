@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
@@ -75,6 +75,7 @@ export const appConfig: ApplicationConfig = {
       useFactory: initializeAuth,
       deps: [AuthService],
       multi: true
-    }
+    },
+    DatePipe
   ]
 };
