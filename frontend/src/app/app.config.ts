@@ -1,4 +1,4 @@
-import { ApplicationConfig,APP_INITIALIZER ,importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig,APP_INITIALIZER ,importProvidersFrom, provideZoneChangeDetection, ErrorHandler } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -15,7 +15,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { AuthService } from './core/services/auth.service';
+import { GlobalErrorHandlerService } from './core/services/error-handler.service';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { environment } from '../environments/environment';
 
 function initializeAuth(authService: AuthService) {
   return () => {
@@ -45,11 +49,26 @@ export const appConfig: ApplicationConfig = {
       FormsModule,
       CommonModule,
       HttpClientModule,
+      LoggerModule.forRoot({
+        serverLoggingUrl: `${environment.apiUrl}/api/logs`,
+        level: environment.production ? NgxLoggerLevel.ERROR : NgxLoggerLevel.DEBUG,
+        serverLogLevel: NgxLoggerLevel.ERROR,
+        disableConsoleLogging: environment.production
+      }),
     ),
     { 
       provide: HTTP_INTERCEPTORS, 
       useClass: AuthInterceptor, 
       multi: true 
+    },
+    { 
+      provide: HTTP_INTERCEPTORS, 
+      useClass: ErrorInterceptor, 
+      multi: true 
+    },
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandlerService
     },
     {
       provide: APP_INITIALIZER,
