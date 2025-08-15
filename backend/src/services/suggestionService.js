@@ -33,17 +33,17 @@ async function suggererContenants(articles) {
   });
 
   // 2. Filtrer manuellement par volume
-  const conteneursFiltres = conteneurs.filter(conteneur => {
-    const volumeConteneur = (
-      conteneur.dimensions.longueur *
-      conteneur.dimensions.largeur *
-      conteneur.dimensions.hauteur
-    ) / 1000000;  // Conversion mm³ → m³
+//   const conteneursFiltres = conteneurs.filter(conteneur => {
+//     const volumeConteneur = (
+//       conteneur.dimensions.longueur *
+//       conteneur.dimensions.largeur *
+//       conteneur.dimensions.hauteur
+//     ) / 1000000;  // Conversion mm³ → m³
     
-    return volumeConteneur >= volumeTotal;
-  });
+//     return volumeConteneur >= volumeTotal;
+//   });
 
-  return conteneursFiltres;
+//   return conteneursFiltres;
 }
 
  
@@ -54,24 +54,24 @@ async function suggererCamions(articles) {
   const { volumeTotal, poidsTotal } = calculerBesoins(articles);
 
   // Récupération de tous les camions disponibles
-  const camions = await Camion.find({
+  const camions = await Camions.find({
     volume: { $gte: volumeTotal },
     capacitePoids: { $gte: poidsTotal },
     disponible: true
   });
 
   // Calcul manuel du volume pour chaque camion (conservé comme demandé)
-  const camionsFiltres = camions.filter(camion => {
-    const volumeCamion = (
-      camion.dimensions.longueur * 
-      camion.dimensions.largeur * 
-      camion.dimensions.hauteur
-    ) / 1000000; // mm³ → m³
+//   const camionsFiltres = camions.filter(camion => {
+//     const volumeCamion = (
+//       camion.dimensions.longueur * 
+//       camion.dimensions.largeur * 
+//       camion.dimensions.hauteur
+//     ) / 1000000; // mm³ → m³
     
-    return volumeCamion >= volumeTotal;
-  });
+//     return volumeCamion >= volumeTotal;
+//   });
 
-  return camionsFiltres;
+//   return camionsFiltres;
 }
 
 module.exports = {

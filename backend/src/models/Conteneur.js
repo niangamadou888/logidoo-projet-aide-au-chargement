@@ -17,12 +17,7 @@ const ConteneurSchema = new mongoose.Schema({
 });
 // Middleware pour calculer automatiquement le volume
 ConteneurSchema.pre('save', function(next) {
-  // Calcul du volume en m³ à partir des dimensions (en mètres)
-  if (this.dimensions && 
-      typeof this.dimensions.longueur === 'number' &&
-      typeof this.dimensions.largeur === 'number' &&
-      typeof this.dimensions.hauteur === 'number') {
-    
+  if (this.dimensions) {
     this.volume = this.dimensions.longueur * 
                   this.dimensions.largeur * 
                   this.dimensions.hauteur;
