@@ -9,7 +9,6 @@ const ConteneurSchema = new mongoose.Schema({
     hauteur: { type: Number, required: true }
   },
   capacitePoids: { type: Number, required: true },
-  materiau: { type: String },
   disponible: { type: Boolean, default: true },
 
 }, {

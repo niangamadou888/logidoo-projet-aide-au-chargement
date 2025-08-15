@@ -25,38 +25,53 @@ function calculerBesoins(articles) {
 async function suggererContenants(articles) {
   const { volumeTotal, poidsTotal } = calculerBesoins(articles);
 
-  // Filtrer les contenants adaptés
-  const contenants = await Conteneur.find({
+  // 1. Récupérer tous les conteneurs qui satisfont le poids et la disponibilité
+  const conteneurs = await Conteneur.find({
+     volume: { $gte: volumeTotal },
     capacitePoids: { $gte: poidsTotal },
     disponible: true
   });
 
-  // Vérification volume (simplifié)
-  const filtres = contenants.filter(c => {
-    const volumeContenant = (c.dimensions.longueur * c.dimensions.largeur * c.dimensions.hauteur) ;
-    return volumeContenant >= volumeTotal;
+  // 2. Filtrer manuellement par volume
+  const conteneursFiltres = conteneurs.filter(conteneur => {
+    const volumeConteneur = (
+      conteneur.dimensions.longueur *
+      conteneur.dimensions.largeur *
+      conteneur.dimensions.hauteur
+    ) / 1000000;  // Conversion mm³ → m³
+    
+    return volumeConteneur >= volumeTotal;
   });
 
-  return filtres;
+  return conteneursFiltres;
 }
 
+ 
 /**
  * Suggestion automatique de camions
  */
 async function suggererCamions(articles) {
   const { volumeTotal, poidsTotal } = calculerBesoins(articles);
 
-  const camions = await Camions.find({
+  // Récupération de tous les camions disponibles
+  const camions = await Camion.find({
+    volume: { $gte: volumeTotal },
     capacitePoids: { $gte: poidsTotal },
     disponible: true
   });
 
-  const filtres = camions.filter(c => {
-    const volumeCamion = (c.dimensions.longueur * c.dimensions.largeur * c.dimensions.hauteur);
+  // Calcul manuel du volume pour chaque camion (conservé comme demandé)
+  const camionsFiltres = camions.filter(camion => {
+    const volumeCamion = (
+      camion.dimensions.longueur * 
+      camion.dimensions.largeur * 
+      camion.dimensions.hauteur
+    ) / 1000000; // mm³ → m³
+    
     return volumeCamion >= volumeTotal;
   });
 
-  return filtres;
+  return camionsFiltres;
 }
 
 module.exports = {

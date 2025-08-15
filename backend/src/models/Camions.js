@@ -14,9 +14,6 @@ const camionSchema = new mongoose.Schema({
     hauteur: { type: Number, required: true }
   },
     capacitePoids: { type: Number, required: true },
-  disponible: { type: Boolean, default: true },
-
-
   disponible: { type: Boolean, default: true }
 });
 
