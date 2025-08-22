@@ -2,8 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./src/routes');
-const contenantRoutes = require('./src/routes/conteneurRoutes'); // Ajoutez cette ligne
-const camionRoutes = require('./src/routes/camionsRoutes');
+const contenantRoutes = require('./src/routes/contenantRoutes'); // Ajoutez cette ligne
+
 const app = express();
 
 // Middleware
@@ -48,7 +48,8 @@ const simulationRoutes = require('./src/routes/simulationRoutes');
 
 app.use('/api/simulations', simulationRoutes); // ← accessible via /api/simulations
 app.use('/api/contenants',contenantRoutes);
-app.use('/api/camions',camionRoutes);
+app.use('/uploads', express.static('uploads'));
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

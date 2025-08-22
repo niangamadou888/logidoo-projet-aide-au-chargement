@@ -1,7 +1,4 @@
-const Camions = require("../models/Camions");
-const Conteneur = require("../models/Conteneur");
-
-
+const Contenant = require("../models/Contenant");  // un seul modèle
 
 /**
  * Calcul du volume total et poids total d'une liste d'articles
@@ -11,7 +8,7 @@ function calculerBesoins(articles) {
   let poidsTotal = 0;
 
   articles.forEach(article => {
-    const volumeArticle = (article.longueur * article.largeur * article.hauteur) / 1000000; // m³
+    const volumeArticle = (article.longueur * article.largeur * article.hauteur) / 1000000; // cm³ → m³
     volumeTotal += volumeArticle * article.quantite;
     poidsTotal += article.poids * article.quantite;
   });
@@ -20,61 +17,122 @@ function calculerBesoins(articles) {
 }
 
 /**
- * Suggestion automatique de contenants
+ * Création d’un contenant (camion ou conteneur)
+ */
+
+async function creerContenant(data){
+    if(data.dimensions){
+     data.volume = (data.dimensions.longueur * data.dimensions.largeur * data.dimensions.hauteur) / 1000000;
+    }
+    const contenant=new Contenant(data);
+    await contenant.save();
+    return contenant;
+}
+
+/**
+ * Suggestion automatique de contenants (camions + conteneurs)
  */
 async function suggererContenants(articles) {
   const { volumeTotal, poidsTotal } = calculerBesoins(articles);
 
-  // 1. Récupérer tous les conteneurs qui satisfont le poids et la disponibilité
-  const conteneurs = await Conteneur.find({
-     volume: { $gte: volumeTotal },
-    capacitePoids: { $gte: poidsTotal },
-    disponible: true
-  });
-
-  // 2. Filtrer manuellement par volume
-//   const conteneursFiltres = conteneurs.filter(conteneur => {
-//     const volumeConteneur = (
-//       conteneur.dimensions.longueur *
-//       conteneur.dimensions.largeur *
-//       conteneur.dimensions.hauteur
-//     ) / 1000000;  // Conversion mm³ → m³
-    
-//     return volumeConteneur >= volumeTotal;
-//   });
-
-//   return conteneursFiltres;
-}
-
- 
-/**
- * Suggestion automatique de camions
- */
-async function suggererCamions(articles) {
-  const { volumeTotal, poidsTotal } = calculerBesoins(articles);
-
-  // Récupération de tous les camions disponibles
-  const camions = await Camions.find({
+  // Récupérer tous les contenants qui satisfont poids, volume et dispo
+  const contenants = await Contenant.find({
     volume: { $gte: volumeTotal },
     capacitePoids: { $gte: poidsTotal },
     disponible: true
   });
 
-  // Calcul manuel du volume pour chaque camion (conservé comme demandé)
-//   const camionsFiltres = camions.filter(camion => {
-//     const volumeCamion = (
-//       camion.dimensions.longueur * 
-//       camion.dimensions.largeur * 
-//       camion.dimensions.hauteur
-//     ) / 1000000; // mm³ → m³
-    
-//     return volumeCamion >= volumeTotal;
-//   });
+  return contenants;
+}
 
-//   return camionsFiltres;
+/**
+ * Suggestion automatique de camions uniquement
+ */
+async function suggererCamions(articles) {
+  const { volumeTotal, poidsTotal } = calculerBesoins(articles);
+
+  // Filtrer uniquement les "camions"
+  const camions = await Contenant.find({
+    categorie: "camion",
+    volume: { $gte: volumeTotal },
+    capacitePoids: { $gte: poidsTotal },
+    disponible: true
+  });
+
+  return camions;
+}
+
+/**
+ * Suggestion automatique de conteneurs uniquement
+ */
+async function suggererConteneurs(articles) {
+  const { volumeTotal, poidsTotal } = calculerBesoins(articles);
+
+  // Filtrer uniquement les "conteneurs"
+  const conteneurs = await Contenant.find({
+    categorie: "conteneur",
+    volume: { $gte: volumeTotal },
+    capacitePoids: { $gte: poidsTotal },
+    disponible: true
+  });
+
+  return conteneurs;
+}
+
+/**
+ * ✅ Récupérer tous les contenants
+ */
+async function getContenants() {
+  return await Contenant.find();
+}
+
+/**
+ * ✅ Récupérer un contenant par ID
+ */
+async function getContenantById(id) {
+  return await Contenant.findById(id);
+}
+
+async function updateContenant(id, data) {
+   if (data.dimensions && typeof data.dimensions === "string") {
+    data.dimensions = JSON.parse(data.dimensions);
+  }
+  // Calcul automatique du volume si dimensions présentes
+  if (data.dimensions) {
+    data.volume = (data.dimensions.longueur * data.dimensions.largeur * data.dimensions.hauteur) / 1000000;
+  }
+  const updatedContenant = await Contenant.findByIdAndUpdate(
+    id,
+    { $set: data },
+    { new: true, runValidators: true }
+  );
+
+  if (!updatedContenant) {
+    throw new Error("Contenant non trouvé");
+  }
+
+  return updatedContenant;
+}
+
+
+/**
+ * Supprimer un contenant par ID
+ */
+async function deleteContenant(id){
+    const deleted = await Contenant.findByIdAndDelete(id);
+    if (!deleted) {
+        throw new Error ("Contenant non trouvé");
+    }
+    return deleted;
 }
 
 module.exports = {
-    suggererCamions,
-    suggererContenants
+  suggererContenants,
+  suggererCamions,
+  suggererConteneurs,
+  getContenants,
+  creerContenant,
+  getContenantById,
+  updateContenant,
+  deleteContenant,
 };

@@ -8,10 +8,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ConteneurService } from '../../services/conteneur.service';
-import { Conteneur } from '../../core/models/conteneur.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Camion } from '../../core/models/camion.model';
-import { CamionsService } from '../../services/camions.service';
+
+import { Contenant } from '../../core/models/contenant.model';
 
 interface Colis {
   id?: number;
@@ -53,13 +52,13 @@ export class SimulationComponent {
   colisForm: FormGroup;
   simulationForm: FormGroup;
   listeColis: Colis[] = [];
-    suggestions: Conteneur[] = [];
+    suggestions: Contenant[] = [];
   articles:Colis[]=[];
   simulations: Simulation[] = [];
   simulationEnCours: Simulation | null = null;
- container: Conteneur[]=[];
-  camions: Camion[]=[];
-  constructor(private fb: FormBuilder, private http: HttpClient,private conteneurService:ConteneurService, private snackBar: MatSnackBar,private camionService:CamionsService) {
+ containers: Contenant[]=[];
+  selectedContainerId: string | null = null;
+  constructor(private fb: FormBuilder, private http: HttpClient,private conteneurService:ConteneurService, private snackBar: MatSnackBar) {
     this.colisForm = this.fb.group({
       type: ['', Validators.required],
       longueur: ['', [Validators.required, Validators.min(1)]],
@@ -68,10 +67,12 @@ export class SimulationComponent {
       poids: ['', [Validators.required, Validators.min(0.1)]],
       quantite: ['1', [Validators.required, Validators.min(1)]],
       container:['1',Validators.required],
-      camions:['1',Validators.required],
+      camions:['1'],
+      volume:['1'],
       nomDestinataire: [''],
       adresse: [''],
-      telephone: ['']
+      telephone: [''],
+      
     });
 
     this.simulationForm = this.fb.group({
@@ -93,6 +94,12 @@ export class SimulationComponent {
     this.listeColis = [];
     this.simulationForm.reset();
   }
+
+
+selectContainer(id: string) {
+  this.selectedContainerId = id;
+  this.colisForm.patchValue({ container: id });
+}
 
   ajouterColis() {
     if (this.colisForm.valid) {
@@ -240,7 +247,6 @@ const exemple = 'Carton;30;25;20;2.5;1;Jean Dupont;123 Rue de la Paix;0123456789
 
   ngOnInit() {
  this.loadConteneurs();
- this.loadCamions();
 //  this.getSuggestions()
 }
  
@@ -262,7 +268,7 @@ const exemple = 'Carton;30;25;20;2.5;1;Jean Dupont;123 Rue de la Paix;0123456789
 this.loading=true;
     this.conteneurService.listerContenants().subscribe({
       next: (data) => {
-        this.container = data;
+        this.containers = data;
         this.loading=false;
       },
       error: (err) => {
@@ -273,19 +279,5 @@ this.loading=true;
     });
   } 
 
-
-     loadCamions() {
-this.loading=true;
-    this.camionService.listerCamions().subscribe({
-      next: (data:Camion[]) => {
-        this.camions = data;
-        this.loading=false;
-      },
-      error: (err) => {
-        console.error('Erreur de chargement des container', err);
-        this.snackBar.open('Erreur de chargement des container', 'Fermer', { duration: 3000 });
-        this.loading=false;
-      }
-    });
-  } 
+ 
 }
