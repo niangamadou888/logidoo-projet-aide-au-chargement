@@ -99,13 +99,8 @@
 
             <img *ngIf="c.images && c.images.length > 0"
      [src]="'http://localhost:3000' + c.images[0]"
-     [alt]="c.type" width="40">
-            <!-- Image par défaut si aucune image -->
-            <img *ngIf="!c.images || c.images.length === 0"
-              [src]="c.categorie === 'camion' ? 'assets/images/camion.png':'assets/images/20Ft-Dry.png'" [alt]="c.type"
-              width="40">
-
-
+     [alt]="c.type" width="100">
+        
 
             <div class="conteneur-title">Type:{{ c.type }}</div>
             <div class="conteneur-dimensions">
