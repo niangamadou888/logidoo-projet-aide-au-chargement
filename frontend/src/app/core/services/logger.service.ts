@@ -1,93 +1,68 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoggerService {
-  constructor(
-    private http: HttpClient,
-    private logger: NGXLogger
-  ) {
-    this.configureLogger();
+  // Minimal log level: in prod only errors; in dev debug
+  private minLevel: 'debug' | 'info' | 'warn' | 'error' = environment.production ? 'error' : 'debug';
+  private endpoint = environment.apiUrl + '/api/logs';
+
+  constructor(private http: HttpClient) {}
+
+  private shouldLog(level: 'debug' | 'info' | 'warn' | 'error'): boolean {
+    const order = ['debug', 'info', 'warn', 'error'];
+    return order.indexOf(level) >= order.indexOf(this.minLevel);
   }
 
-  private configureLogger(): void {
-    // Configurer le niveau de log en fonction de l'environnement
-    const logLevel = environment.production 
-      ? NgxLoggerLevel.ERROR 
-      : NgxLoggerLevel.DEBUG;
-      
-    // Afficher l'URL de l'API uniquement en développement
-    if (!environment.production) {
-      console.log('Configuring logger with URL:', environment.apiUrl + '/api/logs');
+  private post(level: string, message: string, additional: any[]): void {
+    // Best-effort server logging; ignore failures
+    try {
+      this.http.post(this.endpoint, {
+        level,
+        message,
+        additional,
+        timestamp: new Date().toISOString()
+      }).subscribe({ next: () => {}, error: () => {} });
+    } catch {
+      // no-op
     }
-      
-    this.logger.updateConfig({
-      level: logLevel,
-      serverLogLevel: NgxLoggerLevel.INFO, // Envoyer tous les logs de niveau INFO et plus élevé au serveur
-      // URL de l'API pour envoyer les logs au backend
-      serverLoggingUrl: environment.apiUrl + '/api/logs',
-      disableConsoleLogging: false, // Toujours afficher les logs dans la console pour le débogage
-      httpResponseType: 'json',
-      // Pas besoin de timestampFormat car cela nécessite DatePipe
-      enableSourceMaps: true
-    });
   }
 
-  /**
-   * Log un message de debug
-   */
   debug(message: string, ...additional: any[]): void {
-    this.logger.debug(message, ...additional);
+    if (!this.shouldLog('debug')) return;
+    console.debug(message, ...additional);
+    if (!environment.production) this.post('DEBUG', message, additional);
   }
 
-  /**
-   * Log un message d'information
-   */
   info(message: string, ...additional: any[]): void {
-    this.logger.info(message, ...additional);
+    if (!this.shouldLog('info')) return;
+    console.info(message, ...additional);
+    if (!environment.production) this.post('INFO', message, additional);
   }
 
-  /**
-   * Log un message d'avertissement
-   */
   warn(message: string, ...additional: any[]): void {
-    this.logger.warn(message, ...additional);
+    if (!this.shouldLog('warn')) return;
+    console.warn(message, ...additional);
+    this.post('WARN', message, additional);
   }
 
-  /**
-   * Log un message d'erreur
-   */
   error(message: string, ...additional: any[]): void {
-    this.logger.error(message, ...additional);
+    if (!this.shouldLog('error')) return;
+    console.error(message, ...additional);
+    this.post('ERROR', message, additional);
   }
 
-  /**
-   * Log une erreur avec des données de performance
-   * @param component Nom du composant
-   * @param action Action effectuée
-   * @param duration Durée en ms
-   */
+  // Performance helper
   logPerformance(component: string, action: string, duration: number): void {
-    const threshold = 500; // seuil à partir duquel on considère que c'est lent (500ms)
-    
+    const threshold = 500;
+    const payload = { component, action, duration, timestamp: new Date().toISOString() };
     if (duration > threshold) {
-      this.warn(`Performance: ${component} - ${action} a pris ${duration}ms`, {
-        component,
-        action,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      this.warn(`Performance: ${component} - ${action} a pris ${duration}ms`, payload);
     } else {
-      this.debug(`Performance: ${component} - ${action} a pris ${duration}ms`, {
-        component,
-        action,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      this.debug(`Performance: ${component} - ${action} a pris ${duration}ms`, payload);
     }
   }
 }

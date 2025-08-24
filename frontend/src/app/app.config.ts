@@ -18,8 +18,7 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { GlobalErrorHandlerService } from './core/services/error-handler.service';
-import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
-import { environment } from '../environments/environment';
+// Removed ngx-logger integration to avoid missing dependency issues
 
 
 
@@ -39,7 +38,8 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withInterceptorsFromDi()),
+    // Combine HTTP features in a single provider
+    provideHttpClient(withInterceptorsFromDi(), withFetch()),
     provideAnimations(),
     importProvidersFrom(
       ReactiveFormsModule,
@@ -50,13 +50,7 @@ export const appConfig: ApplicationConfig = {
       MatCardModule,
       FormsModule,
       CommonModule,
-      HttpClientModule,
-      LoggerModule.forRoot({
-        serverLoggingUrl: `${environment.apiUrl}/api/logs`,
-        level: environment.production ? NgxLoggerLevel.ERROR : NgxLoggerLevel.DEBUG,
-        serverLogLevel: NgxLoggerLevel.ERROR,
-        disableConsoleLogging: environment.production
-      }),
+      HttpClientModule
     ),
     { 
       provide: HTTP_INTERCEPTORS, 
@@ -77,7 +71,6 @@ export const appConfig: ApplicationConfig = {
       useFactory: initializeAuth,
       deps: [AuthService],
       multi: true
-    }, provideHttpClient(withFetch())
     },
     DatePipe
   ]

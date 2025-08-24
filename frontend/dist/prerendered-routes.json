@@ -6,6 +6,9 @@
     "/auth/register": {},
     "/dashboard": {},
     "/dashboard/admin": {},
-    "/dashboard/user": {}
+    "/dashboard/user": {},
+    "/simulation": {},
+    "/test-logger": {},
+    "/unauthorized": {}
   }
 }
