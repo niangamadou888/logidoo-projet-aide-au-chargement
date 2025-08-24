@@ -7,6 +7,7 @@ import { SimulationComponent } from './features/simulation/simulation.component'
 import { AuthService } from './core/services/auth.service';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
+import { TestLoggerComponent } from './test-logger.component';
 
 
 export const routes: Routes = [
@@ -45,10 +46,14 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-    path: '',
-    component: LandingPageComponent,
-    pathMatch: 'full'
-  },
+  path: '',
+  component: LandingPageComponent,
+  pathMatch: 'full'
+},
+{
+  path: 'test-logger',
+  component: TestLoggerComponent
+},
  {
   path: 'simulation',
   component: SimulationComponent,
