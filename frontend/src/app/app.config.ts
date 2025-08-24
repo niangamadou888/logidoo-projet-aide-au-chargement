@@ -1,6 +1,6 @@
 import { ApplicationConfig,APP_INITIALIZER ,importProvidersFrom, provideZoneChangeDetection, ErrorHandler } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -20,6 +20,8 @@ import { AuthService } from './core/services/auth.service';
 import { GlobalErrorHandlerService } from './core/services/error-handler.service';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { environment } from '../environments/environment';
+
+
 
 function initializeAuth(authService: AuthService) {
   return () => {
@@ -75,6 +77,7 @@ export const appConfig: ApplicationConfig = {
       useFactory: initializeAuth,
       deps: [AuthService],
       multi: true
+    }, provideHttpClient(withFetch())
     },
     DatePipe
   ]

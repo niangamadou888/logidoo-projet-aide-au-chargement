@@ -7,7 +7,10 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
+import { ConteneurService } from '../../services/conteneur.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
+import { Contenant } from '../../core/models/contenant.model';
 
 interface Colis {
   id?: number;
@@ -45,13 +48,17 @@ interface Simulation {
 
 
 export class SimulationComponent {
+  loading = false;
   colisForm: FormGroup;
   simulationForm: FormGroup;
   listeColis: Colis[] = [];
+    suggestions: Contenant[] = [];
+  articles:Colis[]=[];
   simulations: Simulation[] = [];
   simulationEnCours: Simulation | null = null;
-
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+ containers: Contenant[]=[];
+  selectedContainerId: string | null = null;
+  constructor(private fb: FormBuilder, private http: HttpClient,private conteneurService:ConteneurService, private snackBar: MatSnackBar) {
     this.colisForm = this.fb.group({
       type: ['', Validators.required],
       longueur: ['', [Validators.required, Validators.min(1)]],
@@ -59,9 +66,13 @@ export class SimulationComponent {
       hauteur: ['', [Validators.required, Validators.min(1)]],
       poids: ['', [Validators.required, Validators.min(0.1)]],
       quantite: ['1', [Validators.required, Validators.min(1)]],
+      container:['1',Validators.required],
+      camions:['1'],
+      volume:['1'],
       nomDestinataire: [''],
       adresse: [''],
-      telephone: ['']
+      telephone: [''],
+      
     });
 
     this.simulationForm = this.fb.group({
@@ -83,6 +94,12 @@ export class SimulationComponent {
     this.listeColis = [];
     this.simulationForm.reset();
   }
+
+
+selectContainer(id: string) {
+  this.selectedContainerId = id;
+  this.colisForm.patchValue({ container: id });
+}
 
   ajouterColis() {
     if (this.colisForm.valid) {
@@ -225,4 +242,42 @@ const exemple = 'Carton;30;25;20;2.5;1;Jean Dupont;123 Rue de la Paix;0123456789
   getNombreColisTotal(): number {
     return this.listeColis.reduce((total, colis) => total + colis.quantite, 0);
   }
+
+
+
+  ngOnInit() {
+ this.loadConteneurs();
+//  this.getSuggestions()
+}
+ 
+
+
+//  getSuggestions() {
+//     this.conteneurService.suggestionContenants(this.articles).subscribe({
+//       next: (data) => {
+//         this.suggestions = data;
+//         console.log('Suggestions reçues :', this.suggestions);
+//       },
+//       error: (err) => {
+//         console.error('Erreur de suggestion', err);
+//       }
+//     });
+//   }
+
+   loadConteneurs() {
+this.loading=true;
+    this.conteneurService.listerContenants().subscribe({
+      next: (data) => {
+        this.containers = data;
+        this.loading=false;
+      },
+      error: (err) => {
+        console.error('Erreur de chargement des container', err);
+        this.snackBar.open('Erreur de chargement des container', 'Fermer', { duration: 3000 });
+        this.loading=false;
+      }
+    });
+  } 
+
+ 
 }

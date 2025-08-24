@@ -9,6 +9,7 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { TestLoggerComponent } from './test-logger.component';
 
+
 export const routes: Routes = [
   {
     path: 'auth',
@@ -58,7 +59,7 @@ export const routes: Routes = [
   component: SimulationComponent,
   canActivate: [authGuard] 
 },
- 
+
   {
     path: '**',
     redirectTo: '/'

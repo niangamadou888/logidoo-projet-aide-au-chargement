@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./src/routes');
+const contenantRoutes = require('./src/routes/contenantRoutes'); // Ajoutez cette ligne
 const morgan = require('morgan');
 const responseTime = require('response-time');
 const helmet = require('helmet');
@@ -101,6 +102,8 @@ app.use((err, req, res, next) => {
 const simulationRoutes = require('./src/routes/simulationRoutes');
 
 app.use('/api/simulations', simulationRoutes); // ← accessible via /api/simulations
+app.use('/api/contenants',contenantRoutes);
+app.use('/uploads', express.static('uploads'));
 
 
 // Route pour la surveillance du statut de l'API
