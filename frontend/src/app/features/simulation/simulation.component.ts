@@ -23,6 +23,9 @@ interface Colis {
   nomDestinataire?: string;
   adresse?: string;
   telephone?: string;
+  fragile?: boolean;
+  gerbable?: boolean;
+  couleur?: string;
 }
 
 interface Simulation {
@@ -72,6 +75,9 @@ export class SimulationComponent {
       nomDestinataire: [''],
       adresse: [''],
       telephone: [''],
+      fragile: [false],
+      gerbable: [false],
+      couleur: ['#999999'],
       
     });
 
@@ -81,6 +87,22 @@ export class SimulationComponent {
     });
 
     this.nouvellSimulation();
+  }
+
+  private readonly defaultColorPalette = [
+    '#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6',
+    '#EC4899', '#22C55E', '#EAB308', '#06B6D4', '#F97316',
+    '#84CC16', '#14B8A6', '#A855F7', '#D946EF', '#F43F5E'
+  ];
+
+  private getDefaultColor(index: number): string {
+    const i = Math.max(0, index) % this.defaultColorPalette.length;
+    return this.defaultColorPalette[i];
+  }
+
+  updateColisCouleur(index: number, couleur: string) {
+    if (!this.listeColis[index]) return;
+    this.listeColis[index].couleur = couleur || this.getDefaultColor(index);
   }
 
   nouvellSimulation() {
@@ -128,8 +150,8 @@ selectContainer(id: string) {
     console.log('Téléchargement du modèle Excel...');
     
     // Exemple de création d'un CSV simple
-  const headers = 'Type;Longueur(cm);Largeur(cm);Hauteur(cm);Poids(kg);Quantité;Destinataire;Adresse;Téléphone\n';
-const exemple = 'Carton;30;25;20;2.5;1;Jean Dupont;123 Rue de la Paix;0123456789\n';
+  const headers = 'Type;Longueur(cm);Largeur(cm);Hauteur(cm);Poids(kg);Quantité;Destinataire;Adresse;Téléphone;Fragile;Gerbable;Couleur\n';
+const exemple = 'Carton;30;25;20;2.5;1;Jean Dupont;123 Rue de la Paix;0123456789;false;true;#ff9900\n';
 
     const csvContent = headers + exemple;
     
@@ -168,7 +190,10 @@ const exemple = 'Carton;30;25;20;2.5;1;Jean Dupont;123 Rue de la Paix;0123456789
         quantite: Number(colonnes[5]),
         nomDestinataire: colonnes[6]?.trim(),
         adresse: colonnes[7]?.trim(),
-        telephone: colonnes[8]?.trim()
+        telephone: colonnes[8]?.trim(),
+        fragile: colonnes[9] ? String(colonnes[9]).trim().toLowerCase() === 'true' : false,
+        gerbable: colonnes[10] ? String(colonnes[10]).trim().toLowerCase() === 'true' : false,
+        couleur: (colonnes[11] && String(colonnes[11]).trim()) || this.getDefaultColor(index)
       };
     });
 

@@ -15,6 +15,8 @@ export interface Colis {
   hauteur: number;
   quantite: number;
   fragile: boolean;
+  gerbable: boolean;
+  couleur?: string;
   statut?: string;
   dateAjout?: Date;
 }

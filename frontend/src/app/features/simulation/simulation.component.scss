@@ -79,10 +79,78 @@
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   margin-bottom: 2rem;
+  align-items: start;
   
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
   }
+}
+
+.right-column { 
+  grid-column: 2;
+  display: grid;
+  grid-auto-rows: min-content;
+  gap: 1rem;
+  align-content: start;
+  @media (max-width: 1024px) {
+    grid-column: auto;
+  }
+}
+
+.compact {
+  padding: 1rem;
+}
+
+.contenants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.conteneur-card {
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fafafa;
+}
+
+.conteneur-card.selected {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.conteneur-title {
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.conteneur-dimensions,
+.conteneur-volume,
+.conteneur-poids {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.conteneur-badge {
+  display: inline-block;
+  font-size: 11px;
+  background: #e5e7eb;
+  color: #374151;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  margin-top: 6px;
+}
+
+.conteneur-badge.camion {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.excel-hint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #6b7280;
 }
 
 .card {

@@ -93,27 +93,19 @@
           <input type="number" formControlName="quantite" class="form-control">
         </div>
 
-        <div class="contenants-grid">
-          <div *ngFor="let c of containers" class="conteneur-card" [class.selected]="c._id === selectedContainerId"
-            (click)="selectContainer(c._id)">
-
-            <img *ngIf="c.images && c.images.length > 0"
-     [src]="'https://logidoo.onrender.com' + c.images[0]"
-     [alt]="c.type" width="100">
-        
-
-            <div class="conteneur-title">Type:{{ c.type }}</div>
-            <div class="conteneur-dimensions">
-              Dimensions: {{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm
-            </div>
-            <div class="conteneur-volume">Volume: {{ c.volume }} m³</div>
-            <div class="conteneur-poids">Capacité: {{ c.capacitePoids }} kg max</div>
-
-            <!-- Badges dynamiques -->
-            <span class="conteneur-badge" *ngIf="c.categorie === 'conteneur'">Conteneurs</span>
-            <span class="conteneur-badge camion" *ngIf="c.categorie === 'camion'">Camions</span>
+        <div class="form-row">
+          <div class="form-group">
+            <label><input type="checkbox" formControlName="fragile" /> Fragile</label>
+          </div>
+          <div class="form-group">
+            <label><input type="checkbox" formControlName="gerbable" /> Empilable (gerbable)</label>
+          </div>
+          <div class="form-group">
+            <label>Couleur</label>
+            <input type="color" formControlName="couleur" class="form-control" style="height:40px;padding:0;">
           </div>
         </div>
+
         <!-- Champs destinataire (optionnels) -->
         <div class="destinataire-section">
           <h4>Informations destinataire (optionnel)</h4>
@@ -137,54 +129,45 @@
       </form>
     </div>
 
-    <!-- Section Import Excel -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-icon excel-icon">📊</div>
-        <h2>Import Excel</h2>
+    <!-- Colonne droite: wrapper qui empile le choix conteneur + Import Excel -->
+    <div class="right-column">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🧱</div>
+          <h2>Choisir un conteneur</h2>
+        </div>
+        <div class="contenants-grid">
+          <div *ngFor="let c of containers" class="conteneur-card" [class.selected]="c._id === selectedContainerId"
+            (click)="selectContainer(c._id)">
+            <img *ngIf="c.images && c.images.length > 0"
+                 [src]="'https://logidoo.onrender.com' + c.images[0]"
+                 [alt]="c.type" width="100">
+            <div class="conteneur-title">Type: {{ c.type }}</div>
+            <div class="conteneur-dimensions">
+              {{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm
+            </div>
+            <div class="conteneur-volume">Volume: {{ c.volume }} m³</div>
+            <div class="conteneur-poids">Capacité: {{ c.capacitePoids }} kg max</div>
+            <span class="conteneur-badge" *ngIf="c.categorie === 'conteneur'">Conteneurs</span>
+            <span class="conteneur-badge camion" *ngIf="c.categorie === 'camion'">Camions</span>
+          </div>
+        </div>
       </div>
 
-      <p class="excel-description">
-        Télécharger d'abord le modèle Excel avec les colonnes attendues
-      </p>
-
-      <button (click)="telechargerModele()" class="btn-download">
-        📥 Télécharger le modèle
-      </button>
-
-      <p class="excel-description">
-        Sélectionnez votre fichier Excel complété
-      </p>
-
-      <label class="btn-import">
-        📤 Importer Excel
-        <input type="file" (change)="importerDepuisExcel($event)" accept=".xlsx,.xls,.csv" style="display: none;">
-      </label>
-
-      <div class="excel-columns">
-        <p><strong>Colonnes attendues :</strong></p>
-        <ul>
-          <li>• Type de colis (texte)</li>
-          <li>• Longueur (cm) (nombre)</li>
-          <li>• Largeur (cm) (nombre)</li>
-          <li>• Hauteur (cm) (nombre)</li>
-          <li>• Poids (kg) (nombre)</li>
-          <li>• Quantité (nombre, optionnel)</li>
-          <li>• Container (texte)</li>
-        </ul>
-      </div>
-
-      <div class="status-section">
-        <div class="status-icon">📦</div>
-        <p *ngIf="listeColis.length === 0" class="status-text">
-          Aucun colis ajouté pour le moment<br>
-          Commencer par ajouter des colis à votre simulation
-        </p>
-        <p *ngIf="listeColis.length > 0" class="status-text">
-          {{ getNombreColisTotal() }} colis ajouté{{ getNombreColisTotal() > 1 ? 's' : '' }}<br>
-          Poids total: {{ calculerPoidsTotal() | number:'1.1-1' }} kg<br>
-          Volume total: {{ calculerVolumeTotal() | number:'1.2-2' }} m³
-        </p>
+      <!-- Section Import Excel (réduite) -->
+      <div class="card compact">
+        <div class="card-header">
+          <div class="card-icon excel-icon">📊</div>
+          <h2>Import Excel</h2>
+        </div>
+        <div class="excel-actions">
+          <button (click)="telechargerModele()" class="btn-download">📥 Télécharger le modèle</button>
+          <label class="btn-import" style="margin-top: 0.75rem;">
+            📤 Importer Excel
+            <input type="file" (change)="importerDepuisExcel($event)" accept=".xlsx,.xls,.csv" style="display: none;">
+          </label>
+          <p class="excel-hint">Colonnes supportées: Type, Dimensions, Poids, Qté, Destinataire, Fragile, Gerbable, Couleur.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -195,16 +178,29 @@
     <div class="colis-items">
       <div *ngFor="let colis of listeColis; let i = index" class="colis-item">
         <div class="colis-info">
-          <span class="colis-type">{{ colis.type }}</span>
+          <span class="colis-type">
+            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;"
+                  [style.background]="colis.couleur || '#999999'"></span>
+            {{ colis.type }}
+          </span>
           <span class="colis-dimensions">
             {{ colis.longueur }}×{{ colis.largeur }}×{{ colis.hauteur }}cm - {{ colis.poids }}kg
           </span>
           <span *ngIf="colis.quantite > 1" class="colis-quantity">
             Qté: {{ colis.quantite }}
           </span>
+          <span *ngIf="colis.fragile" class="colis-flag" style="margin-left:8px;">Fragile</span>
+          <span *ngIf="colis.gerbable" class="colis-flag" style="margin-left:8px;">Empilable</span>
           <div *ngIf="colis.nomDestinataire" class="colis-destinataire">
             Destinataire: {{ colis.nomDestinataire }} - {{ colis.adresse }} - {{ colis.telephone }}
           </div>
+        </div>
+        <div class="colis-edit" style="margin-right: 10px;">
+          <label style="font-size:12px;color:#555;margin-right:6px;">Couleur:</label>
+          <input type="color"
+                 [value]="colis.couleur || '#999999'"
+                 (input)="updateColisCouleur(i, $any($event.target).value)"
+                 style="width:36px;height:28px;padding:0;border:none;background:transparent;cursor:pointer;" />
         </div>
         <button (click)="supprimerColis(i)" class="btn-delete">
           Supprimer

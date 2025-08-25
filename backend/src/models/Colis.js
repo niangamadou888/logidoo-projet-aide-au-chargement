@@ -14,6 +14,8 @@ const ColisSchema = new mongoose.Schema({
   hauteur: Number,
   quantite: Number,
   fragile: Boolean,
+  gerbable: Boolean,
+  couleur: String,
   statut: String,
   dateAjout: Date,
   conteneurId:{type:mongoose.Schema.Types.ObjectId,ref:'Conteneur'},

@@ -103,7 +103,12 @@ const simulationRoutes = require('./src/routes/simulationRoutes');
 
 app.use('/api/simulations', simulationRoutes); // ← accessible via /api/simulations
 app.use('/api/contenants',contenantRoutes);
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static('uploads', {
+  setHeaders: (res, path) => {
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none"); // optionnel si tu n’utilises pas COEP
+  }
+}));
 
 
 // Route pour la surveillance du statut de l'API
