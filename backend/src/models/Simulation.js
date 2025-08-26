@@ -31,25 +31,8 @@ const ResultatsSchema = new mongoose.Schema({
     fragilesCount: Number,
     nonGerbablesCount: Number
   },
-  containers: [{
-    id: String,
-    ref: mongoose.Schema.Types.ObjectId,
-    type: String,
-    categorie: String,
-    capacity: {
-      volume: Number,
-      poids: Number
-    },
-    used: {
-      volume: Number,
-      poids: Number
-    },
-    utilization: {
-      volume: Number,
-      poids: Number
-    },
-    items: [ColisSchema]
-  }],
+  // Utiliser Mixed pour être tolérant aux différentes formes de données retournées par l'algo
+  containers: [mongoose.Schema.Types.Mixed],
   placements: [{
     containerId: String,
     containerRef: mongoose.Schema.Types.ObjectId,

@@ -112,8 +112,27 @@ router.post('/optimal-container', authenticate, async (req, res) => {
 router.post('/save', authenticate, async (req, res) => {
   try {
     const utilisateurId = req.user._id;
-    const { colis, resultats } = req.body;
-    
+    let { colis, resultats } = req.body;
+
+    // Normalisation du payload pour éviter les erreurs de typage
+    try {
+      if (typeof colis === 'string') {
+        colis = JSON.parse(colis);
+      }
+    } catch (_) {}
+
+    try {
+      if (typeof resultats === 'string') {
+        resultats = JSON.parse(resultats);
+      }
+    } catch (_) {}
+
+    try {
+      if (resultats && typeof resultats.containers === 'string') {
+        resultats.containers = JSON.parse(resultats.containers);
+      }
+    } catch (_) {}
+
     if (!colis || !resultats) {
       return res.status(400).json({ 
         success: false, 
