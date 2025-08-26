@@ -9,6 +9,7 @@ import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ConteneurService } from '../../services/conteneur.service';
 import { SimulationService, SimulationResult, OptimalContainerResult } from '../../services/simulation.service';
+import { Container2DViewComponent } from './container-2d-view.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { Contenant } from '../../core/models/contenant.model';
@@ -65,7 +66,8 @@ interface ContainerStats {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    Container2DViewComponent
   ]
 })
 
@@ -640,5 +642,12 @@ export class SimulationComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  // Récupère les dimensions d'un contenant par sa référence (ObjectId)
+  getContainerDimensions(ref: string | null | undefined) {
+    if (!ref) return null;
+    const found = this.containers.find(c => c._id === ref);
+    return found ? found.dimensions : null;
   }
 }

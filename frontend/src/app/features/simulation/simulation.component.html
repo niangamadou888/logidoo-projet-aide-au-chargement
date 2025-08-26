@@ -377,18 +377,28 @@
     <div class="containers-used">
       <h3>Contenants utilisés</h3>
       
-      <div class="containers-grid">
-        <div *ngFor="let container of simulationResultats.containers" class="container-result-card">
-          <div class="container-header">
-            <strong>{{ container.type }}</strong>
-            <span class="container-category">{{ container.categorie }}</span>
-          </div>
-          
-          <div class="container-stats">
-            <div class="stat">
-              <div class="progress-bar">
-                <div class="progress" [style.width]="container.utilization.volume + '%'"></div>
-              </div>
+        <div class="containers-grid">
+          <div *ngFor="let container of simulationResultats.containers" class="container-result-card">
+            <div class="container-header">
+              <strong>{{ container.type }}</strong>
+              <span class="container-category">{{ container.categorie }}</span>
+            </div>
+
+            <!-- Visualisation 2D (vue du dessus) -->
+            <div class="container-2d-section" style="margin: 10px 0 14px;">
+              <h4 style="margin: 0 0 6px; font-size: 0.95rem; color: #374151;">Visualisation 2D</h4>
+              <app-container-2d-view
+                [container]="container"
+                [containerDimensions]="getContainerDimensions(container.ref)"
+                [scaleToWidth]="320"
+              ></app-container-2d-view>
+            </div>
+
+            <div class="container-stats">
+              <div class="stat">
+                <div class="progress-bar">
+                  <div class="progress" [style.width]="container.utilization.volume + '%'"></div>
+                </div>
               <div class="stat-label">
                 <span>Volume: {{ container.utilization.volume | number:'1.0-0' }}%</span>
                 <span class="secondary">{{ container.used.volume | number:'1.2-2' }}m³ / {{ container.capacity.volume | number:'1.2-2' }}m³</span>
