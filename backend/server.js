@@ -42,9 +42,9 @@ app.use(responseTime((req, res, time) => {
 app.use(morgan('combined', { stream: accessLogStream }));
 app.use(morgan('dev')); // Version console pour développement
 
-// Middleware de base
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Middleware de base avec limites augmentées pour des payloads volumineux (simulations)
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
 // CORS middleware (simple version)
 app.use((req, res, next) => {
