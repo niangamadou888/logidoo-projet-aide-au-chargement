@@ -2,7 +2,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -10,52 +9,11 @@ import Swal from 'sweetalert2';
 import { ConteneurService } from '../../services/conteneur.service';
 import { SimulationService, SimulationResult, OptimalContainerResult } from '../../services/simulation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
 import { Contenant } from '../../core/models/contenant.model';
+import { Simulation, Colis, ContainerStats } from '../../models/simulation.model';
+import { ExcelService } from '../../services/excelService';
 
-interface Colis {
-  reference?: string;
-  type: string;
-  longueur: number;
-  largeur: number;
-  hauteur: number;
-  poids: number;
-  quantite: number;
-  nomDestinataire?: string;
-  adresse?: string;
-  telephone?: string;
-  fragile?: boolean;
-  gerbable?: boolean;
-  couleur?: string;
-  statut?: string;
-  dateAjout?: Date;
-}
 
-interface Simulation {
-  id?: number;
-  nom: string;
-  description?: string;
-  colis: Colis[];
-  dateCreation: Date;
-  statut: 'brouillon' | 'validée';
-}
-
-interface ContainerStats {
-  containerType: string;
-  containerCategory: string;
-  dimensions: {
-    longueur: number;
-    largeur: number;
-    hauteur: number;
-  };
-  volume: number;
-  capacitePoids: number;
-  volumeUtilization: number;
-  weightUtilization: number;
-  placedItems: number;
-  totalItems: number;
-  optimalityScore: number;
-}
 
 @Component({
   selector: 'app-simulation',
@@ -93,6 +51,7 @@ export class SimulationComponent implements OnInit {
     private http: HttpClient,
     private conteneurService: ConteneurService,
     private simulationService: SimulationService,
+    private excelService: ExcelService,
     private snackBar: MatSnackBar
   ) {
     this.colisForm = this.fb.group({
@@ -118,8 +77,30 @@ export class SimulationComponent implements OnInit {
       description: ['']
     });
 
-    this.nouvellSimulation();
+    this.nouvelleSimulation();
   }
+
+    telechargerModele(): void {
+          this.excelService.telechargerModele();
+        }
+     importerDepuisExcel(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    const file = input.files[0];
+    this.excelService.importerDepuisExcel(file).subscribe({
+      next: (colisImportes) => {
+        this.listeColis = this.listeColis.concat(colisImportes);
+        this.snackBar.open('Colis importés avec succès', 'OK', { duration: 3000 });
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'import Excel:', err);
+        this.snackBar.open('Erreur lors de l\'import du fichier Excel', 'OK', { duration: 5000 });
+      }
+    });
+    // Réinitialise la valeur de l'input pour permettre un nouvel import du même fichier si besoin
+    input.value = '';
+  }
+}
 
   private readonly defaultColorPalette = [
     '#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6',
@@ -137,12 +118,8 @@ export class SimulationComponent implements OnInit {
     this.listeColis[index].couleur = couleur || this.getDefaultColor(index);
   }
 
-  nouvellSimulation() {
-    this.simulationResultats = null;
-    this.optimalContainer = null;
-    this.selectedContainerStats = null;
-    this.previewTime = null;
-    this.simulationEnCours = false;
+  nouvelleSimulation() {
+    this.resetResultats();
     this.listeColis = [];
     this.simulationForm.reset();
     this.selectedContainerId = null;
@@ -300,11 +277,7 @@ export class SimulationComponent implements OnInit {
         });
         
         // Réinitialiser les résultats de simulation
-        this.simulationResultats = null;
-        this.optimalContainer = null;
-        this.selectedContainerStats = null;
-        this.previewTime = null;
-        this.simulationEnCours = false;
+        this.resetResultats();
         
         // Si mode automatique activé, chercher le conteneur optimal
         if (this.selectionAutoOptimal && this.listeColis.length > 0) {
@@ -351,14 +324,18 @@ export class SimulationComponent implements OnInit {
     }
   }
 
+  private resetResultats() {
+  this.simulationResultats = null;
+  this.optimalContainer = null;
+  this.selectedContainerStats = null;
+  this.previewTime = null;
+  this.simulationEnCours = false;
+}
+
+
   supprimerColis(index: number) {
     this.listeColis.splice(index, 1);
-    // Réinitialiser les résultats de simulation quand on supprime un colis
-    this.simulationResultats = null;
-    this.optimalContainer = null;
-    this.selectedContainerStats = null;
-    this.previewTime = null;
-    this.simulationEnCours = false;
+    this.resetResultats();
     
     // Si mode automatique activé et qu'il reste des colis, chercher le conteneur optimal
     if (this.selectionAutoOptimal && this.listeColis.length > 0) {
@@ -369,92 +346,7 @@ export class SimulationComponent implements OnInit {
     }
   }
 
-  telechargerModele() {
-    console.log('Téléchargement du modèle Excel...');
-    
-    const headers = 'Type;Longueur(cm);Largeur(cm);Hauteur(cm);Poids(kg);Quantité;Destinataire;Adresse;Téléphone;Fragile;Gerbable;Couleur\n';
-    const exemple = 'Carton;30;25;20;2.5;1;Jean Dupont;123 Rue de la Paix;0123456789;false;true;#ff9900\n';
 
-    const csvContent = headers + exemple;
-    
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'modele_colis.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  }
-
-  importerDepuisExcel(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const text = e.target?.result as string;
-          const lignes = text.split('\n').filter(line => line.trim() !== '');
-          lignes.shift(); // Supprime la première ligne (les entêtes)
-
-          const colisImportes: Colis[] = lignes.map((ligne, index) => {
-            const colonnes = ligne.split(';');
-
-            // Création d'un colis avec la même structure que l'ajout manuel
-            return {
-              reference: `IMPORT-${Date.now()}-${index}`,
-              type: colonnes[0]?.trim() || '',
-              longueur: Number(colonnes[1]),
-              largeur: Number(colonnes[2]),
-              hauteur: Number(colonnes[3]),
-              poids: Number(colonnes[4]),
-              quantite: Number(colonnes[5]) || 1,
-              nomDestinataire: colonnes[6]?.trim() || undefined,
-              adresse: colonnes[7]?.trim() || undefined,
-              telephone: colonnes[8]?.trim() || undefined,
-              fragile: colonnes[9] ? String(colonnes[9]).trim().toLowerCase() === 'true' : false,
-              gerbable: colonnes[10] ? String(colonnes[10]).trim().toLowerCase() === 'true' : true,
-              couleur: (colonnes[11] && String(colonnes[11]).trim()) || this.getDefaultColor(index),
-              statut: 'actif',
-              dateAjout: new Date()
-            };
-          });
-
-          // Afficher les colis importés pour debug
-          console.log('Colis importés:', colisImportes);
-
-          this.listeColis.push(...colisImportes);
-          this.snackBar.open(`${colisImportes.length} colis importé(s) depuis ${file.name}`, 'OK', {
-            duration: 3000
-          });
-          
-          // Réinitialiser les résultats de simulation quand on importe des colis
-          this.simulationResultats = null;
-          this.optimalContainer = null;
-          this.selectedContainerStats = null;
-          this.previewTime = null;
-          this.simulationEnCours = false;
-          
-          // Si mode automatique activé, chercher le conteneur optimal
-          if (this.selectionAutoOptimal && this.listeColis.length > 0) {
-            this.trouverConteneurOptimal();
-          } else if (this.selectedContainerId) {
-            // Sinon, si un conteneur est sélectionné manuellement, mettre à jour ses stats
-            this.evaluateSelectedContainer();
-          }
-        } catch (error) {
-          console.error('Erreur lors de l\'import:', error);
-          this.snackBar.open('Erreur lors de l\'import du fichier', 'OK', {
-            duration: 3000
-          });
-        }
-      };
-
-      reader.readAsText(file);
-    }
-    
-    // Reset input file
-    event.target.value = '';
-  }
 
   // Trouver le conteneur optimal pour les colis
   trouverConteneurOptimal() {
@@ -599,7 +491,7 @@ export class SimulationComponent implements OnInit {
           confirmButtonText: 'OK'
         });
         
-        this.nouvellSimulation();
+        this.nouvelleSimulation();
       },
       error: (error) => {
         console.error('Erreur lors de la sauvegarde:', error);
