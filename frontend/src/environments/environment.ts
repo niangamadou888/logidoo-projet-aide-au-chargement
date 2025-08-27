@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000',
+  apiUrl: 'https://logidoo.onrender.com',
   logLevel: 'debug',
   version: '1.0.0',
 };
