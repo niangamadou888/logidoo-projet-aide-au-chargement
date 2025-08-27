@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class SimulationService {
-  private apiUrl = 'http://localhost:3000/api/simulations';
+  private apiUrl = 'https://logidoo.onrender.com/api/simulations';
 
   constructor(private http: HttpClient) {}
 
