@@ -10,6 +10,10 @@ import { Observable } from 'rxjs';
 export class ExcelService {
   constructor() {}
 
+    public randomColor(): string {
+  return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+}
+
   telechargerModele() {
     const ws = XLSX.utils.json_to_sheet([
       {
@@ -53,6 +57,7 @@ export class ExcelService {
         const workbook = XLSX.read(data, { type: 'array' });
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+        const couleur = this.randomColor();
 
         const colisImportes: Colis[] = jsonData.map((row, index) => {
           const mapped: Partial<Colis> = {};
@@ -71,7 +76,8 @@ export class ExcelService {
             quantite: Number(mapped.quantite) || 1,
             nomDestinataire: mapped.nomDestinataire || '',
             adresse: mapped.adresse || '',
-            telephone: mapped.telephone || ''
+            telephone: mapped.telephone || '',
+            couleur
           };
         });
 

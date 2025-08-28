@@ -79,6 +79,8 @@ export class SimulationComponent implements OnInit {
     this.nouvelleSimulation();
   }
 
+
+
     telechargerModele(): void {
           this.excelService.telechargerModele();
         }
@@ -88,8 +90,25 @@ export class SimulationComponent implements OnInit {
     const file = input.files[0];
     this.excelService.importerDepuisExcel(file).subscribe({
       next: (colisImportes) => {
-        this.listeColis = this.listeColis.concat(colisImportes);
-        this.snackBar.open('Colis importés avec succès', 'OK', { duration: 3000 });
+         const colisComplets: Colis[] = [];
+colisImportes.forEach((colis, idx) => {
+  const couleur = this.excelService.randomColor(); // une couleur unique par ligne
+  const quantite = Number(colis.quantite) || 1;
+  for (let i = 0; i < quantite; i++) {
+    colisComplets.push({
+      ...colis,
+      couleur,
+      reference: `COLIS-${Date.now()}-${idx}-${i}`,
+      statut: 'actif',
+      dateAjout: new Date(),
+      quantite: 1 // chaque colis individuel a quantite 1
+    });
+  }
+});
+this.listeColis = this.listeColis.concat(colisComplets);
+        this.snackBar.open(
+          `${colisImportes.length} ligne${colisImportes.length > 1 ? 's' : ''} importée${colisImportes.length > 1 ? 's' : ''} (${colisComplets.length} colis au total)`,
+          'OK', { duration: 3000 });
 
         if (this.selectionAutoOptimal && this.listeColis.length > 0) {
           this.trouverConteneurOptimal();
@@ -218,49 +237,31 @@ export class SimulationComponent implements OnInit {
   ajouterColis() {
     if (this.colisForm.valid) {
       try {
+
         // Récupérer les valeurs brutes du formulaire
         const formValues = this.colisForm.getRawValue();
-        
-        // Créer l'objet colis avec la structure exacte attendue par le backend
-        const nouveauColis: Colis = {
-          reference: `COLIS-${Date.now()}`,
-          type: formValues.type,
-          longueur: Number(formValues.longueur),
-          largeur: Number(formValues.largeur),
-          hauteur: Number(formValues.hauteur),
-          poids: Number(formValues.poids),
-          quantite: Number(formValues.quantite),
-          nomDestinataire: formValues.nomDestinataire || undefined,
-          adresse: formValues.adresse || undefined,
-          telephone: formValues.telephone || undefined,
-          fragile: Boolean(formValues.fragile),
-          gerbable: Boolean(formValues.gerbable),
-          couleur: formValues.couleur || this.getDefaultColor(this.listeColis.length),
-          statut: 'actif',
-          dateAjout: new Date()
-        };
-        
-        // Vérification des valeurs numériques
-        if (isNaN(nouveauColis.longueur) || nouveauColis.longueur <= 0) {
-          throw new Error('La longueur doit être un nombre positif');
+        const couleur = formValues.couleur || this.excelService.randomColor();
+        const quantite = Number(formValues.quantite) || 1;
+        for (let i = 0; i < quantite; i++) {
+          const nouveauColis: Colis = {
+            reference: `COLIS-${Date.now()}-${i}`,
+            type: formValues.type,
+            longueur: Number(formValues.longueur),
+            largeur: Number(formValues.largeur),
+            hauteur: Number(formValues.hauteur),
+            poids: Number(formValues.poids),
+            quantite: 1,
+            nomDestinataire: formValues.nomDestinataire || undefined,
+            adresse: formValues.adresse || undefined,
+            telephone: formValues.telephone || undefined,
+            fragile: Boolean(formValues.fragile),
+            gerbable: Boolean(formValues.gerbable),
+            couleur,
+            statut: 'actif',
+            dateAjout: new Date()
+          };
+          this.listeColis.push(nouveauColis);
         }
-        if (isNaN(nouveauColis.largeur) || nouveauColis.largeur <= 0) {
-          throw new Error('La largeur doit être un nombre positif');
-        }
-        if (isNaN(nouveauColis.hauteur) || nouveauColis.hauteur <= 0) {
-          throw new Error('La hauteur doit être un nombre positif');
-        }
-        if (isNaN(nouveauColis.poids) || nouveauColis.poids <= 0) {
-          throw new Error('Le poids doit être un nombre positif');
-        }
-        if (isNaN(nouveauColis.quantite) || nouveauColis.quantite <= 0) {
-          nouveauColis.quantite = 1; // Valeur par défaut
-        }
-        
-        console.log('Nouveau colis à ajouter:', nouveauColis);
-        
-        // Ajouter à la liste des colis
-        this.listeColis.push(nouveauColis);
         
         // Réinitialiser le formulaire avec les valeurs par défaut
         this.colisForm.reset({
@@ -337,6 +338,35 @@ export class SimulationComponent implements OnInit {
   this.simulationEnCours = false;
 }
 
+page = 1;
+pageSize = 10;
+
+get paginatedColis(): Colis[] {
+  const start = (this.page - 1) * this.pageSize;
+  return this.listeColis.slice(start, start + this.pageSize);
+}
+
+totalPages(): number {
+  return Math.ceil(this.listeColis.length / this.pageSize) || 1;
+}
+
+// Pagination intelligente avec "..."
+getPages(): (number | string)[] {
+  const total = this.totalPages();
+  const pages: (number | string)[] = [];
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) pages.push(i);
+  } else {
+    if (this.page <= 4) {
+      pages.push(1, 2, 3, 4, 5, '...', total);
+    } else if (this.page >= total - 3) {
+      pages.push(1, '...', total - 4, total - 3, total - 2, total - 1, total);
+    } else {
+      pages.push(1, '...', this.page - 1, this.page, this.page + 1, '...', total);
+    }
+  }
+  return pages;
+}
 
   supprimerColis(index: number) {
     this.listeColis.splice(index, 1);
@@ -538,4 +568,10 @@ export class SimulationComponent implements OnInit {
       }
     });
   }
+
+  setPage(p: number | string) {
+  if (typeof p === 'number') {
+    this.page = p;
+  }
+}
 }
