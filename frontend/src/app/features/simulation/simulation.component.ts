@@ -1,4 +1,3 @@
-// simulation.component.ts
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -43,7 +42,7 @@ export class SimulationComponent implements OnInit {
   containers: Contenant[] = [];
   selectedContainerId: string | null = null;
   previewTime: number | null = null;
-  selectionAutoOptimal = true; // Option pour sélection automatique du conteneur optimal
+  selectionAutoOptimal = true; // Par défaut, la sélection automatique est activée
   evaluatingContainer = false; // Pour afficher un indicateur de chargement lors de l'évaluation d'un conteneur
 
   constructor(
@@ -83,7 +82,7 @@ export class SimulationComponent implements OnInit {
     telechargerModele(): void {
           this.excelService.telechargerModele();
         }
-     importerDepuisExcel(event: Event): void {
+ importerDepuisExcel(event: Event): void {
   const input = event.target as HTMLInputElement;
   if (input.files && input.files.length > 0) {
     const file = input.files[0];
@@ -91,16 +90,22 @@ export class SimulationComponent implements OnInit {
       next: (colisImportes) => {
         this.listeColis = this.listeColis.concat(colisImportes);
         this.snackBar.open('Colis importés avec succès', 'OK', { duration: 3000 });
+
+        if (this.selectionAutoOptimal && this.listeColis.length > 0) {
+          this.trouverConteneurOptimal();
+        } else if (this.selectedContainerId) {
+          this.evaluateSelectedContainer();
+        }
       },
       error: (err) => {
         console.error('Erreur lors de l\'import Excel:', err);
         this.snackBar.open('Erreur lors de l\'import du fichier Excel', 'OK', { duration: 5000 });
       }
     });
-    // Réinitialise la valeur de l'input pour permettre un nouvel import du même fichier si besoin
     input.value = '';
   }
 }
+
 
   private readonly defaultColorPalette = [
     '#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6',
