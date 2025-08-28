@@ -283,69 +283,88 @@
 
   <!-- Liste des colis -->
 <!-- Affiche le titre et le résumé une seule fois -->
-<h3>Colis de la simulation ({{ listeColis.length }})</h3>
-<div class="colis-summary">
-  <div class="summary-item">
-    <strong>{{ calculerNombreColisTotal() }}</strong>
-    <span>Total colis</span>
+<div *ngIf="listeColis.length > 0">
+  <h3>Colis de la simulation ({{ listeColis.length }})</h3>
+  <div class="colis-summary">
+    <div class="summary-item">
+      <strong>{{ calculerNombreColisTotal() }}</strong>
+      <span>Total colis</span>
+    </div>
+    <div class="summary-item">
+      <strong>{{ calculerVolumeTotal() | number:'1.2-2' }} m³</strong>
+      <span>Volume total</span>
+    </div>
+    <div class="summary-item">
+      <strong>{{ calculerPoidsTotal() | number:'1.2-2' }} kg</strong>
+      <span>Poids total</span>
+    </div>
   </div>
-  <div class="summary-item">
-    <strong>{{ calculerVolumeTotal() | number:'1.2-2' }} m³</strong>
-    <span>Volume total</span>
-  </div>
-  <div class="summary-item">
-    <strong>{{ calculerPoidsTotal() | number:'1.2-2' }} kg</strong>
-    <span>Poids total</span>
-  </div>
-</div>
 
-<div class="colis-items">
-  <!-- Ici, la pagination -->
-  <div *ngFor="let colis of paginatedColis; let i = index" class="colis-item">
-    <div class="colis-info">
-      <span class="colis-type">
-        <span style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;"
-              [style.background]="colis.couleur || '#999999'"></span>
-        {{ colis.type }}
-      </span>
-      <span class="colis-dimensions">
-        {{ colis.longueur }}×{{ colis.largeur }}×{{ colis.hauteur }}cm - {{ colis.poids }}kg
-      </span>
-      <span *ngIf="colis.quantite > 1" class="colis-quantity">
-        Qté: {{ colis.quantite }}
-      </span>
-      <span *ngIf="colis.fragile" class="colis-flag fragile-flag" style="margin-left:8px;">Fragile</span>
-      <span *ngIf="colis.gerbable" class="colis-flag" style="margin-left:8px;">Empilable</span>
-      <div *ngIf="colis.nomDestinataire" class="colis-destinataire">
-        Destinataire: {{ colis.nomDestinataire }} - {{ colis.adresse }} - {{ colis.telephone }}
+  <div class="colis-items">
+    <!-- Ici, la pagination -->
+    <div *ngFor="let colis of paginatedColis; let i = index" class="colis-item">
+      <div class="colis-info">
+        <span class="colis-type">
+          <span style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;"
+                [style.background]="colis.couleur || '#999999'"></span>
+          {{ colis.type }}
+        </span>
+        <span class="colis-dimensions">
+          {{ colis.longueur }}×{{ colis.largeur }}×{{ colis.hauteur }}cm - {{ colis.poids }}kg
+        </span>
+        <span *ngIf="colis.quantite > 1" class="colis-quantity">
+          Qté: {{ colis.quantite }}
+        </span>
+        <span *ngIf="colis.fragile" class="colis-flag fragile-flag" style="margin-left:8px;">Fragile</span>
+        <span *ngIf="colis.gerbable" class="colis-flag" style="margin-left:8px;">Empilable</span>
+        <div *ngIf="colis.nomDestinataire" class="colis-destinataire">
+          Destinataire: {{ colis.nomDestinataire }} - {{ colis.adresse }} - {{ colis.telephone }}
+        </div>
       </div>
+      <div class="colis-edit" style="margin-right: 10px;">
+        <label style="font-size:12px;color:#555;margin-right:6px;">Couleur:</label>
+        <input type="color"
+               [value]="colis.couleur || '#999999'"
+               (input)="updateColisCouleur(i + (page - 1) * pageSize, $any($event.target).value)"
+               style="width:36px;height:28px;padding:0;border:none;background:transparent;cursor:pointer;" />
+      </div>
+      <button (click)="supprimerColis(i + (page - 1) * pageSize)" class="btn-delete">
+        Supprimer
+      </button>
     </div>
-    <div class="colis-edit" style="margin-right: 10px;">
-      <label style="font-size:12px;color:#555;margin-right:6px;">Couleur:</label>
-      <input type="color"
-             [value]="colis.couleur || '#999999'"
-             (input)="updateColisCouleur(i + (page - 1) * pageSize, $any($event.target).value)"
-             style="width:36px;height:28px;padding:0;border:none;background:transparent;cursor:pointer;" />
-    </div>
-    <button (click)="supprimerColis(i + (page - 1) * pageSize)" class="btn-delete">
-      Supprimer
-    </button>
   </div>
+
+  <!-- Pagination -->
+  <div class="pagination-bar">
+    <button (click)="page = page - 1" [disabled]="page === 1" class="pagination-btn">◀</button>
+    <ng-container *ngFor="let p of getPages(); let idx = index">
+      <button
+        class="pagination-btn page-number"
+        [class.active]="p === page"
+        (click)="setPage(p)"
+        [disabled]="p === '...'">
+        {{ p }}
+      </button>
+    </ng-container>
+    <button (click)="page = page + 1" [disabled]="page === totalPages()" class="pagination-btn">▶</button>
+  </div>
+
+   <!-- Boutons d'action -->
+    <div class="action-buttons">
+      <button (click)="lancerSimulation()" class="btn-primary full-width" 
+              *ngIf="(!simulationResultats && !simulationEnCours) && listeColis.length > 0 && selectedContainerId" 
+              [disabled]="findingOptimal">
+        {{ findingOptimal ? 'Recherche du conteneur optimal...' : 'Lancer la simulation avec le conteneur sélectionné' }}
+      </button>
+      <button (click)="validerSimulation()" class="btn-validate full-width" *ngIf="simulationResultats || simulationEnCours" [disabled]="!simulationForm.valid || loading">
+        {{ loading ? 'Chargement...' : 'Valider la simulation' }}
+      </button>
+    </div>
 </div>
 
-<!-- Pagination -->
-<div class="pagination-bar">
-  <button (click)="page = page - 1" [disabled]="page === 1" class="pagination-btn">◀</button>
-  <ng-container *ngFor="let p of getPages(); let idx = index">
-    <button
-      class="pagination-btn page-number"
-      [class.active]="p === page"
-      (click)="setPage(p)"
-      [disabled]="p === '...'">
-      {{ p }}
-    </button>
-  </ng-container>
-  <button (click)="page = page + 1" [disabled]="page === totalPages()" class="pagination-btn">▶</button>
+<!-- Message si aucun colis -->
+<div *ngIf="listeColis.length === 0" class="no-colis">
+  Aucun colis ajouté pour le moment.
 </div>
 
   <!-- Résultats de la simulation -->
