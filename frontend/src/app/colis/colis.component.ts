@@ -24,6 +24,8 @@ export class ColisComponent implements OnInit {
       hauteur: [0, Validators.required],
       quantite: [1],
       fragile: [false],
+      gerbable: [false],
+      couleur: ['#999999'],
     });
 
     this.chargerColis();
@@ -33,7 +35,7 @@ export class ColisComponent implements OnInit {
     if (this.colisForm.valid) {
       this.colisService.ajouterColis(this.colisForm.value).subscribe((data) => {
         this.listeColis.push(data);
-        this.colisForm.reset({ quantite: 1, fragile: false });
+        this.colisForm.reset({ quantite: 1, fragile: false, gerbable: false, couleur: '#999999' });
       });
     }
   }

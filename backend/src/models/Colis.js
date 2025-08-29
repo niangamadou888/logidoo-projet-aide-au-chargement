@@ -14,8 +14,12 @@ const ColisSchema = new mongoose.Schema({
   hauteur: Number,
   quantite: Number,
   fragile: Boolean,
+  gerbable: Boolean,
+  couleur: String,
   statut: String,
-  dateAjout: Date
+  dateAjout: Date,
+  conteneurId:{type:mongoose.Schema.Types.ObjectId,ref:'Conteneur'},
+   camionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Camion' }
 });
 
 module.exports = ColisSchema;

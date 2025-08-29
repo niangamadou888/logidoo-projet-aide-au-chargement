@@ -32,6 +32,8 @@ router.post('/colis', (req, res) => {
       hauteur: data.hauteur,
       quantite: data.quantite || 1,
       fragile: data.fragile || false,
+      gerbable: data.gerbable || false,
+      couleur: data.couleur || '#999999',
       statut: data.statut || 'En attente',
       dateAjout: new Date()
     });

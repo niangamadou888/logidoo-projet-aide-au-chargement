@@ -15,13 +15,15 @@ export interface Colis {
   hauteur: number;
   quantite: number;
   fragile: boolean;
+  gerbable: boolean;
+  couleur?: string;
   statut?: string;
   dateAjout?: Date;
 }
 
 @Injectable({ providedIn: 'root' })
 export class ColisService {
-  private apiUrl = 'http://localhost:3000/api/colis';
+  private apiUrl = 'https://logidoo.onrender.com/api/colis';
 
   constructor(private http: HttpClient) {}
 
