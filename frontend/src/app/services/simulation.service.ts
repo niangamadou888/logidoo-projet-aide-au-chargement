@@ -51,7 +51,7 @@ export interface OptimalContainerResult {
   providedIn: 'root'
 })
 export class SimulationService {
-  private apiUrl = 'https://logidoo.onrender.com/api/simulations';
+  private apiUrl = 'http://localhost:3000/api/simulations';
 
   constructor(private http: HttpClient) {}
 

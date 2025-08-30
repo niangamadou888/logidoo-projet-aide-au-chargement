@@ -1,0 +1,177 @@
+<!-- src/app/features/visualization/visualization.component.html -->
+
+<div class="visualization-container" [class.sidebar-collapsed]="sidebarCollapsed">
+  
+  <!-- Header avec contrôles principaux -->
+  <header class="visualization-header">
+    <div class="header-left">
+      <button class="btn btn-icon" (click)="goBackToSimulation()" title="Retour à la simulation">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <div class="simulation-info">
+        <h1>{{ getSimulationTitle() }}</h1>
+        <div class="simulation-meta" *ngIf="scene">
+          <span>{{ getTotalContainers() }} conteneur(s)</span>
+          <span *ngIf="hasMultipleContainers()"> • {{ getCurrentContainerName() }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-center" *ngIf="hasMultipleContainers()">
+      <div class="container-navigation">
+        <button class="btn btn-icon" (click)="previousContainer()" title="Conteneur précédent">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"/>
+          </svg>
+        </button>
+        <span class="container-indicator">
+          {{ (scene?.currentContainerIndex || 0) + 1 }} / {{ getTotalContainers() }}
+        </span>
+        <button class="btn btn-icon" (click)="nextContainer()" title="Conteneur suivant">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,18 15,12 9,6"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <div class="header-right">
+      <button class="btn btn-toggle" 
+              [class.active]="currentView === '3d'"
+              (click)="toggleView()"
+              title="Basculer vue 2D/3D">
+        <span *ngIf="currentView === '3d'">3D</span>
+        <span *ngIf="currentView === '2d'">2D</span>
+      </button>
+      
+      <button class="btn btn-icon" (click)="resetView()" title="Réinitialiser la vue">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 4v6h6M23 20v-6h-6"/>
+          <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+        </svg>
+      </button>
+      
+      <button class="btn btn-icon" (click)="exportVisualization()" title="Exporter">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7,10 12,15 17,10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      </button>
+      
+      <button class="btn btn-icon" 
+              (click)="toggleSidebar()" 
+              title="Basculer panneau latéral">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <line x1="15" y1="3" x2="15" y2="21"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- État de chargement -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Chargement de la visualisation...</p>
+    </div>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div class="error-container" *ngIf="error && !loading">
+    <div class="error-message">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="15" y1="9" x2="9" y2="15"/>
+        <line x1="9" y1="9" x2="15" y2="15"/>
+      </svg>
+      <h3>Erreur de visualisation</h3>
+      <p>{{ error }}</p>
+      <button class="btn btn-primary" (click)="goBackToSimulation()">
+        Retour à la simulation
+      </button>
+    </div>
+  </div>
+
+  <!-- Interface principale -->
+  <div class="main-interface" *ngIf="!loading && !error && scene">
+    
+    <!-- Barre d'outils -->
+    <div class="toolbar-container">
+      <app-toolbar 
+        [scene]="scene" 
+        [config]="config" 
+        [viewport]="viewport">
+      </app-toolbar>
+    </div>
+    
+    <!-- Zone de visualisation -->
+    <div class="visualization-area">
+      <div class="viewer-container">
+        
+        <!-- Vue 2D -->
+        <app-canvas 
+          *ngIf="currentView === '2d'" 
+          [scene]="scene"
+          [config]="config"
+          [viewport]="viewport">
+        </app-canvas>
+        
+        <!-- Vue 3D -->
+        <app-scene 
+          *ngIf="currentView === '3d'" 
+          [scene]="scene"
+          [config]="config"
+          [viewport]="viewport">
+        </app-scene>
+        
+        <!-- Indicateurs de vue -->
+        <div class="view-indicators">
+          <div class="view-mode-badge" [attr.data-mode]="currentView">
+            {{ currentView.toUpperCase() }}
+          </div>
+          
+          <div class="zoom-indicator" *ngIf="viewport">
+            Zoom: {{ (viewport.zoom * 100) | number:'1.0-0' }}%
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Panneau latéral -->
+    <div class="sidebar" [class.collapsed]="sidebarCollapsed">
+      <app-panel 
+        [scene]="scene"
+        [config]="config">
+      </app-panel>
+    </div>
+  </div>
+
+  <!-- Footer avec statistiques rapides -->
+  <footer class="visualization-footer" *ngIf="!loading && !error && scene">
+    <div class="stats-quick">
+      <div class="stat-item" *ngIf="scene.containers.length">
+        <span class="stat-label">Conteneurs:</span>
+        <span class="stat-value">{{ scene.containers.length }}</span>
+      </div>
+      
+      <div class="stat-item" *ngIf="scene.containers[scene.currentContainerIndex]">
+        <span class="stat-label">Items:</span>
+        <span class="stat-value">{{ scene.containers[scene.currentContainerIndex].items.length }}</span>
+      </div>
+      
+      <div class="stat-item" *ngIf="scene.containers[scene.currentContainerIndex]">
+        <span class="stat-label">Volume utilisé:</span>
+        <span class="stat-value">{{ scene.containers[scene.currentContainerIndex].utilization.volume | number:'1.0-0' }}%</span>
+      </div>
+      
+      <div class="stat-item" *ngIf="scene.containers[scene.currentContainerIndex]">
+        <span class="stat-label">Poids utilisé:</span>
+        <span class="stat-value">{{ scene.containers[scene.currentContainerIndex].utilization.poids | number:'1.0-0' }}%</span>
+      </div>
+    </div>
+  </footer>
+</div>
