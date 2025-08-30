@@ -1,0 +1,26 @@
+<!-- src/app/features/visualization/components/scene/scene.component.html -->
+<div class="scene-container" #container>
+  <!-- État de chargement -->
+  <div class="scene-placeholder" *ngIf="!isInitialized && !initializationError">
+    <div class="loading-3d">
+      <div class="spinner"></div>
+      <p>Chargement de la vue 3D...</p>
+    </div>
+  </div>
+  
+  <!-- Erreur d'initialisation -->
+  <div class="scene-error" *ngIf="initializationError">
+    <div class="error-content">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="15" y1="9" x2="9" y2="15"/>
+        <line x1="9" y1="9" x2="15" y2="15"/>
+      </svg>
+      <h3>Erreur de rendu 3D</h3>
+      <p>{{ initializationError }}</p>
+      <button class="retry-btn" (click)="initializeScene()">Réessayer</button>
+    </div>
+  </div>
+  
+  <!-- Le canvas Three.js sera ajouté ici dynamiquement -->
+</div>

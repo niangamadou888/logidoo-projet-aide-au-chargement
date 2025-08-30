@@ -10,7 +10,7 @@ import { Colis } from './colis.service';
 })
 export class ConteneurService {
 
-private apiUrl = 'https://logidoo.onrender.com/api';
+private apiUrl = 'http://localhost:3000/api';
 
   constructor(private http: HttpClient) { }
 

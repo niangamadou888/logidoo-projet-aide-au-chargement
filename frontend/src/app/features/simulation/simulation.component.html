@@ -131,7 +131,7 @@
             </label>
           </div>
         </div>
-        
+
         <!-- Message explicatif pour le mode de sélection -->
         <div class="selection-mode-explanation">
           <p *ngIf="selectionAutoOptimal">
@@ -148,12 +148,12 @@
             <div class="optimal-badge">
               <span>Recommandé</span>
             </div>
-            
+
             <div class="container-header">
               <strong>{{ optimalContainer.containerType }}</strong>
               <span class="container-category">{{ optimalContainer.containerCategory }}</span>
             </div>
-            
+
             <div class="container-stats">
               <div class="stat">
                 <div class="progress-bar">
@@ -163,7 +163,7 @@
                   <span>Volume: {{ optimalContainer.volumeUtilization | percent:'1.0-0' }}</span>
                 </div>
               </div>
-              
+
               <div class="stat">
                 <div class="progress-bar">
                   <div class="progress" [style.width]="(optimalContainer.weightUtilization * 100) + '%'"></div>
@@ -177,15 +177,16 @@
                 <strong>{{ optimalContainer.placedItems }}</strong> / {{ optimalContainer.totalItems }} colis placés
               </div>
             </div>
-            
+
             <div class="container-dimensions">
-              <span>{{ optimalContainer.dimensions.longueur }} × {{ optimalContainer.dimensions.largeur }} × {{ optimalContainer.dimensions.hauteur }} mm</span>
+              <span>{{ optimalContainer.dimensions.longueur }} × {{ optimalContainer.dimensions.largeur }} × {{
+                optimalContainer.dimensions.hauteur }} mm</span>
               <span>Volume: {{ optimalContainer.volume }} m³</span>
               <span>Capacité: {{ optimalContainer.capacitePoids }} kg max</span>
             </div>
           </div>
         </div>
-        
+
         <!-- Affichage des stats du conteneur sélectionné manuellement -->
         <div *ngIf="!selectionAutoOptimal && selectedContainerStats" class="selected-container-info">
           <div class="selected-container-card">
@@ -193,7 +194,7 @@
               <strong>{{ selectedContainerStats.containerType }}</strong>
               <span class="container-category">{{ selectedContainerStats.containerCategory }}</span>
             </div>
-            
+
             <div class="container-stats">
               <div class="stat">
                 <div class="progress-bar">
@@ -203,7 +204,7 @@
                   <span>Volume: {{ selectedContainerStats.volumeUtilization | percent:'1.0-0' }}</span>
                 </div>
               </div>
-              
+
               <div class="stat">
                 <div class="progress-bar">
                   <div class="progress" [style.width]="(selectedContainerStats.weightUtilization * 100) + '%'"></div>
@@ -213,41 +214,41 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="placement-stats">
               <span class="placement-info">
-                <strong>{{ selectedContainerStats.placedItems }}</strong> / {{ selectedContainerStats.totalItems }} colis placés
+                <strong>{{ selectedContainerStats.placedItems }}</strong> / {{ selectedContainerStats.totalItems }}
+                colis placés
               </span>
-              <span class="score-info" [class.good-score]="selectedContainerStats.optimalityScore > 0.7" 
-                                     [class.medium-score]="selectedContainerStats.optimalityScore > 0.4 && selectedContainerStats.optimalityScore <= 0.7"
-                                     [class.low-score]="selectedContainerStats.optimalityScore <= 0.4">
+              <span class="score-info" [class.good-score]="selectedContainerStats.optimalityScore > 0.7"
+                [class.medium-score]="selectedContainerStats.optimalityScore > 0.4 && selectedContainerStats.optimalityScore <= 0.7"
+                [class.low-score]="selectedContainerStats.optimalityScore <= 0.4">
                 Score d'optimalité: {{ selectedContainerStats.optimalityScore | percent:'1.0-0' }}
               </span>
             </div>
-            
+
             <div class="container-dimensions">
-              <span>{{ selectedContainerStats.dimensions.longueur }} × {{ selectedContainerStats.dimensions.largeur }} × {{ selectedContainerStats.dimensions.hauteur }} mm</span>
+              <span>{{ selectedContainerStats.dimensions.longueur }} × {{ selectedContainerStats.dimensions.largeur }} ×
+                {{ selectedContainerStats.dimensions.hauteur }} mm</span>
               <span>Volume: {{ selectedContainerStats.volume }} m³</span>
               <span>Capacité: {{ selectedContainerStats.capacitePoids }} kg max</span>
             </div>
           </div>
         </div>
-        
+
         <!-- Indicateur de chargement pour l'évaluation du conteneur -->
         <div *ngIf="evaluatingContainer" class="container-loading">
           <div class="loading-spinner"></div>
           <span>Évaluation du conteneur en cours...</span>
         </div>
-        
+
         <!-- Liste des conteneurs disponibles -->
         <div class="contenants-grid" [class.dimmed]="selectionAutoOptimal && optimalContainer">
-          <div *ngFor="let c of containers" class="conteneur-card" 
-               [class.selected]="c._id === selectedContainerId"
-               [class.optimal]="optimalContainer && c._id === optimalContainer.containerId"
-               (click)="selectContainer(c._id)">
-            <img *ngIf="c.images && c.images.length > 0"
-                 [src]="'https://logidoo.onrender.com' + c.images[0]"
-                 [alt]="c.type" width="100">
+          <div *ngFor="let c of containers" class="conteneur-card" [class.selected]="c._id === selectedContainerId"
+            [class.optimal]="optimalContainer && c._id === optimalContainer.containerId"
+            (click)="selectContainer(c._id)">
+            <img *ngIf="c.images && c.images.length > 0" [src]="'https://logidoo.onrender.com' + c.images[0]"
+              [alt]="c.type" width="100">
             <div class="conteneur-title">Type: {{ c.type }}</div>
             <div class="conteneur-dimensions">
               {{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm
@@ -275,7 +276,8 @@
             📤 Importer Excel
             <input type="file" (change)="importerDepuisExcel($event)" accept=".xlsx,.xls,.csv" style="display: none;">
           </label>
-          <p class="excel-hint">Colonnes supportées: Type, Dimensions, Poids, Qté, Destinataire, Fragile, Gerbable, Couleur.</p>
+          <p class="excel-hint">Colonnes supportées: Type, Dimensions, Poids, Qté, Destinataire, Fragile, Gerbable,
+            Couleur.</p>
         </div>
       </div>
     </div>
@@ -302,8 +304,9 @@
       <div *ngFor="let colis of listeColis; let i = index" class="colis-item">
         <div class="colis-info">
           <span class="colis-type">
-            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;"
-                  [style.background]="colis.couleur || '#999999'"></span>
+            <span
+              style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;"
+              [style.background]="colis.couleur || '#999999'"></span>
             {{ colis.type }}
           </span>
           <span class="colis-dimensions">
@@ -320,10 +323,9 @@
         </div>
         <div class="colis-edit" style="margin-right: 10px;">
           <label style="font-size:12px;color:#555;margin-right:6px;">Couleur:</label>
-          <input type="color"
-                 [value]="colis.couleur || '#999999'"
-                 (input)="updateColisCouleur(i, $any($event.target).value)"
-                 style="width:36px;height:28px;padding:0;border:none;background:transparent;cursor:pointer;" />
+          <input type="color" [value]="colis.couleur || '#999999'"
+            (input)="updateColisCouleur(i, $any($event.target).value)"
+            style="width:36px;height:28px;padding:0;border:none;background:transparent;cursor:pointer;" />
         </div>
         <button (click)="supprimerColis(i)" class="btn-delete">
           Supprimer
@@ -333,13 +335,19 @@
 
     <!-- Boutons d'action -->
     <div class="action-buttons">
-      <button (click)="lancerSimulation()" class="btn-primary full-width" 
-              *ngIf="(!simulationResultats && !simulationEnCours) && listeColis.length > 0 && selectedContainerId" 
-              [disabled]="findingOptimal">
-        {{ findingOptimal ? 'Recherche du conteneur optimal...' : 'Lancer la simulation avec le conteneur sélectionné' }}
+      <button (click)="lancerSimulation()" class="btn-primary full-width"
+        *ngIf="(!simulationResultats && !simulationEnCours) && listeColis.length > 0 && selectedContainerId"
+        [disabled]="findingOptimal">
+        {{ findingOptimal ? 'Recherche du conteneur optimal...' : 'Lancer la simulation avec le conteneur sélectionné'
+        }}
       </button>
-      <button (click)="validerSimulation()" class="btn-validate full-width" *ngIf="simulationResultats || simulationEnCours" [disabled]="!simulationForm.valid || loading">
+      <button (click)="validerSimulation()" class="btn-validate full-width"
+        *ngIf="simulationResultats || simulationEnCours" [disabled]="!simulationForm.valid || loading">
         {{ loading ? 'Chargement...' : 'Valider la simulation' }}
+      </button>
+      <button (click)="testVisualization()" class="btn-primary full-width"
+        *ngIf="simulationResultats && listeColis.length > 0" style="margin-top: 1rem; background: #10b981;">
+        🔧 Test Direct Visualisation (Debug)
       </button>
     </div>
   </div>
@@ -368,7 +376,8 @@
         <span>Utilisation poids</span>
       </div>
       <div class="stats-item" [class.warning]="simulationResultats.unplacedItems.length > 0">
-        <strong>{{ simulationResultats.stats.placedCount }} / {{ simulationResultats.stats.placedCount + simulationResultats.stats.unplacedCount }}</strong>
+        <strong>{{ simulationResultats.stats.placedCount }} / {{ simulationResultats.stats.placedCount +
+          simulationResultats.stats.unplacedCount }}</strong>
         <span>Colis placés</span>
       </div>
     </div>
@@ -376,14 +385,14 @@
     <!-- Liste des contenants utilisés -->
     <div class="containers-used">
       <h3>Contenants utilisés</h3>
-      
+
       <div class="containers-grid">
         <div *ngFor="let container of simulationResultats.containers" class="container-result-card">
           <div class="container-header">
             <strong>{{ container.type }}</strong>
             <span class="container-category">{{ container.categorie }}</span>
           </div>
-          
+
           <div class="container-stats">
             <div class="stat">
               <div class="progress-bar">
@@ -391,21 +400,23 @@
               </div>
               <div class="stat-label">
                 <span>Volume: {{ container.utilization.volume | number:'1.0-0' }}%</span>
-                <span class="secondary">{{ container.used.volume | number:'1.2-2' }}m³ / {{ container.capacity.volume | number:'1.2-2' }}m³</span>
+                <span class="secondary">{{ container.used.volume | number:'1.2-2' }}m³ / {{ container.capacity.volume |
+                  number:'1.2-2' }}m³</span>
               </div>
             </div>
-            
+
             <div class="stat">
               <div class="progress-bar">
                 <div class="progress" [style.width]="container.utilization.poids + '%'"></div>
               </div>
               <div class="stat-label">
                 <span>Poids: {{ container.utilization.poids | number:'1.0-0' }}%</span>
-                <span class="secondary">{{ container.used.poids | number:'1.0-0' }}kg / {{ container.capacity.poids | number:'1.0-0' }}kg</span>
+                <span class="secondary">{{ container.used.poids | number:'1.0-0' }}kg / {{ container.capacity.poids |
+                  number:'1.0-0' }}kg</span>
               </div>
             </div>
           </div>
-          
+
           <div class="container-items">
             <h4>Colis ({{ container.items.length }})</h4>
             <div class="items-list">
@@ -419,12 +430,13 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Colis non placés -->
     <div *ngIf="simulationResultats.unplacedItems.length > 0" class="unplaced-items">
       <h3 class="warning-title">⚠️ Colis non placés</h3>
-      <p>Les colis suivants n'ont pas pu être placés. Considérez l'utilisation de contenants plus grands ou la division en lots.</p>
-      
+      <p>Les colis suivants n'ont pas pu être placés. Considérez l'utilisation de contenants plus grands ou la division
+        en lots.</p>
+
       <div class="unplaced-list">
         <div *ngFor="let item of simulationResultats.unplacedItems" class="unplaced-item">
           <div class="item-info">
