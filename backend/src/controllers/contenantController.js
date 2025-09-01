@@ -150,4 +150,13 @@ exports.deleteContenant=async(req,res)=>{
     console.error("Erreur deleteContenant:", error)
     res.status(500).json({ message: "Erreur interne", error: error.message})
   }
+};
+exports.getCategories=async(req,res)=>{
+  try {
+    const categories = await service.getCategories();
+    res.status(200).json(categories);
+  } catch (error) {
+   console.error("Erreur récupération catégories:", error);
+     res.status(500).json({ message: "Erreur interne", error }); 
+  }
 }
