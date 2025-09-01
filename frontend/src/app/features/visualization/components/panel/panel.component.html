@@ -44,7 +44,7 @@
 
       <!-- Liste des items -->
       <div class="items-list" *ngIf="getCurrentContainer() as container">
-        <h4>Items ({{ container.items?.length || 0 }})</h4>
+        <h4>Items ({{ container.items.length }})</h4>
         
         <div class="no-items" *ngIf="!container.items || container.items.length === 0">
           <p>Aucun item dans ce conteneur</p>
@@ -61,7 +61,7 @@
             <div class="item-type">{{ item.type || 'Item' }}</div>
             
             <div class="item-details">
-              {{ item.dimensions?.longueur || 0 }}×{{ item.dimensions?.largeur || 0 }}×{{ item.dimensions?.hauteur || 0 }}cm
+              {{ item.dimensions.longueur || 0 }}×{{ item.dimensions.largeur || 0 }}×{{ item.dimensions.hauteur || 0 }}cm
               <span *ngIf="item.poids"> • {{ item.poids }}kg</span>
               <span *ngIf="item.quantite && item.quantite > 1"> • Qté: {{ item.quantite }}</span>
             </div>

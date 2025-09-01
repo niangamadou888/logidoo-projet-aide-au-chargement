@@ -9,6 +9,7 @@
     "/dashboard/user": {},
     "/simulation": {},
     "/test-logger": {},
-    "/unauthorized": {}
+    "/unauthorized": {},
+    "/visualization": {}
   }
 }
