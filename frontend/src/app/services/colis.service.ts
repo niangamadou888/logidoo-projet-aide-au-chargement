@@ -23,7 +23,7 @@ export interface Colis {
 
 @Injectable({ providedIn: 'root' })
 export class ColisService {
-  private apiUrl = 'https://logidoo.onrender.com/api/colis';
+  private apiUrl = 'http://localhost:3000/api/colis';
 
   constructor(private http: HttpClient) {}
 
