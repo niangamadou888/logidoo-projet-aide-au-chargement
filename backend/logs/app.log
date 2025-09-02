@@ -7,3 +7,11 @@
 2025-09-01 02:54:42 [INFO]: Serveur backend démarré sur le port 3000 {"port":"3000","env":"development","nodeVersion":"v22.15.0"}
 2025-09-01 03:06:28 [INFO]: Serveur backend démarré sur le port 3000 {"port":"3000","env":"development","nodeVersion":"v22.15.0"}
 2025-09-01 03:26:44 [INFO]: Serveur backend démarré sur le port 3000 {"port":"3000","env":"development","nodeVersion":"v22.15.0"}
+2025-09-01 23:15:29 [INFO]: Serveur backend démarré sur le port 3000 {"port":"3000","env":"development","nodeVersion":"v22.15.0"}
+2025-09-01 23:32:35 [WARN]: Route lente détectée: OPTIONS /contenants/categories - 510.02ms 
+2025-09-02 00:06:00 [INFO]: Serveur backend démarré sur le port 3000 {"port":"3000","env":"development","nodeVersion":"v22.15.0"}
+2025-09-02 00:15:22 [WARN]: Route lente détectée: GET /categories - 1019.23ms 
+2025-09-02 00:15:44 [INFO]: Serveur backend démarré sur le port 3000 {"port":"3000","env":"development","nodeVersion":"v22.15.0"}
+2025-09-02 02:05:27 [WARN]: Route lente détectée: GET /categories - 508.66ms 
+2025-09-02 02:38:47 [INFO]: Serveur backend démarré sur le port 3000 {"port":"3000","env":"development","nodeVersion":"v22.15.0"}
+2025-09-02 02:45:53 [INFO]: Serveur backend démarré sur le port 3000 {"port":"3000","env":"development","nodeVersion":"v22.15.0"}

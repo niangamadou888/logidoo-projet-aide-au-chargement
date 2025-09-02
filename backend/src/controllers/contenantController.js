@@ -27,10 +27,28 @@ exports.creerContenant = async (req, res) => {
   try {
     let data = req.body;
 
-    // Parse dimensions si envoyées en string
+    // Parse dimensions si elles sont envoyées en string
     if (data.dimensions && typeof data.dimensions === "string") {
       data.dimensions = JSON.parse(data.dimensions);
     }
+
+    // S'assurer que les dimensions sont des nombres
+    if (data.dimensions) {
+      data.dimensions.longueur = Number(data.dimensions.longueur) || 0;
+      data.dimensions.largeur = Number(data.dimensions.largeur) || 0;
+      data.dimensions.hauteur = Number(data.dimensions.hauteur) || 0;
+    }
+
+    // Parse capacite si envoyée en string
+    if (data.capacite && typeof data.capacite === "string") {
+      data.capacite = JSON.parse(data.capacite);
+    }
+
+    // S'assurer que les champs numériques existent
+    data.capacitePoids = Number(data.capacitePoids) || 0;
+    if (!data.capacite) data.capacite = {};
+    data.capacite.volume = Number(data.capacite.volume) || 0;
+    data.capacite.poidsMax = Number(data.capacite.poidsMax) || data.capacitePoids;
 
     // Ajout image uploadée
     if (req.file) {
@@ -38,13 +56,19 @@ exports.creerContenant = async (req, res) => {
       data.images.push(`/uploads/${req.file.filename}`);
     }
 
+    // Calcul automatique du volume si non fourni
+    if (data.dimensions && (!data.volume || data.volume === 0)) {
+      data.volume = (data.dimensions.longueur * data.dimensions.largeur * data.dimensions.hauteur) / 1000000;
+    }
+
     const contenant = await service.creerContenant(data);
     res.status(201).json(contenant);
   } catch (error) {
     console.error("Erreur création contenant:", error);
-    res.status(500).json({ message: "Erreur interne", error });
+    res.status(500).json({ message: "Erreur interne", error: error.message });
   }
 };
+
 
 /**
  * Suggestion automatique de camions uniquement
@@ -157,6 +181,6 @@ exports.getCategories=async(req,res)=>{
     res.status(200).json(categories);
   } catch (error) {
    console.error("Erreur récupération catégories:", error);
-     res.status(500).json({ message: "Erreur interne", error }); 
+    
   }
 }
