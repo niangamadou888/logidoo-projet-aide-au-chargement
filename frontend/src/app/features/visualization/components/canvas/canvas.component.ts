@@ -42,6 +42,9 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   private containerDimensions = { width: 0, height: 0 };
   private padding = 50;
 
+  // Mode de vue 2D: plan (dessus), côté (profil), arrière
+  viewMode: 'top' | 'side' | 'back' = 'top';
+
   constructor() { }
 
   ngOnInit(): void {
@@ -219,17 +222,19 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   private drawContainer(container: VisualizationContainer): void {
     if (!this.ctx) return;
 
-    const { longueur, largeur } = container.dimensions;
+    // Dimensions projetées du conteneur selon la vue sélectionnée
+    const base = this.getProjectedContainerSize(container);
+    const { width: baseW, height: baseH } = base;
     const scale = Math.min(
-      (this.containerDimensions.width - 2 * this.padding) / longueur,
-      (this.containerDimensions.height - 2 * this.padding) / largeur
+      (this.containerDimensions.width - 2 * this.padding) / baseW,
+      (this.containerDimensions.height - 2 * this.padding) / baseH
     ) * 0.8;
 
     // Dessiner le contour du conteneur
     this.ctx.strokeStyle = container.color || '#666666';
     this.ctx.lineWidth = 3;
     this.ctx.setLineDash([]);
-    this.ctx.strokeRect(-longueur * scale / 2, -largeur * scale / 2, longueur * scale, largeur * scale);
+    this.ctx.strokeRect(-baseW * scale / 2, -baseH * scale / 2, baseW * scale, baseH * scale);
 
     // Dessiner les items
     container.items.forEach(item => {
@@ -237,23 +242,53 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     // Dessiner les informations du conteneur
-    this.drawContainerInfo(container, scale);
+    this.drawContainerInfo(container, scale, baseW, baseH);
   }
 
   private drawItem(item: VisualizationItem, container: VisualizationContainer, containerScale: number): void {
     if (!this.ctx) return;
 
-    const containerHalfWidth = container.dimensions.longueur * containerScale / 2;
-    const containerHalfHeight = container.dimensions.largeur * containerScale / 2;
+    // Déterminer les axes projetés selon la vue
+    let projContainerW: number;
+    let projContainerH: number;
+    let posX: number;
+    let posY: number;
+    let itemW: number;
+    let itemH: number;
 
-    // Calculer la position relative dans le conteneur
-    const relativeX = (item.position.x / container.dimensions.longueur) * container.dimensions.longueur * containerScale;
-    const relativeY = (item.position.y / container.dimensions.largeur) * container.dimensions.largeur * containerScale;
-    
-    const x = -containerHalfWidth + relativeX;
-    const y = -containerHalfHeight + relativeY;
-    const width = (item.dimensions.longueur / container.dimensions.longueur) * container.dimensions.longueur * containerScale;
-    const height = (item.dimensions.largeur / container.dimensions.largeur) * container.dimensions.largeur * containerScale;
+    if (this.viewMode === 'top') {
+      projContainerW = container.dimensions.longueur;
+      projContainerH = container.dimensions.largeur;
+      posX = item.position.x;
+      posY = item.position.y;
+      itemW = item.dimensions.longueur;
+      itemH = item.dimensions.largeur;
+    } else if (this.viewMode === 'side') {
+      projContainerW = container.dimensions.longueur;
+      projContainerH = container.dimensions.hauteur;
+      posX = item.position.x;
+      posY = item.position.z;
+      itemW = item.dimensions.longueur;
+      itemH = item.dimensions.hauteur;
+    } else { // 'back'
+      projContainerW = container.dimensions.largeur;
+      projContainerH = container.dimensions.hauteur;
+      posX = item.position.y;
+      posY = item.position.z;
+      itemW = item.dimensions.largeur;
+      itemH = item.dimensions.hauteur;
+    }
+
+    const containerHalfWidth = projContainerW * containerScale / 2;
+    const containerHalfHeight = projContainerH * containerScale / 2;
+
+    const x = -containerHalfWidth + (posX * containerScale);
+    // Pour les vues avec l'axe vertical (hauteur), inverser Y pour avoir l'origine en bas
+    const y = (this.viewMode === 'side' || this.viewMode === 'back')
+      ? (containerHalfHeight - ((posY + itemH) * containerScale))
+      : (-containerHalfHeight + (posY * containerScale));
+    const width = itemW * containerScale;
+    const height = itemH * containerScale;
 
     // Dessiner l'item
     this.ctx.fillStyle = item.color;
@@ -306,12 +341,11 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     this.ctx.strokeRect(x, y, width, height);
   }
 
-  private drawContainerInfo(container: VisualizationContainer, scale: number): void {
+  private drawContainerInfo(container: VisualizationContainer, scale: number, baseW: number, baseH: number): void {
     if (!this.ctx) return;
 
-    const { longueur, largeur } = container.dimensions;
-    const containerWidth = longueur * scale;
-    const containerHeight = largeur * scale;
+    const containerWidth = baseW * scale;
+    const containerHeight = baseH * scale;
 
     // Titre du conteneur
     this.ctx.fillStyle = '#333333';
@@ -325,11 +359,14 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
 
     // Dimensions
     this.ctx.font = '12px Arial';
-    this.ctx.fillText(
-      `${longueur} × ${largeur} × ${container.dimensions.hauteur} cm`,
-      0,
-      -containerHeight / 2 - 5
-    );
+    const dims = container.dimensions;
+    const dimsText = this.viewMode === 'top'
+      ? `${dims.longueur} × ${dims.largeur} cm (Plan)`
+      : this.viewMode === 'side'
+        ? `${dims.longueur} × ${dims.hauteur} cm (Côté)`
+        : `${dims.largeur} × ${dims.hauteur} cm (Arrière)`;
+
+    this.ctx.fillText(dimsText, 0, -containerHeight / 2 - 5);
   }
 
   private drawInterface(): void {
@@ -343,7 +380,8 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     this.ctx.font = '12px Arial';
     this.ctx.textAlign = 'left';
     this.ctx.fillText(`Zoom: ${Math.round(this.scale * 100)}%`, 20, 30);
-    this.ctx.fillText(`Vue: Top-Down`, 20, 45);
+    const vueLabel = this.viewMode === 'top' ? 'Plan' : this.viewMode === 'side' ? 'Côté' : 'Arrière';
+    this.ctx.fillText(`Vue: ${vueLabel}`, 20, 45);
   }
 
   private darkenColor(hex: string, percent: number): string {
@@ -379,5 +417,23 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     this.offsetX = 0;
     this.offsetY = 0;
     this.render();
+  }
+
+  // Changer de mode de vue 2D
+  setViewMode(mode: 'top' | 'side' | 'back'): void {
+    if (this.viewMode !== mode) {
+      this.viewMode = mode;
+      this.resetZoom();
+    }
+  }
+
+  private getProjectedContainerSize(container: VisualizationContainer): { width: number, height: number } {
+    if (this.viewMode === 'top') {
+      return { width: container.dimensions.longueur, height: container.dimensions.largeur };
+    } else if (this.viewMode === 'side') {
+      return { width: container.dimensions.longueur, height: container.dimensions.hauteur };
+    }
+    // back
+    return { width: container.dimensions.largeur, height: container.dimensions.hauteur };
   }
 }
