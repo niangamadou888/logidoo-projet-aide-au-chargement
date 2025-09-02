@@ -193,6 +193,8 @@ export class VisualizationService {
     let currentRowMaxWidth = 0;
     let currentLayerMaxHeight = 0;
 
+    const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+
     container.items.forEach((item, index) => {
       const { longueur, largeur, hauteur } = item.dimensions;
 
@@ -220,7 +222,30 @@ export class VisualizationService {
         }
       }
 
-      item.position = { x: currentX, y: currentY, z: currentZ };
+      // Position cible avant clamp
+      let targetX = currentX;
+      let targetY = currentY;
+      let targetZ = currentZ;
+
+      // Convertir en centres et appliquer le clamp dans les limites du conteneur
+      const halfItemX = longueur / 2;
+      const halfItemY = largeur / 2;
+      const halfItemZ = hauteur / 2;
+
+      const containerLen = container.dimensions.longueur;
+      const containerWid = container.dimensions.largeur;
+      const containerHei = container.dimensions.hauteur;
+
+      const centerX = clamp(targetX + halfItemX, halfItemX, containerLen - halfItemX);
+      const centerY = clamp(targetY + halfItemY, halfItemY, containerWid - halfItemY);
+      const centerZ = clamp(targetZ + halfItemZ, halfItemZ, containerHei - halfItemZ);
+
+      // Revenir aux positions d'origine (coin) après clamp des centres
+      item.position = {
+        x: centerX - halfItemX,
+        y: centerY - halfItemY,
+        z: centerZ - halfItemZ
+      };
       item.opacity = 1.0;
 
       console.log(`✅ Item ${index + 1}: placé à x=${currentX}, y=${currentY}, z=${currentZ} (limite: ${maxX}, ${maxY}, ${maxZ})`);
