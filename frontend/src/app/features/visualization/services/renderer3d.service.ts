@@ -36,6 +36,8 @@ export class ThreeDRendererService {
   // Configuration actuelle
   private currentConfig: VisualizationConfig | null = null;
   private currentViewport: ViewportSettings | null = null;
+  // Espace visuel entre les colis (en centimètres)
+  private readonly gapCm: number = 2;
 
   constructor() { }
 
@@ -353,11 +355,16 @@ export class ThreeDRendererService {
   private createItemMesh(item: VisualizationItem): any {
     const { longueur, largeur, hauteur } = item.dimensions;
 
+    // Réduire légèrement la géométrie pour créer un espace visuel entre les colis
+    const adjLongueur = Math.max(1, longueur - this.gapCm);
+    const adjLargeur = Math.max(1, largeur - this.gapCm);
+    const adjHauteur = Math.max(1, hauteur - this.gapCm);
+
     // Géométrie
     const geometry = new THREE.BoxGeometry(
-      this.cmToUnits(longueur),
-      this.cmToUnits(hauteur),
-      this.cmToUnits(largeur)
+      this.cmToUnits(adjLongueur),
+      this.cmToUnits(adjHauteur),
+      this.cmToUnits(adjLargeur)
     );
 
     // Matériau
@@ -374,6 +381,7 @@ export class ThreeDRendererService {
     // Position (conversion des coordonnées) basée sur les dimensions du conteneur courant
     const cont = this.currentContainerDims || { longueur: 1200, largeur: 240, hauteur: 260 };
     mesh.position.set(
+      // Conserver le centre basé sur les dimensions d'origine
       this.cmToUnits(item.position.x + longueur / 2) - this.cmToUnits(cont.longueur) / 2,
       this.cmToUnits(item.position.z + hauteur / 2),
       this.cmToUnits(item.position.y + largeur / 2) - this.cmToUnits(cont.largeur) / 2
