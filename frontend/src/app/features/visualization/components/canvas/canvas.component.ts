@@ -48,8 +48,8 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   private containerDimensions = { width: 0, height: 0 };
   private padding = 50;
 
-  // Mode de vue 2D: plan (dessus), côté (profil), arrière
-  viewMode: 'top' | 'side' | 'back' = 'top';
+  // Mode de vue 2D: plan (dessus), dessous, côté, côté opposé, avant, arrière
+  viewMode: 'top' | 'bottom' | 'side' | 'side-opposite' | 'front' | 'back' = 'top';
 
   constructor() { }
 
@@ -334,21 +334,21 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     let itemW: number;
     let itemH: number;
 
-    if (this.viewMode === 'top') {
+    if (this.viewMode === 'top' || this.viewMode === 'bottom') {
       projContainerW = container.dimensions.longueur;
       projContainerH = container.dimensions.largeur;
       posX = item.position.x;
       posY = item.position.y;
       itemW = item.dimensions.longueur;
       itemH = item.dimensions.largeur;
-    } else if (this.viewMode === 'side') {
+    } else if (this.viewMode === 'side' || this.viewMode === 'side-opposite') {
       projContainerW = container.dimensions.longueur;
       projContainerH = container.dimensions.hauteur;
       posX = item.position.x;
       posY = item.position.z;
       itemW = item.dimensions.longueur;
       itemH = item.dimensions.hauteur;
-    } else { // 'back'
+    } else { // 'back' | 'front'
       projContainerW = container.dimensions.largeur;
       projContainerH = container.dimensions.hauteur;
       posX = item.position.y;
@@ -362,7 +362,7 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
 
     const x = -containerHalfWidth + (posX * containerScale);
     // Pour les vues avec l'axe vertical (hauteur), inverser Y pour avoir l'origine en bas
-    const y = (this.viewMode === 'side' || this.viewMode === 'back')
+    const y = (this.viewMode === 'side' || this.viewMode === 'side-opposite' || this.viewMode === 'back' || this.viewMode === 'front')
       ? (containerHalfHeight - ((posY + itemH) * containerScale))
       : (-containerHalfHeight + (posY * containerScale));
     const width = itemW * containerScale;
@@ -438,11 +438,14 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     // Dimensions
     ctx.font = '12px Arial';
     const dims = container.dimensions;
-    const dimsText = this.viewMode === 'top'
-      ? `${dims.longueur} × ${dims.largeur} cm (Plan)`
-      : this.viewMode === 'side'
-        ? `${dims.longueur} × ${dims.hauteur} cm (Côté)`
-        : `${dims.largeur} × ${dims.hauteur} cm (Arrière)`;
+    const dimsText =
+      this.viewMode === 'top'
+        ? `${dims.longueur} × ${dims.largeur} cm (Plan)`
+        : this.viewMode === 'bottom'
+          ? `${dims.longueur} × ${dims.largeur} cm (Dessous)`
+          : (this.viewMode === 'side' || this.viewMode === 'side-opposite')
+            ? `${dims.longueur} × ${dims.hauteur} cm (${this.viewMode === 'side' ? 'Côté' : 'Côté opposé'})`
+            : `${dims.largeur} × ${dims.hauteur} cm (${this.viewMode === 'back' ? 'Arrière' : 'Avant'})`;
 
     ctx.fillText(dimsText, 0, -containerHeight / 2 - 5);
   }
@@ -458,7 +461,13 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     this.ctx.font = '12px Arial';
     this.ctx.textAlign = 'left';
     this.ctx.fillText(`Zoom: ${Math.round(this.scale * 100)}%`, 20, 30);
-    const vueLabel = this.viewMode === 'top' ? 'Plan' : this.viewMode === 'side' ? 'Côté' : 'Arrière';
+    const vueLabel =
+      this.viewMode === 'top' ? 'Plan'
+      : this.viewMode === 'bottom' ? 'Dessous'
+      : this.viewMode === 'side' ? 'Côté'
+      : this.viewMode === 'side-opposite' ? 'Côté opposé'
+      : this.viewMode === 'front' ? 'Avant'
+      : 'Arrière';
     this.ctx.fillText(`Vue: ${vueLabel}`, 20, 45);
   }
 
@@ -498,7 +507,7 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // Changer de mode de vue 2D
-  setViewMode(mode: 'top' | 'side' | 'back'): void {
+  setViewMode(mode: 'top' | 'bottom' | 'side' | 'side-opposite' | 'front' | 'back'): void {
     if (this.viewMode !== mode) {
       this.viewMode = mode;
       // Vue changée => reconstruire le calque statique
@@ -508,25 +517,37 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private getProjectedContainerSize(container: VisualizationContainer): { width: number, height: number } {
-    if (this.viewMode === 'top') {
+    if (this.viewMode === 'top' || this.viewMode === 'bottom') {
       return { width: container.dimensions.longueur, height: container.dimensions.largeur };
-    } else if (this.viewMode === 'side') {
+    } else if (this.viewMode === 'side' || this.viewMode === 'side-opposite') {
       return { width: container.dimensions.longueur, height: container.dimensions.hauteur };
     }
-    // back
+    // back / front
     return { width: container.dimensions.largeur, height: container.dimensions.hauteur };
   }
 
   // Mesure de profondeur selon la vue pour trier du plus éloigné au plus proche
   private getDepth(item: VisualizationItem): number {
     if (this.viewMode === 'top') {
-      // Caméra au-dessus regardant vers -Z : profondeur = z du haut de l'item
+      // Caméra au-dessus regardant vers -Z : profondeur = z du haut de l'item (plus grand = plus proche)
       return item.position.z + item.dimensions.hauteur;
+    } else if (this.viewMode === 'bottom') {
+      // Caméra en dessous regardant vers +Z : profondeur = distance au dessous (plus petit = plus loin)
+      const containerH = this.scene?.containers[this.scene.currentContainerIndex]?.dimensions.hauteur || 0;
+      return containerH - item.position.z;
     } else if (this.viewMode === 'side') {
       // Vue de côté (X/Z), profondeur le long de Y (largeur)
       return item.position.y + item.dimensions.largeur;
+    } else if (this.viewMode === 'side-opposite') {
+      // Vue côté opposé, profondeur inversée le long de Y
+      const containerW = this.scene?.containers[this.scene.currentContainerIndex]?.dimensions.largeur || 0;
+      return containerW - item.position.y;
+    } else if (this.viewMode === 'back') {
+      // Vue arrière (Y/Z), profondeur le long de X (longueur)
+      return item.position.x + item.dimensions.longueur;
     }
-    // Vue arrière (Y/Z), profondeur le long de X (longueur)
-    return item.position.x + item.dimensions.longueur;
+    // Vue avant, profondeur inversée le long de X
+    const containerL = this.scene?.containers[this.scene.currentContainerIndex]?.dimensions.longueur || 0;
+    return containerL - item.position.x;
   }
 }
