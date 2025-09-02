@@ -1,0 +1,83 @@
+<!-- src/app/features/visualization/components/panel/panel.component.html -->
+<div class="panel">
+  <div class="panel-header">
+    <h3>Détails</h3>
+  </div>
+  
+  <div class="panel-content">
+    <!-- Message si aucun container -->
+    <div class="no-data" *ngIf="!hasContainers()">
+      <p>Aucun conteneur à afficher</p>
+    </div>
+
+    <!-- Contenu si containers disponibles -->
+    <ng-container *ngIf="hasContainers()">
+      
+      <!-- Informations du conteneur -->
+      <div class="container-info" *ngIf="getCurrentContainer() as container">
+        <h4>Conteneur actuel</h4>
+        <div class="info-item">
+          <span class="label">Type:</span>
+          <span class="value">{{ container.type || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Catégorie:</span>
+          <span class="value">{{ container.categorie || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Items:</span>
+          <span class="value">{{ getCurrentContainerItemCount() }}</span>
+        </div>
+        <div class="info-item" *ngIf="container.utilization">
+          <span class="label">Volume utilisé:</span>
+          <span class="value">{{ container.utilization.volume | number:'1.0-0' }}%</span>
+        </div>
+        <div class="info-item" *ngIf="container.utilization">
+          <span class="label">Poids utilisé:</span>
+          <span class="value">{{ container.utilization.poids | number:'1.0-0' }}%</span>
+        </div>
+        <div class="info-item" *ngIf="container.dimensions">
+          <span class="label">Dimensions:</span>
+          <span class="value">{{ container.dimensions.longueur }}×{{ container.dimensions.largeur }}×{{ container.dimensions.hauteur }}cm</span>
+        </div>
+      </div>
+
+      <!-- Liste des items -->
+      <div class="items-list" *ngIf="getCurrentContainer() as container">
+        <h4>Items ({{ container.items.length }})</h4>
+        
+        <div class="no-items" *ngIf="!container.items || container.items.length === 0">
+          <p>Aucun item dans ce conteneur</p>
+        </div>
+        
+        <div class="item" 
+             *ngFor="let item of container.items; trackBy: trackByItemId" 
+             (click)="selectItem(item)"
+             [class.selected]="scene?.selectedItem?.id === item.id">
+          
+          <div class="item-color" [style.background]="item.color || '#999999'"></div>
+          
+          <div class="item-info">
+            <div class="item-type">{{ item.type || 'Item' }}</div>
+            
+            <div class="item-details">
+              {{ item.dimensions.longueur || 0 }}×{{ item.dimensions.largeur || 0 }}×{{ item.dimensions.hauteur || 0 }}cm
+              <span *ngIf="item.poids"> • {{ item.poids }}kg</span>
+              <span *ngIf="item.quantite && item.quantite > 1"> • Qté: {{ item.quantite }}</span>
+            </div>
+            
+            <div class="item-flags" *ngIf="item.fragile || (item.gerbable === false)">
+              <span class="flag fragile" *ngIf="item.fragile">Fragile</span>
+              <span class="flag non-stackable" *ngIf="item.gerbable === false">Non empilable</span>
+            </div>
+            
+            <div class="item-destination" *ngIf="item.nomDestinataire">
+              <small>{{ item.nomDestinataire }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </ng-container>
+  </div>
+</div>

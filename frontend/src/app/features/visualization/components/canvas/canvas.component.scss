@@ -1,0 +1,207 @@
+// src/app/features/visualization/components/canvas/canvas.component.scss
+
+.canvas-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  overflow: hidden;
+
+  .visualization-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    background: transparent;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
+
+.canvas-overlays {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 10;
+
+  > * {
+    pointer-events: auto;
+  }
+}
+
+// ===== LÉGENDE =====
+.legend {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8125rem;
+    color: #4b5563;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .legend-marker {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 2px;
+      flex-shrink: 0;
+
+      &.fragile {
+        background: #ef4444;
+        position: relative;
+
+        &::after {
+          content: '!';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: white;
+          font-weight: bold;
+          font-size: 0.625rem;
+          line-height: 1;
+        }
+      }
+
+      &.non-stackable {
+        background: transparent;
+        border: 2px dashed #f59e0b;
+      }
+    }
+  }
+}
+
+// ===== CONTRÔLES DE ZOOM =====
+.zoom-controls {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  .zoom-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    background: transparent;
+    color: #374151;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+
+    &:active {
+      background: rgba(59, 130, 246, 0.2);
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+// ===== INSTRUCTIONS =====
+.instructions {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+  p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 1rem;
+  }
+}
+
+// ===== RESPONSIVE =====
+@media (max-width: 768px) {
+  .legend {
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.75rem;
+    font-size: 0.75rem;
+
+    h4 {
+      font-size: 0.8125rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .legend-item {
+      margin-bottom: 0.375rem;
+      font-size: 0.75rem;
+
+      .legend-marker {
+        width: 0.875rem;
+        height: 0.875rem;
+      }
+    }
+  }
+
+  .zoom-controls {
+    bottom: 0.5rem;
+    left: 0.5rem;
+
+    .zoom-btn {
+      width: 2.25rem;
+      height: 2.25rem;
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+
+  .instructions {
+    padding: 1.5rem;
+
+    p {
+      font-size: 0.875rem;
+    }
+  }
+}

@@ -8,6 +8,7 @@ import { AuthService } from './core/services/auth.service';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { TestLoggerComponent } from './test-logger.component';
+import { VisualizationComponent } from './features/visualization/visualization.component';
 
 
 export const routes: Routes = [
@@ -27,7 +28,7 @@ export const routes: Routes = [
           redirectToDashboard: () => {
             const authService = inject(AuthService);
             const router = inject(Router);
-            
+
             if (authService.isAdmin()) {
               router.navigate(['/dashboard/admin']);
             } else {
@@ -46,19 +47,31 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-  path: '',
-  component: LandingPageComponent,
-  pathMatch: 'full'
-},
-{
-  path: 'test-logger',
-  component: TestLoggerComponent
-},
- {
-  path: 'simulation',
-  component: SimulationComponent,
-  canActivate: [authGuard] 
-},
+    path: '',
+    component: LandingPageComponent,
+    pathMatch: 'full'
+  },
+  {
+    path: 'test-logger',
+    component: TestLoggerComponent
+  },
+  {
+    path: 'simulation',
+    component: SimulationComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'visualization/:simulationId',
+    component: VisualizationComponent,
+    canActivate: [authGuard]
+  },
+
+  // ✅ Route alternative pour visualiser directement sans ID
+  {
+    path: 'visualization',
+    component: VisualizationComponent,
+    canActivate: [authGuard]
+  },
 
   {
     path: '**',
