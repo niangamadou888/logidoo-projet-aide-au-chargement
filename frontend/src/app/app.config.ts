@@ -19,8 +19,7 @@ import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { GlobalErrorHandlerService } from './core/services/error-handler.service';
 // Removed ngx-logger integration to avoid missing dependency issues
-
-
+import {MatStepperModule} from '@angular/material/stepper';
 
 function initializeAuth(authService: AuthService) {
   return () => {
@@ -50,7 +49,9 @@ export const appConfig: ApplicationConfig = {
       MatCardModule,
       FormsModule,
       CommonModule,
-      HttpClientModule
+      HttpClientModule,
+      MatStepperModule
+      
     ),
     { 
       provide: HTTP_INTERCEPTORS, 

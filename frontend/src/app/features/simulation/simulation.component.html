@@ -244,7 +244,7 @@
           <div *ngFor="let c of containers" class="conteneur-card" 
                [class.selected]="c._id === selectedContainerId"
                [class.optimal]="optimalContainer && c._id === optimalContainer.containerId"
-               (click)="selectContainer(c._id)">
+               (click)="selectContainer(c._id!)">
             <img *ngIf="c.images && c.images.length > 0"
                  [src]="'https://logidoo.onrender.com' + c.images[0]"
                  [alt]="c.type" width="100">

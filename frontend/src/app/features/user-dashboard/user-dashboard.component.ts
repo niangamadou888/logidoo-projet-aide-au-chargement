@@ -23,14 +23,35 @@ import { User } from '../../core/models/user.model';
     MatListModule,
     MatCardModule,
     MatMenuModule,
-    RouterModule
-  ],
+    RouterModule,
+    
+],
   templateUrl: './user-dashboard.component.html',
   styleUrl: './user-dashboard.component.scss'
 })
 export class UserDashboardComponent implements OnInit {
   currentUser: User | null = null;
-  
+//  users = [
+//     { rang: 1, name: 'Modou', count: 78 },
+//     { rang: 2, name: 'Fatou', count: 65 },
+//     { rang: 3, name: 'Codou', count: 52 }
+//   ];
+
+  //  simulations = [
+  //   { label: "Aujourd'hui", value: 126 },
+  //   { label: "Semaine", value: 135 },
+  //   { label: "Mois", value: 425 }
+  // ];
+
+
+  //  containers = [
+  //   { label: "Conteneur 20’", value: "37%" },
+  //   { label: "Conteneur 40’", value: "31%" },
+  //   { label: "Camion", value: "23%" },
+  //   { label: "Autres", value: "9%" }
+  // ];
+ // Données dynamique
+//users :UserActive[]= [];
   // User dashboard statistics
   userStats = {
     totalSimulations: 28,
@@ -46,14 +67,19 @@ export class UserDashboardComponent implements OnInit {
     ]
   };
   
+
+  
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    
   ) {}
   
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
+     
+    
     });
   }
   
