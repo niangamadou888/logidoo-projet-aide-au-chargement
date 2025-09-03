@@ -849,3 +849,41 @@
     }
   }
 }
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.5rem 0;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  background: #f3f4f6; /* gris clair */
+  border: 1px solid #d1d5db;
+  color: #374151; /* gris foncé */
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #e5e7eb;
+  transform: translateY(-2px);
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination button.active {
+  background: #f97316;   /* orange vif */
+  color: white;
+  border-color: #f97316;
+  font-weight: 600;
+}
+

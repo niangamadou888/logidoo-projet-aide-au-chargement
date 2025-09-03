@@ -179,81 +179,107 @@ export class VisualizationService {
   private calculateItemPositions(container: VisualizationContainer): void {
     if (!container.items?.length) return;
 
-    console.log('📦 Calcul des positions pour container:', container.dimensions);
+    console.log('📦 Calcul des positions (optimisé, anti-collision) pour container:', container.dimensions);
 
-    const margin = 20;
-    const spacing = 5;
-    const maxX = container.dimensions.longueur - margin;
-    const maxY = container.dimensions.largeur - margin;
-    const maxZ = container.dimensions.hauteur - margin;
+    const containerDims: Dimensions3D = { ...container.dimensions };
 
-    let currentX = margin;
-    let currentY = margin;
-    let currentZ = margin;
-    let currentRowMaxWidth = 0;
-    let currentLayerMaxHeight = 0;
+    // 1) Ordonner les items pour limiter les trous (grands d'abord, fragiles en dernier)
+    const items = [...container.items];
+    items.sort((a, b) => {
+      const va = a.dimensions.longueur * a.dimensions.largeur * a.dimensions.hauteur;
+      const vb = b.dimensions.longueur * b.dimensions.largeur * b.dimensions.hauteur;
+      // Fragiles à la fin, sinon volume décroissant
+      if ((a.fragile ? 1 : 0) !== (b.fragile ? 1 : 0)) return (a.fragile ? 1 : 0) - (b.fragile ? 1 : 0);
+      return vb - va;
+    });
 
-    const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+    const placed: Array<{ position: Position3D; dimensions: Dimensions3D; ref: string }> = [];
 
-    container.items.forEach((item, index) => {
-      const { longueur, largeur, hauteur } = item.dimensions;
+    // Générer toutes les orientations possibles (6 permutations)
+    const orientations = (d: Dimensions3D): Dimensions3D[] => [
+      { longueur: d.longueur, largeur: d.largeur, hauteur: d.hauteur },
+      { longueur: d.longueur, largeur: d.hauteur, hauteur: d.largeur },
+      { longueur: d.largeur, largeur: d.longueur, hauteur: d.hauteur },
+      { longueur: d.largeur, largeur: d.hauteur, hauteur: d.longueur },
+      { longueur: d.hauteur, largeur: d.longueur, hauteur: d.largeur },
+      { longueur: d.hauteur, largeur: d.largeur, hauteur: d.longueur }
+    ];
 
-      // Vérification CORRECTE : est-ce que l'item entier rentre ?
-      if (currentX + longueur > maxX) {
-        console.log(`⬅️ Item ${index + 1}: Fin de ligne (${currentX} + ${longueur} > ${maxX})`);
+    // 2) Placement avec grille fine et anti-collision
+    for (const item of items) {
+      const isFragile = !!item.fragile;
+      let placedOK = false;
+      let chosenDims: Dimensions3D | null = null;
+      let chosenPos: Position3D | null = null;
 
-        currentX = margin;
-        currentY += currentRowMaxWidth + spacing;
-        currentRowMaxWidth = 0;
+      // Essayer plusieurs orientations pour trouver un fit serré
+      for (const orient of orientations(item.dimensions)) {
+        // Filtrer si l'orientation ne rentre pas géométriquement
+        if (
+          orient.longueur > containerDims.longueur ||
+          orient.largeur > containerDims.largeur ||
+          orient.hauteur > containerDims.hauteur
+        ) {
+          continue;
+        }
 
-        if (currentY + largeur > maxY) {
-          console.log(`⬆️ Item ${index + 1}: Fin de couche (${currentY} + ${largeur} > ${maxY})`);
+        // Recherche avec pas fin (5cm) pour combler les trous
+        const pos = GeometryUtils.findBestPosition(
+          containerDims,
+          orient,
+          placed.map(p => ({ position: p.position, dimensions: p.dimensions })),
+          isFragile,
+          5
+        );
 
-          currentY = margin;
-          currentZ += currentLayerMaxHeight + spacing;
-          currentLayerMaxHeight = 0;
+        if (pos) {
+          // Glisser au plus près des parois / colis pour limiter les trous au milieu
+          const pushed = GeometryUtils.pushToWalls(
+            pos,
+            orient,
+            containerDims,
+            placed.map(p => ({ position: p.position, dimensions: p.dimensions })),
+            2
+          );
 
-          if (currentZ + hauteur > maxZ) {
-            console.log(`❌ Item ${index + 1}: Ne rentre pas (${currentZ} + ${hauteur} > ${maxZ})`);
-            item.position = { x: margin, y: margin, z: margin };
-            item.opacity = 0.3;
-            return;
-          }
+          chosenDims = orient;
+          chosenPos = pushed;
+          placedOK = true;
+          break;
         }
       }
 
-      // Position cible avant clamp
-      let targetX = currentX;
-      let targetY = currentY;
-      let targetZ = currentZ;
+      if (!placedOK) {
+        // Marquer comme non placé visuellement (semi-transparent), mais éviter chevauchement
+        item.opacity = 0.3;
+        item.position = { x: 0, y: 0, z: 0 };
+        continue;
+      }
 
-      // Convertir en centres et appliquer le clamp dans les limites du conteneur
-      const halfItemX = longueur / 2;
-      const halfItemY = largeur / 2;
-      const halfItemZ = hauteur / 2;
-
-      const containerLen = container.dimensions.longueur;
-      const containerWid = container.dimensions.largeur;
-      const containerHei = container.dimensions.hauteur;
-
-      const centerX = clamp(targetX + halfItemX, halfItemX, containerLen - halfItemX);
-      const centerY = clamp(targetY + halfItemY, halfItemY, containerWid - halfItemY);
-      const centerZ = clamp(targetZ + halfItemZ, halfItemZ, containerHei - halfItemZ);
-
-      // Revenir aux positions d'origine (coin) après clamp des centres
-      item.position = {
-        x: centerX - halfItemX,
-        y: centerY - halfItemY,
-        z: centerZ - halfItemZ
-      };
+      // Appliquer position + dimensions retenues
+      item.position = chosenPos!;
+      // Mettre à jour les dimensions si rotation appliquée
+      item.dimensions = chosenDims!;
       item.opacity = 1.0;
 
-      console.log(`✅ Item ${index + 1}: placé à x=${currentX}, y=${currentY}, z=${currentZ} (limite: ${maxX}, ${maxY}, ${maxZ})`);
+      placed.push({ position: chosenPos!, dimensions: chosenDims!, ref: item.id });
+    }
 
-      currentX += longueur + spacing;
-      currentRowMaxWidth = Math.max(currentRowMaxWidth, largeur);
-      currentLayerMaxHeight = Math.max(currentLayerMaxHeight, hauteur);
-    });
+    // 3) Sécurité: vérifier qu'aucun colis ne se chevauche (log + ajustement léger)
+    for (let i = 0; i < placed.length; i++) {
+      for (let j = i + 1; j < placed.length; j++) {
+        const A = placed[i];
+        const B = placed[j];
+        if (GeometryUtils.isOverlapping(A.position, A.dimensions, B.position, B.dimensions)) {
+          // Décaler très légèrement B sur X si collision détectée
+          const nudge = 1;
+          const tryPos: Position3D = { ...B.position, x: Math.min(B.position.x + nudge, containerDims.longueur - B.dimensions.longueur) };
+          if (!GeometryUtils.collides(tryPos, B.dimensions, placed.filter((_, k) => k !== j))) {
+            B.position = tryPos;
+          }
+        }
+      }
+    }
   }
 
   /**
