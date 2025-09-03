@@ -1,0 +1,82 @@
+<div class="admin-dashboard-container">
+  <mat-toolbar color="primary" class="toolbar">
+    <div class="logo-section">
+      <img src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo" />
+      <span class="app-title">Admin - Conteneurs</span>
+    </div>
+    <div class="toolbar-spacer"></div>
+    <div class="user-section" *ngIf="currentUser">
+      <span class="username">{{ currentUser.username }}</span>
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <a mat-menu-item [routerLink]="['/dashboard/admin']">
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+        </a>
+      </mat-menu>
+    </div>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" opened class="sidenav">
+      <mat-nav-list>
+        <a mat-list-item [routerLink]="['/dashboard/admin']" routerLinkActive="active">
+          <mat-icon matListItemIcon>dashboard</mat-icon>
+          <span matListItemTitle>Dashboard</span>
+        </a>
+        <a mat-list-item [routerLink]="['/dashboard/admin/conteneurs']" routerLinkActive="active">
+          <mat-icon matListItemIcon>inventory_2</mat-icon>
+          <span matListItemTitle>Containers</span>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="sidenav-content">
+      <div class="conteneurs-page">
+        <div class="page-header">
+          <h1>Gestion des contenants</h1>
+          <span class="spacer"></span>
+          <button mat-stroked-button (click)="fetchContenants()">
+            <mat-icon>refresh</mat-icon>
+            Rafraîchir
+          </button>
+        </div>
+
+        <div class="contenants-section">
+          <h2>Contenants existants</h2>
+          <div *ngIf="loading" class="loading">Chargement...</div>
+          <div *ngIf="!loading && contenants.length === 0" class="empty">Aucun contenant pour le moment.</div>
+
+          <div class="contenants-grid" *ngIf="!loading && contenants.length > 0">
+            <div class="conteneur-card" *ngFor="let c of contenants">
+              <img *ngIf="c.images && c.images.length > 0" [src]="'https://logidoo.onrender.com' + c.images[0]" [alt]="c.type" />
+              <div class="conteneur-header">
+                <strong>{{ c.type }}</strong>
+                <span class="badge" [class.camion]="c.categorie === 'camion'">{{ c.categorie | titlecase }}</span>
+              </div>
+              <div class="conteneur-body">
+                <div class="dim">{{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm</div>
+                <div class="vol">Volume: {{ c.volume ?? ((c.dimensions.longueur*c.dimensions.largeur*c.dimensions.hauteur)/1000000) | number:'1.2-2' }} m³</div>
+                <div class="cap">Capacité: {{ c.capacitePoids }} kg</div>
+                <div class="status" *ngIf="c.disponible !== undefined">Statut: {{ c.disponible ? 'Disponible' : 'Indisponible' }}</div>
+              </div>
+              <div class="card-actions">
+                <button mat-stroked-button color="warn" (click)="deleteContenant(c._id)">
+                  <mat-icon>delete</mat-icon>
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ajout-section">
+          <h2>Ajouter un contenant</h2>
+          <app-ajoute-conteneur></app-ajoute-conteneur>
+        </div>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

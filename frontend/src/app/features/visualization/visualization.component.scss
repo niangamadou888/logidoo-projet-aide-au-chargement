@@ -1,0 +1,376 @@
+// src/app/features/visualization/visualization.component.scss
+
+.visualization-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  &.sidebar-collapsed {
+    .sidebar {
+      transform: translateX(100%);
+    }
+    .main-interface {
+      padding-right: 0;
+    }
+  }
+}
+
+// ===== HEADER =====
+.visualization-header {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .header-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}
+
+.simulation-info {
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    color: #1e293b;
+  }
+
+  .simulation-meta {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+.container-navigation {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f1f5f9;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+
+  .container-indicator {
+    font-weight: 500;
+    color: #475569;
+    min-width: 3rem;
+    text-align: center;
+  }
+}
+
+// ===== BOUTONS =====
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+
+  &:hover {
+    background: #f1f5f9;
+  }
+
+  &.btn-primary {
+    background: #f97316;
+    color: white;
+    border-color: #f97316;
+
+    &:hover {
+      background: #ea580c;
+      border-color: #ea580c;
+    }
+  }
+
+  &.btn-icon {
+    padding: 0.5rem;
+    min-width: 2.5rem;
+    justify-content: center;
+  }
+
+  &.btn-toggle {
+    background: #e2e8f0;
+    color: #475569;
+
+    &.active {
+      background: #f97316;
+      color: white;
+    }
+  }
+}
+
+// ===== ÉTATS DE CHARGEMENT ET ERREUR =====
+.loading-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+
+  .loading-spinner {
+    text-align: center;
+
+    .spinner {
+      width: 3rem;
+      height: 3rem;
+      border: 3px solid #e2e8f0;
+      border-top: 3px solid #f97316;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    p {
+      color: #64748b;
+      font-size: 1rem;
+    }
+  }
+}
+
+.error-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+
+  .error-message {
+    text-align: center;
+    max-width: 400px;
+
+    svg {
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      color: #dc2626;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #64748b;
+      margin-bottom: 1.5rem;
+    }
+  }
+}
+
+// ===== INTERFACE PRINCIPALE =====
+.main-interface {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-right: 320px; // Espace pour la sidebar
+  transition: padding-right 0.3s ease;
+  position: relative;
+}
+
+.toolbar-container {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.75rem 1.5rem;
+}
+
+.visualization-area {
+  flex: 1;
+  position: relative;
+  background: #f8fafc;
+
+  .viewer-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+}
+
+.view-indicators {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .view-mode-badge {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+
+    &[data-mode="2d"] {
+      background: rgba(59, 130, 246, 0.9);
+    }
+
+    &[data-mode="3d"] {
+      background: rgba(249, 115, 22, 0.9);
+    }
+  }
+
+  .zoom-indicator {
+    background: rgba(255, 255, 255, 0.95);
+    color: #374151;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    border: 1px solid #e5e7eb;
+  }
+}
+
+// ===== SIDEBAR =====
+.sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100%;
+  background: white;
+  border-left: 1px solid #e2e8f0;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+  z-index: 50;
+  overflow-y: auto;
+
+  &.collapsed {
+    transform: translateX(100%);
+  }
+}
+
+// ===== FOOTER =====
+.visualization-footer {
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 1rem 1.5rem;
+
+  .stats-quick {
+    display: flex;
+    gap: 2rem;
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+
+      .stat-label {
+        font-size: 0.75rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .stat-value {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1e293b;
+      }
+    }
+  }
+}
+
+// ===== ANIMATIONS =====
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// ===== RESPONSIVE =====
+@media (max-width: 1024px) {
+  .visualization-container {
+    &:not(.sidebar-collapsed) {
+      .main-interface {
+        padding-right: 0;
+      }
+
+      .sidebar {
+        transform: translateX(100%);
+      }
+    }
+  }
+
+  .container-navigation {
+    .container-indicator {
+      display: none;
+    }
+  }
+
+  .header-center {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .visualization-header {
+    padding: 0.75rem 1rem;
+
+    .simulation-info h1 {
+      font-size: 1.25rem;
+    }
+
+    .header-right {
+      gap: 0.5rem;
+    }
+
+    .btn {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8125rem;
+
+      &.btn-icon {
+        padding: 0.375rem;
+      }
+    }
+  }
+
+  .toolbar-container {
+    padding: 0.5rem 1rem;
+  }
+
+  .view-indicators {
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .visualization-footer {
+    padding: 0.75rem 1rem;
+
+    .stats-quick {
+      gap: 1rem;
+
+      .stat-item .stat-value {
+        font-size: 1rem;
+      }
+    }
+  }
+}

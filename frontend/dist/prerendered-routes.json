@@ -1,0 +1,16 @@
+{
+  "routes": {
+    "/": {},
+    "/auth": {},
+    "/auth/login": {},
+    "/auth/register": {},
+    "/container": {},
+    "/dashboard": {},
+    "/dashboard/admin": {},
+    "/dashboard/user": {},
+    "/simulation": {},
+    "/test-logger": {},
+    "/unauthorized": {},
+    "/visualization": {}
+  }
+}
