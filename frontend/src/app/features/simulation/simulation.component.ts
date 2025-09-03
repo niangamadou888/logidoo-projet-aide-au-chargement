@@ -79,7 +79,7 @@ export class SimulationComponent implements OnInit {
       description: ['']
     });
 
-    this.nouvelleSimulation();
+    // Ne pas réinitialiser ici; on restaure potentiellement depuis l'état/navigation
   }
 
   telechargerModele(): void {
@@ -565,6 +565,31 @@ export class SimulationComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Restaurer l'état depuis l'historique ou la session, sinon initialiser
+    const stateData = (window.history && (window.history.state as any))?.simulationData;
+    let restored: any = stateData;
+
+    if (!restored) {
+      try {
+        const session = sessionStorage.getItem('simulationData');
+        restored = session ? JSON.parse(session) : null;
+      } catch (e) {
+        restored = null;
+      }
+    }
+
+    if (restored) {
+      // Restaure les données de simulation
+      this.listeColis = Array.isArray(restored.colis) ? restored.colis : [];
+      this.simulationResultats = restored.resultats || null;
+      this.simulationForm.patchValue({
+        nom: restored.nom || '',
+        description: restored.description || ''
+      });
+    } else {
+      this.nouvelleSimulation();
+    }
+
     this.loadConteneurs();
   }
 
