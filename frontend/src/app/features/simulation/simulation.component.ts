@@ -566,21 +566,11 @@ export class SimulationComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Restaurer l'état depuis l'historique ou la session, sinon initialiser
-    const stateData = (window.history && (window.history.state as any))?.simulationData;
-    let restored: any = stateData;
-
-    if (!restored) {
-      try {
-        const session = sessionStorage.getItem('simulationData');
-        restored = session ? JSON.parse(session) : null;
-      } catch (e) {
-        restored = null;
-      }
-    }
+    // Restaurer uniquement si on revient explicitement de la visualisation
+    // via navigation d'état (goBackToSimulation). Sinon, démarrer proprement.
+    const restored = (window.history && (window.history.state as any))?.simulationData;
 
     if (restored) {
-      // Restaure les données de simulation
       this.listeColis = Array.isArray(restored.colis) ? restored.colis : [];
       this.simulationResultats = restored.resultats || null;
       this.simulationForm.patchValue({
