@@ -16,3 +16,7 @@
 2025-09-02 02:38:47 [INFO]: Serveur backend démarré sur le port 3000 {"port":"3000","env":"development","nodeVersion":"v22.15.0"}
 2025-09-02 02:45:53 [INFO]: Serveur backend démarré sur le port 3000 {"port":"3000","env":"development","nodeVersion":"v22.15.0"}
 2025-09-02 03:13:13 [INFO]: Serveur backend démarré sur le port 3000 {"port":"3000","env":"development","nodeVersion":"v22.15.0"}
+2025-09-02 23:16:06 [INFO]: Serveur backend démarré sur le port 3000 {"port":"3000","env":"development","nodeVersion":"v22.15.0"}
+2025-09-02 23:16:08 [WARN]: Route lente détectée: GET /categories - 1453.25ms 
+2025-09-02 23:49:55 [ERROR]: [Frontend] Erreur HTTP 401: POST https://logidoo.onrender.com/api/auth/login {"0":{"url":"https://logidoo.onrender.com/api/auth/login","method":"POST","status":401,"statusText":"Unknown Error","error":{"success":false,"message":"Invalid credentials"},"message":"Http failure response for https://logidoo.onrender.com/api/auth/login: 401 ","duration":"1524ms"},"ip":"::1","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
+2025-09-02 23:49:55 [WARN]: [Frontend] Performance: HTTP - POST https://logidoo.onrender.com/api/auth/login a pris 1524ms {"0":{"component":"HTTP","action":"POST https://logidoo.onrender.com/api/auth/login","duration":1524,"timestamp":"2025-09-03T11:49:55.499Z"},"ip":"::1","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"}
