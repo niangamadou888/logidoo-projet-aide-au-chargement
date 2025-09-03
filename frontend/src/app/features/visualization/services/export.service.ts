@@ -1,5 +1,5 @@
 // src/app/features/visualization/services/export.service.ts
-
+import jsPDF from 'jspdf';
 import { Injectable } from '@angular/core';
 import { VisualizationScene, VisualizationContainer } from '../models/visualization.model';
 
@@ -59,7 +59,7 @@ export class ExportService {
   async exportToPDF(scene: VisualizationScene, canvasDataUrl?: string): Promise<void> {
     try {
       // Dynamically import jsPDF to avoid bundle size issues
-      const { jsPDF } = await import('jspdf');
+    
       
       const pdf = new jsPDF({
         orientation: 'portrait',
