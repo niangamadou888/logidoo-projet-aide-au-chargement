@@ -126,7 +126,20 @@ async function deleteContenant(id){
     return deleted;
 }
 
+/**
+ * Récupérer les catégories uniques de contenants
+ */
+async function getCategories() {
+  try {
+    const categories = await Contenant.distinct('categorie'); 
+    return categories; 
+  } catch (error) {
+    console.error("Erreur récupération catégories:", error);
+    throw error;
+  }
+}
 module.exports = {
+  getCategories,
   suggererContenants,
   suggererCamions,
   suggererConteneurs,

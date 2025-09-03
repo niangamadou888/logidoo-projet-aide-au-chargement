@@ -2,11 +2,18 @@ import { Routes } from '@angular/router';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { userRoleGuard } from '../core/guards/user-role.guard';
+import { ConteneursPageComponent } from './conteneurs/conteneurs-page.component';
 
 export const DASHBOARD_ROUTES: Routes = [
   {
     path: 'admin',
     component: AdminDashboardComponent,
+    canActivate: [userRoleGuard],
+    data: { requiredRole: 'admin' }
+  },
+  {
+    path: 'admin/conteneurs',
+    component: ConteneursPageComponent,
     canActivate: [userRoleGuard],
     data: { requiredRole: 'admin' }
   },

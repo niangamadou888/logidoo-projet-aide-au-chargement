@@ -24,7 +24,7 @@
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #sidenav mode="side" opened class="sidenav">
       <mat-nav-list>
-        <a mat-list-item>
+        <a mat-list-item [routerLink]="['/dashboard/admin']" routerLinkActive="active">
           <mat-icon matListItemIcon>dashboard</mat-icon>
           <span matListItemTitle>Dashboard</span>
         </a>
@@ -32,7 +32,7 @@
           <mat-icon matListItemIcon>people</mat-icon>
           <span matListItemTitle>Users</span>
         </a>
-        <a mat-list-item>
+        <a mat-list-item [routerLink]="['/dashboard/admin/conteneurs']" routerLinkActive="active">
           <mat-icon matListItemIcon>inventory_2</mat-icon>
           <span matListItemTitle>Containers</span>
         </a>
@@ -161,9 +161,13 @@
                 </div>
               </mat-card-content>
             </mat-card>
+            
           </div>
         </div>
       </div>
+      
     </mat-sidenav-content>
+   
   </mat-sidenav-container>
+   
 </div>

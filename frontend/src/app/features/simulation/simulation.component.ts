@@ -151,7 +151,8 @@ export class SimulationComponent implements OnInit {
     this.simulationEnCours = false;
   }
 
-  selectContainer(id: string) {
+  selectContainer(id: string | undefined) {
+    if (!id) return; // Guard against undefined IDs
     // Si c'est le même conteneur déjà sélectionné, ne rien faire
     if (this.selectedContainerId === id) return;
 
@@ -659,5 +660,4 @@ goToPage(page: number) {
   if (page < 1 || page > this.totalPages) return;
   this.currentPage = page;
 }
-
 }

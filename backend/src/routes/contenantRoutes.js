@@ -14,4 +14,5 @@ router.post("/suggestion/conteneurs", contenantController.suggestionConteneurs);
 router.get("/",contenantController.getContenants)
 router.put("/:id",upload.single("image"),contenantController.updateContenant)
 router.delete("/:id",contenantController.deleteContenant);
+router.get('/categories', contenantController.getCategories);
 module.exports = router;

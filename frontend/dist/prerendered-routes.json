@@ -4,6 +4,7 @@
     "/auth": {},
     "/auth/login": {},
     "/auth/register": {},
+    "/container": {},
     "/dashboard": {},
     "/dashboard/admin": {},
     "/dashboard/user": {},

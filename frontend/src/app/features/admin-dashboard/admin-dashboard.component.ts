@@ -23,8 +23,8 @@ import { User } from '../../core/models/user.model';
     MatListModule,
     MatCardModule,
     MatMenuModule,
-    RouterModule
-  ],
+    RouterModule,
+],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss'
 })
