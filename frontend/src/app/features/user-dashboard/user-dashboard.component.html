@@ -29,17 +29,13 @@
           <mat-icon matListItemIcon>dashboard</mat-icon>
           <span matListItemTitle>Dashboard</span>
         </a>
-        <a mat-list-item>
-          <mat-icon matListItemIcon>inventory_2</mat-icon>
-          <span matListItemTitle>My Projects</span>
-        </a>
         <a mat-list-item routerLink="/simulation">
           <mat-icon matListItemIcon>add_box</mat-icon>
           <span matListItemTitle>New Simulation</span>
         </a>
          
         
-        <a mat-list-item>
+        <a mat-list-item routerLink="/history">
           <mat-icon matListItemIcon>history</mat-icon>
           <span matListItemTitle>History</span>
         </a>
@@ -114,7 +110,7 @@
               <table class="simulations-table">
                 <thead>
                   <tr>
-                    <th>ID</th>
+                    <th>Name</th>
                     <th>Date</th>
                     <th>Container</th>
                     <th>Fill Rate</th>
@@ -123,19 +119,19 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let sim of userStats.recentSimulations">
-                    <td>{{ sim.id }}</td>
-                    <td>{{ sim.date }}</td>
-                    <td>{{ sim.containerType }}</td>
+                  <tr *ngFor="let sim of recentSimulations">
+                    <td>{{ sim.nom || ('Simulation ' + (sim._id || sim.id)) }}</td>
+                    <td>{{ sim.date | date:'yyyy-MM-dd HH:mm' }}</td>
+                    <td>{{ sim.resultats?.containers?.[0]?.type || '-' }}</td>
                     <td>
                       <div class="fill-rate-bar">
-                        <div class="fill-rate-progress" [style.width.%]="sim.fillRate"></div>
-                        <span>{{ sim.fillRate }}%</span>
+                        <div class="fill-rate-progress" [style.width.%]="(sim.resultats?.stats?.avgVolumeUtilization || 0) * 100"></div>
+                        <span>{{ ((sim.resultats?.stats?.avgVolumeUtilization || 0) * 100) | number:'1.0-0' }}%</span>
                       </div>
                     </td>
-                    <td>{{ sim.packageCount }}</td>
+                    <td>{{ sim.colis?.length || sim.resultats?.stats?.colisCount || 0 }}</td>
                     <td class="action-buttons">
-                      <button mat-icon-button color="primary" title="View">
+                      <button mat-icon-button color="primary" title="View" (click)="loadSimulation(sim)">
                         <mat-icon>visibility</mat-icon>
                       </button>
                       <button mat-icon-button color="primary" title="Export PDF">
@@ -147,7 +143,7 @@
               </table>
             </mat-card-content>
             <mat-card-actions>
-              <button mat-button color="primary">VIEW ALL SIMULATIONS</button>
+              <button mat-button color="primary" routerLink="/history">VIEW ALL SIMULATIONS</button>
             </mat-card-actions>
           </mat-card>
           

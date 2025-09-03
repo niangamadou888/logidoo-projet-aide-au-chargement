@@ -10,6 +10,7 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { TestLoggerComponent } from './test-logger.component';
 import { ConteneursPageComponent } from './features/conteneurs/conteneurs-page.component';
 import { VisualizationComponent } from './features/visualization/visualization.component';
+import { HistoryComponent } from './features/history/history.component';
 
 
 export const routes: Routes = [
@@ -51,6 +52,11 @@ export const routes: Routes = [
   path: '',
   component: LandingPageComponent,
   pathMatch: 'full'
+},
+{
+  path: 'history',
+  component: HistoryComponent,
+  canActivate: [authGuard]
 },
 {
   path: 'test-logger',
