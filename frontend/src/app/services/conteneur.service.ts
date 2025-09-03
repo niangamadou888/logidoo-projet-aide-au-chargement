@@ -68,4 +68,9 @@ export class ConteneurService {
     return this.http.get<string[]>(`${this.apiUrl}/contenants/categories`);
   }
   
+  // Supprimer un contenant par ID
+  deleteContenant(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/contenants/${id}`);
+  }
+  
 }

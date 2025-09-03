@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { userRoleGuard } from '../core/guards/user-role.guard';
-import { AjouteConteneurComponent } from './ajoute-conteneur/ajoute-conteneur.component';
+import { ConteneursPageComponent } from './conteneurs/conteneurs-page.component';
 
 export const DASHBOARD_ROUTES: Routes = [
   {
@@ -12,8 +12,8 @@ export const DASHBOARD_ROUTES: Routes = [
     data: { requiredRole: 'admin' }
   },
   {
-    path: 'admin',
-    component: AjouteConteneurComponent,
+    path: 'admin/conteneurs',
+    component: ConteneursPageComponent,
     canActivate: [userRoleGuard],
     data: { requiredRole: 'admin' }
   },
