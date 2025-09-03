@@ -301,7 +301,7 @@
       </div>
     </div>
     <div class="colis-items">
-      <div *ngFor="let colis of listeColis; let i = index" class="colis-item">
+      <div *ngFor="let colis of pagedColis; let i = index" class="colis-item">
         <div class="colis-info">
           <span class="colis-type">
             <span
@@ -351,6 +351,19 @@
       </button>
     </div>
   </div>
+  <!-- Pagination -->
+<div class="pagination" *ngIf="totalPages > 1">
+  <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">◀</button>
+
+  <button *ngFor="let page of [].constructor(totalPages); let i = index"
+          (click)="goToPage(i + 1)"
+          [class.active]="currentPage === i + 1">
+    {{ i + 1 }}
+  </button>
+
+  <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">▶</button>
+</div>
+
 
   <!-- Résultats de la simulation -->
   <div *ngIf="simulationResultats" class="card simulation-results">

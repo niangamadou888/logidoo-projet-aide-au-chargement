@@ -616,4 +616,23 @@ export class SimulationComponent implements OnInit {
       this.router.navigate(['/visualization']);
     });
   }
+
+  // === PAGINATION ===
+itemsPerPage = 5;            // nombre d’éléments par page
+currentPage = 1;
+
+get totalPages(): number {
+  return Math.ceil(this.listeColis.length / this.itemsPerPage);
+}
+
+get pagedColis(): Colis[] {
+  const start = (this.currentPage - 1) * this.itemsPerPage;
+  return this.listeColis.slice(start, start + this.itemsPerPage);
+}
+
+goToPage(page: number) {
+  if (page < 1 || page > this.totalPages) return;
+  this.currentPage = page;
+}
+
 }
