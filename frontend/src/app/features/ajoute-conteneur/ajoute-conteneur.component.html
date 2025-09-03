@@ -1,0 +1,104 @@
+<mat-card class="add-card" [ngStyle]="{'background-image': 'url(' + backgroundUrl + ')'}">
+  <mat-card-header>
+    <mat-icon class="add">add_circle</mat-icon>
+    <mat-card-title class="ajout">Ajouter un contenant</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+
+  <mat-card-content>
+    <form [formGroup]="contenantForm" (ngSubmit)="submit()" class="form-grid">
+
+      <!-- Colonne gauche -->
+      <div class="col">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Catégorie</mat-label>
+          <mat-select formControlName="categorie">
+            <mat-option *ngFor="let cat of categories" [value]="cat">{{ cat | titlecase }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="contenantForm.get('categorie')?.hasError('required')">
+            Catégorie requise
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Type</mat-label>
+          <input matInput formControlName="type" />
+          <mat-error *ngIf="contenantForm.get('type')?.hasError('required')">
+            Type requis
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Modèle</mat-label>
+          <input matInput formControlName="modele" />
+        </mat-form-field>
+
+        <!-- Checkbox -->
+        <mat-checkbox formControlName="disponible" class="mt-8">
+          Disponible
+        </mat-checkbox>
+
+        <!-- Upload image -->
+        <div class="file-row">
+          <button mat-stroked-button type="button" (click)="fileInput.click()">
+            <mat-icon>upload</mat-icon>&nbsp;Importer une image
+          </button>
+          <span class="file-name" *ngIf="selectedFile">{{ selectedFile }}</span>
+          <input #fileInput type="file" hidden (change)="onFileSelected($event)" />
+        </div>
+      </div>
+
+      <!-- Colonne droite -->
+      <div class="col">
+        <div class="dim-grid">
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Longueur (mm)</mat-label>
+            <input matInput type="number" formControlName="longueur" />
+            <mat-error *ngIf="contenantForm.get('longueur')?.hasError('required')">Requis</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Largeur (mm)</mat-label>
+            <input matInput type="number" formControlName="largeur" />
+            <mat-error *ngIf="contenantForm.get('largeur')?.hasError('required')">Requis</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Hauteur (mm)</mat-label>
+            <input matInput type="number" formControlName="hauteur" />
+            <mat-error *ngIf="contenantForm.get('hauteur')?.hasError('required')">Requis</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Capacité Poids -->
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Capacité poids (kg)</mat-label>
+          <input matInput type="number" formControlName="capacitePoids"  />
+          <mat-error *ngIf="contenantForm.get('capacitePoids')?.hasError('required')">Requis</mat-error>
+        </mat-form-field>
+
+        <!-- Groupe capacité -->
+        <div class="dim-grid">
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Capacité volume (m³)</mat-label>
+            <input matInput type="number" formControlName="capaciteVolume" readonly />
+            <mat-error *ngIf="contenantForm.get('capaciteVolume')?.hasError('min')">≥ 0</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Poids max (kg)</mat-label>
+            <input matInput type="number" formControlName="capacitePoidsMax" readonly/>
+            <mat-error *ngIf="contenantForm.get('capacitePoidsMax')?.hasError('min')">≥ 0</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions align="end" class="actions">
+    <button class="btn" mat-raised-button color="primary" (click)="submit()" [disabled]="contenantForm.invalid">
+      Créer
+    </button>
+  </mat-card-actions>
+</mat-card>

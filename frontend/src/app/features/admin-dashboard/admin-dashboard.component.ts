@@ -10,11 +10,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/models/user.model';
+import { AjouteConteneurComponent } from "../ajoute-conteneur/ajoute-conteneur.component";
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [
+  imports: [AjouteConteneurComponent,
     CommonModule,
     MatToolbarModule,
     MatButtonModule,
@@ -23,8 +24,9 @@ import { User } from '../../core/models/user.model';
     MatListModule,
     MatCardModule,
     MatMenuModule,
-    RouterModule
-  ],
+    RouterModule,
+    AjouteConteneurComponent
+],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss'
 })

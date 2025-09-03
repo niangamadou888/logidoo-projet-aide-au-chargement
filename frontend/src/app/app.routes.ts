@@ -8,6 +8,7 @@ import { AuthService } from './core/services/auth.service';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { TestLoggerComponent } from './test-logger.component';
+import { AjouteConteneurComponent } from './features/ajoute-conteneur/ajoute-conteneur.component';
 import { VisualizationComponent } from './features/visualization/visualization.component';
 
 
@@ -47,19 +48,24 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-    path: '',
-    component: LandingPageComponent,
-    pathMatch: 'full'
-  },
-  {
-    path: 'test-logger',
-    component: TestLoggerComponent
-  },
-  {
-    path: 'simulation',
-    component: SimulationComponent,
-    canActivate: [authGuard]
-  },
+  path: '',
+  component: LandingPageComponent,
+  pathMatch: 'full'
+},
+{
+  path: 'test-logger',
+  component: TestLoggerComponent
+},
+ {
+  path: 'simulation',
+  component: SimulationComponent,
+  canActivate: [authGuard] 
+},
+{
+  path: 'container',
+  component: AjouteConteneurComponent,
+  canActivate: [authGuard] 
+},
   {
     path: 'visualization/:simulationId',
     component: VisualizationComponent,

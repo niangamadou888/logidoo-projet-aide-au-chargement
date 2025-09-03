@@ -1,19 +1,17 @@
 import { Dimensions } from "./dimensions.model";
 
 export interface Contenant {
-    _id: string;
-    categorie: "camion" | "conteneur";
+    _id?: string;  // facultatif lors de la création
+    categorie: string;
     modele?: string;
     type: string;                
     dimensions: Dimensions;
-    volume: number;
+    volume?: number;  // calculé automatiquement côté backend
     capacitePoids: number;
     capacite?: {               
         volume?: number;
         poidsMax?: number;
     };
-    disponible: boolean;
-
-    images: string[];
-
+    disponible?: boolean;  // optionnel, valeur par défaut true
+    images?: string[];     // optionnel
 }
