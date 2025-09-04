@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface SimulationOptions {
@@ -66,14 +67,19 @@ export class SimulationService {
    * Récupérer toutes les simulations d'un utilisateur
    */
   recupererSimulations(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/user`);
+    // Support both {success, simulations} and direct array responses
+    return this.http.get<any>(`${this.apiUrl}/user`).pipe(
+      map((res: any) => res?.simulations ?? res ?? [])
+    );
   }
 
   /**
    * Récupérer une simulation spécifique par ID
    */
   recupererSimulation(id: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      map((res: any) => res?.simulation ?? res)
+    );
   }
 
   /**
@@ -101,8 +107,9 @@ export class SimulationService {
   /**
    * Sauvegarder les résultats d'une simulation
    */
-  sauvegarderResultats(colis: any[], resultats: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/save`, { colis, resultats });
+  sauvegarderResultats(colis: any[], resultats: any, nom?: string, description?: string): Observable<any> {
+    const payload: any = { colis, resultats, nom: nom ?? '', description: description ?? '' };
+    return this.http.post<any>(`${this.apiUrl}/save`, payload);
   }
 
   /**

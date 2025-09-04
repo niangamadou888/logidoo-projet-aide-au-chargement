@@ -1,0 +1,94 @@
+<div class="history-page-container">
+  <mat-toolbar color="primary" class="toolbar">
+    <div class="logo-section">
+      <img src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo">
+      <span class="app-title">Logidoo</span>
+    </div>
+    <div class="toolbar-spacer"></div>
+    <div class="user-section" *ngIf="currentUser">
+      <span class="username">{{ currentUser.username }}</span>
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    </div>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" opened class="sidenav">
+      <mat-nav-list>
+        <a mat-list-item routerLink="/dashboard/user">
+          <mat-icon matListItemIcon>dashboard</mat-icon>
+          <span matListItemTitle>Dashboard</span>
+        </a>
+        <a mat-list-item routerLink="/simulation">
+          <mat-icon matListItemIcon>add_box</mat-icon>
+          <span matListItemTitle>New Simulation</span>
+        </a>
+        <a mat-list-item routerLink="/history">
+          <mat-icon matListItemIcon>history</mat-icon>
+          <span matListItemTitle>History</span>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="sidenav-content">
+      <div class="content-container">
+        <div class="page-header">
+          <h1>Simulation History</h1>
+          <p>Browse and load your saved simulations</p>
+        </div>
+
+        <mat-card class="history-card">
+          <mat-card-content>
+            <div *ngIf="loading">Loading...</div>
+            <div *ngIf="error" class="error">{{ error }}</div>
+
+            <table class="simulations-table" *ngIf="!loading && simulations.length">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Date</th>
+                  <th>Packages</th>
+                  <th>Containers</th>
+                  <th>Fill Rate</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let sim of simulations">
+                  <td>{{ sim.nom || ('Simulation ' + (sim._id || sim.id)) }}</td>
+                  <td class="description-cell">{{ sim.description || '-' }}</td>
+                  <td>{{ sim.date | date:'yyyy-MM-dd HH:mm' }}</td>
+                  <td>{{ sim.colis?.length || sim.resultats?.stats?.colisCount || 0 }}</td>
+                  <td>{{ sim.resultats?.stats?.containersCount || sim.resultats?.containers?.length || 0 }}</td>
+                  <td>
+                    <div class="fill-rate-bar">
+                      <div class="fill-rate-progress" [style.width.%]="(sim.resultats?.stats?.avgVolumeUtilization || 0) * 100"></div>
+                      <span>{{ ((sim.resultats?.stats?.avgVolumeUtilization || 0) * 100) | number:'1.0-0' }}%</span>
+                    </div>
+                  </td>
+                  <td class="action-buttons">
+                    <button mat-icon-button color="primary" aria-label="Load" (click)="loadSimulation(sim)">
+                      <mat-icon>play_circle</mat-icon>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div *ngIf="!loading && !simulations.length" class="empty-state">
+              No simulations found.
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

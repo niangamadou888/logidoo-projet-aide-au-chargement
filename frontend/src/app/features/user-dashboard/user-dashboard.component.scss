@@ -164,6 +164,14 @@
     border-bottom: 1px solid #f0f0f0;
   }
   
+  .description-cell {
+    max-width: 240px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #555;
+  }
+  
   th {
     color: #666;
     font-weight: 500;

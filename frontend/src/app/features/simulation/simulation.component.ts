@@ -493,8 +493,8 @@ export class SimulationComponent implements OnInit {
       resultats: this.simulationResultats
     });
 
-    // Sauvegarder les résultats
-    this.simulationService.sauvegarderResultats(this.listeColis, this.simulationResultats).subscribe({
+    // Sauvegarder les résultats (avec nom/description)
+    this.simulationService.sauvegarderResultats(this.listeColis, this.simulationResultats, simulation.nom, simulation.description).subscribe({
       next: (response) => {
         console.log('Simulation sauvegardée:', response);
         this.loading = false;
