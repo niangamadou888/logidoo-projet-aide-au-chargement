@@ -111,6 +111,7 @@
                 <thead>
                   <tr>
                     <th>Name</th>
+                    <th>Description</th>
                     <th>Date</th>
                     <th>Container</th>
                     <th>Fill Rate</th>
@@ -121,6 +122,7 @@
                 <tbody>
                   <tr *ngFor="let sim of recentSimulations">
                     <td>{{ sim.nom || ('Simulation ' + (sim._id || sim.id)) }}</td>
+                    <td class="description-cell">{{ sim.description || '-' }}</td>
                     <td>{{ sim.date | date:'yyyy-MM-dd HH:mm' }}</td>
                     <td>{{ sim.resultats?.containers?.[0]?.type || '-' }}</td>
                     <td>

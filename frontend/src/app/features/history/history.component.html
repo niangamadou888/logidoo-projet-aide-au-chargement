@@ -53,6 +53,7 @@
               <thead>
                 <tr>
                   <th>Name</th>
+                  <th>Description</th>
                   <th>Date</th>
                   <th>Packages</th>
                   <th>Containers</th>
@@ -63,6 +64,7 @@
               <tbody>
                 <tr *ngFor="let sim of simulations">
                   <td>{{ sim.nom || ('Simulation ' + (sim._id || sim.id)) }}</td>
+                  <td class="description-cell">{{ sim.description || '-' }}</td>
                   <td>{{ sim.date | date:'yyyy-MM-dd HH:mm' }}</td>
                   <td>{{ sim.colis?.length || sim.resultats?.stats?.colisCount || 0 }}</td>
                   <td>{{ sim.resultats?.stats?.containersCount || sim.resultats?.containers?.length || 0 }}</td>

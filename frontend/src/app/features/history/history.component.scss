@@ -69,6 +69,14 @@
   }
 }
 
+.description-cell {
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #555;
+}
+
 .fill-rate-bar {
   position: relative;
   height: 20px;

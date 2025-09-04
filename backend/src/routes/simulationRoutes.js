@@ -10,10 +10,12 @@ const { performance } = require('perf_hooks');
 router.post('/', authenticate, async (req, res) => {
   try {
     const utilisateurId = req.user._id; // récupéré grâce au middleware
-    const { colis } = req.body;
+    const { colis, nom, description } = req.body;
 
     const nouvelleSimulation = new Simulation({
       utilisateurId,
+      nom,
+      description,
       colis,
       date: new Date()
     });

@@ -108,9 +108,7 @@ export class SimulationService {
    * Sauvegarder les résultats d'une simulation
    */
   sauvegarderResultats(colis: any[], resultats: any, nom?: string, description?: string): Observable<any> {
-    const payload: any = { colis, resultats };
-    if (nom) payload.nom = nom;
-    if (description) payload.description = description;
+    const payload: any = { colis, resultats, nom: nom ?? '', description: description ?? '' };
     return this.http.post<any>(`${this.apiUrl}/save`, payload);
   }
 
