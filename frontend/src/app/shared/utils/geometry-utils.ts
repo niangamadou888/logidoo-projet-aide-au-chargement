@@ -54,30 +54,32 @@ export class GeometryUtils {
     containerDims: Dimensions3D,
     itemDims: Dimensions3D,
     existingItems: Array<{position: Position3D, dimensions: Dimensions3D}>,
-    fragile = false
+    fragile = false,
+    step = 10
   ): Position3D | null {
-    const step = 10; // Pas de recherche en centimètres
-    
+    // Bordures de sécurité pour éviter de coller les parois
+    const margin = 0;
+
+    const minX = 0 + margin;
+    const minY = 0 + margin;
+    const minZ = 0 + margin;
+    const maxX = containerDims.longueur - itemDims.longueur - margin;
+    const maxY = containerDims.largeur - itemDims.largeur - margin;
+    const maxZ = containerDims.hauteur - itemDims.hauteur - margin;
+
+    if (maxX < minX || maxY < minY || maxZ < minZ) return null;
+
     // Si l'objet est fragile, commencer par le haut
-    const startZ = fragile ? containerDims.hauteur - itemDims.hauteur : 0;
-    const endZ = fragile ? containerDims.hauteur - itemDims.hauteur : containerDims.hauteur - itemDims.hauteur;
+    const startZ = fragile ? maxZ : minZ;
+    const endZ = fragile ? minZ : maxZ;
     const stepZ = fragile ? -step : step;
 
-    for (let z = startZ; fragile ? z >= 0 : z <= endZ; z += stepZ) {
-      for (let y = 0; y <= containerDims.largeur - itemDims.largeur; y += step) {
-        for (let x = 0; x <= containerDims.longueur - itemDims.longueur; x += step) {
+    for (let z = startZ; fragile ? z >= endZ : z <= endZ; z += stepZ) {
+      for (let y = minY; y <= maxY; y += step) {
+        for (let x = minX; x <= maxX; x += step) {
           const position: Position3D = { x, y, z };
-          
-          // Vérifier s'il n'y a pas de collision avec les objets existants
-          let hasCollision = false;
-          for (const existing of existingItems) {
-            if (this.isOverlapping(position, itemDims, existing.position, existing.dimensions)) {
-              hasCollision = true;
-              break;
-            }
-          }
 
-          if (!hasCollision) {
+          if (!this.collides(position, itemDims, existingItems)) {
             return position;
           }
         }
@@ -85,6 +87,56 @@ export class GeometryUtils {
     }
 
     return null; // Aucune position trouvée
+  }
+
+  /**
+   * Vérifie collision contre une liste d'objets
+   */
+  static collides(
+    position: Position3D,
+    dimensions: Dimensions3D,
+    existingItems: Array<{position: Position3D, dimensions: Dimensions3D}>
+  ): boolean {
+    for (const existing of existingItems) {
+      if (this.isOverlapping(position, dimensions, existing.position, existing.dimensions)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Fait glisser un item au plus proche des parois/géométries (X puis Y) pour combler les espaces
+   */
+  static pushToWalls(
+    startPosition: Position3D,
+    dims: Dimensions3D,
+    containerDims: Dimensions3D,
+    existingItems: Array<{position: Position3D, dimensions: Dimensions3D}>,
+    step = 2
+  ): Position3D {
+    let pos: Position3D = { ...startPosition };
+
+    // Glissade vers -X
+    while (pos.x > 0) {
+      const next = { ...pos, x: Math.max(0, pos.x - step) };
+      if (this.collides(next, dims, existingItems)) break;
+      pos = next;
+    }
+
+    // Glissade vers -Y
+    while (pos.y > 0) {
+      const next = { ...pos, y: Math.max(0, pos.y - step) };
+      if (this.collides(next, dims, existingItems)) break;
+      pos = next;
+    }
+
+    // Clamp dans le conteneur (sécurité)
+    pos.x = Math.min(pos.x, Math.max(0, containerDims.longueur - dims.longueur));
+    pos.y = Math.min(pos.y, Math.max(0, containerDims.largeur - dims.largeur));
+    pos.z = Math.min(pos.z, Math.max(0, containerDims.hauteur - dims.hauteur));
+
+    return pos;
   }
 
   /**

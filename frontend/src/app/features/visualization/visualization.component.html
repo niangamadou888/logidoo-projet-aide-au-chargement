@@ -100,13 +100,13 @@
   <div class="main-interface" *ngIf="!loading && !error && scene">
     
     <!-- Barre d'outils -->
-    <div class="toolbar-container">
+    <!-- <div class="toolbar-container">
       <app-toolbar 
         [scene]="scene" 
         [config]="config" 
         [viewport]="viewport">
       </app-toolbar>
-    </div>
+    </div> -->
     
     <!-- Zone de visualisation -->
     <div class="visualization-area">
@@ -130,13 +130,13 @@
         
         <!-- Indicateurs de vue -->
         <div class="view-indicators">
-          <div class="view-mode-badge" [attr.data-mode]="currentView">
+          <!-- <div class="view-mode-badge" [attr.data-mode]="currentView">
             {{ currentView.toUpperCase() }}
-          </div>
+          </div> -->
           
-          <div class="zoom-indicator" *ngIf="viewport">
+          <!-- <div class="zoom-indicator" *ngIf="viewport">
             Zoom: {{ (viewport.zoom * 100) | number:'1.0-0' }}%
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

@@ -512,10 +512,12 @@ async function simulateOptimalPlacement(items, options = {}) {
 /**
  * Sauvegarde une simulation dans la base de données
  */
-async function saveSimulation(utilisateurId, colis, resultats) {
+async function saveSimulation(utilisateurId, colis, resultats, nom = undefined, description = undefined) {
   try {
     const simulation = new Simulation({
       utilisateurId,
+      nom,
+      description,
       colis,
       resultats,
       date: new Date()

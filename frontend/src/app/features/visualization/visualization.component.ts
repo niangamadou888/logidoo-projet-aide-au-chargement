@@ -8,7 +8,6 @@ import { Subject, takeUntil } from 'rxjs';
 // Imports des composants de visualisation
 import { CanvasComponent } from './components/canvas/canvas.component';
 import { SceneComponent } from './components/scene/scene.component';
-import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { PanelComponent } from './components/panel/panel.component';
 
 // Imports des services et modèles
@@ -29,7 +28,6 @@ import { ExportService } from './services/export.service';
     CommonModule,
     CanvasComponent,
     SceneComponent,
-    ToolbarComponent,
     PanelComponent
   ],
   templateUrl: './visualization.component.html',
@@ -84,7 +82,6 @@ export class VisualizationComponent implements OnInit, OnDestroy {
       try {
         this.simulationData = JSON.parse(sessionData);
         console.log('✅ Données récupérées:', this.simulationData);
-        sessionStorage.removeItem('simulationData');
         this.loadVisualization();
         return;
       } catch (error) {
@@ -200,7 +197,9 @@ export class VisualizationComponent implements OnInit, OnDestroy {
    * Retour à la simulation
    */
   goBackToSimulation(): void {
-    this.router.navigate(['/simulation']);
+    this.router.navigate(['/simulation'], {
+      state: { simulationData: this.simulationData }
+    });
   }
 
   /**

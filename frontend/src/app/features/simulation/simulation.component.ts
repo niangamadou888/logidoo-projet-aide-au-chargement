@@ -79,7 +79,7 @@ export class SimulationComponent implements OnInit {
       description: ['']
     });
 
-    this.nouvelleSimulation();
+    // Ne pas réinitialiser ici; on restaure potentiellement depuis l'état/navigation
   }
 
   telechargerModele(): void {
@@ -493,8 +493,8 @@ export class SimulationComponent implements OnInit {
       resultats: this.simulationResultats
     });
 
-    // Sauvegarder les résultats
-    this.simulationService.sauvegarderResultats(this.listeColis, this.simulationResultats).subscribe({
+    // Sauvegarder les résultats (avec nom/description)
+    this.simulationService.sauvegarderResultats(this.listeColis, this.simulationResultats, simulation.nom, simulation.description).subscribe({
       next: (response) => {
         console.log('Simulation sauvegardée:', response);
         this.loading = false;
@@ -566,6 +566,21 @@ export class SimulationComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Restaurer uniquement si on revient explicitement de la visualisation
+    // via navigation d'état (goBackToSimulation). Sinon, démarrer proprement.
+    const restored = (window.history && (window.history.state as any))?.simulationData;
+
+    if (restored) {
+      this.listeColis = Array.isArray(restored.colis) ? restored.colis : [];
+      this.simulationResultats = restored.resultats || null;
+      this.simulationForm.patchValue({
+        nom: restored.nom || '',
+        description: restored.description || ''
+      });
+    } else {
+      this.nouvelleSimulation();
+    }
+
     this.loadConteneurs();
   }
 
@@ -617,4 +632,22 @@ export class SimulationComponent implements OnInit {
       this.router.navigate(['/visualization']);
     });
   }
+
+  // === PAGINATION ===
+itemsPerPage = 5;            // nombre d’éléments par page
+currentPage = 1;
+
+get totalPages(): number {
+  return Math.ceil(this.listeColis.length / this.itemsPerPage);
+}
+
+get pagedColis(): Colis[] {
+  const start = (this.currentPage - 1) * this.itemsPerPage;
+  return this.listeColis.slice(start, start + this.itemsPerPage);
+}
+
+goToPage(page: number) {
+  if (page < 1 || page > this.totalPages) return;
+  this.currentPage = page;
+}
 }

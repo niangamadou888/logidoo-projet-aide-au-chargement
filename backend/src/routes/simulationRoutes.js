@@ -10,10 +10,12 @@ const { performance } = require('perf_hooks');
 router.post('/', authenticate, async (req, res) => {
   try {
     const utilisateurId = req.user._id; // récupéré grâce au middleware
-    const { colis } = req.body;
+    const { colis, nom, description } = req.body;
 
     const nouvelleSimulation = new Simulation({
       utilisateurId,
+      nom,
+      description,
       colis,
       date: new Date()
     });
@@ -112,7 +114,7 @@ router.post('/optimal-container', authenticate, async (req, res) => {
 router.post('/save', authenticate, async (req, res) => {
   try {
     const utilisateurId = req.user._id;
-    let { colis, resultats } = req.body;
+    let { colis, resultats, nom, description } = req.body;
 
     // Normalisation du payload pour éviter les erreurs de typage
     try {
@@ -140,7 +142,7 @@ router.post('/save', authenticate, async (req, res) => {
       });
     }
     
-    const simulation = await optimizedSimulationService.saveSimulation(utilisateurId, colis, resultats);
+    const simulation = await optimizedSimulationService.saveSimulation(utilisateurId, colis, resultats, nom, description);
     
     res.status(201).json({ 
       success: true, 
