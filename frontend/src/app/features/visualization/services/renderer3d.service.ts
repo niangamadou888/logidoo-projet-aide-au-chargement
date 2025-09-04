@@ -404,7 +404,7 @@ export class ThreeDRendererService {
       this.addFragileMarker(mesh);
     }
 
-    if (item.gerbable === false) {
+    if (item.gerbable === false && (this.currentConfig?.highlightNonGerbable ?? true)) {
       this.addNonStackableMarker(mesh);
     }
 
@@ -415,44 +415,145 @@ export class ThreeDRendererService {
    * Ajoute un marqueur fragile
    */
   private addFragileMarker(parentMesh: any): void {
-    const markerGeometry = new THREE.SphereGeometry(5, 8, 6);
-    const markerMaterial = new THREE.MeshBasicMaterial({ color: 0xff4444 });
-    const marker = new THREE.Mesh(markerGeometry, markerMaterial);
-
-    // Position au-dessus de l'item
     const box = new THREE.Box3().setFromObject(parentMesh);
-    marker.position.copy(box.max);
-    marker.position.y += 10;
+    const size = new THREE.Vector3();
+    box.getSize(size);
 
-    parentMesh.add(marker);
+    // 1) Liseré rouge (outline) pour rendre l'objet bien visible
+    if (parentMesh.geometry) {
+      const edges = new THREE.EdgesGeometry(parentMesh.geometry);
+      const lineMat = new THREE.LineBasicMaterial({ color: 0xff3333 });
+      const line = new THREE.LineSegments(edges, lineMat);
+      line.position.copy(parentMesh.position.clone().sub(parentMesh.position));
+      parentMesh.add(line);
+    }
+
+    // 2) Capot supérieur semi-transparent rouge
+    const topPlaneGeom = new THREE.PlaneGeometry(size.x, size.z);
+    const topPlaneMat = new THREE.MeshBasicMaterial({ color: 0xff6b6b, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
+    const topPlane = new THREE.Mesh(topPlaneGeom, topPlaneMat);
+    topPlane.rotation.x = -Math.PI / 2;
+    topPlane.position.set((box.min.x + box.max.x) / 2 - parentMesh.position.x,
+                          box.max.y - parentMesh.position.y + 0.1,
+                          (box.min.z + box.max.z) / 2 - parentMesh.position.z);
+    parentMesh.add(topPlane);
+
+    // 3) Étiquette billboard "FRAGILE"
+    const label = this.createBillboardLabel('FRAGILE', '#b91c1c', '#ffffff');
+    const scaleFactor = Math.max(20, Math.min(80, Math.min(size.x, size.z) * 0.4));
+    label.scale.setScalar(scaleFactor);
+    label.position.set((box.min.x + box.max.x) / 2 - parentMesh.position.x,
+                       box.max.y - parentMesh.position.y + scaleFactor * 0.02 + 6,
+                       (box.min.z + box.max.z) / 2 - parentMesh.position.z);
+    parentMesh.add(label);
   }
 
   /**
    * Ajoute un marqueur visuel pour les colis non gerbables (croix rouge sur le dessus)
    */
   private addNonStackableMarker(parentMesh: any): void {
-    const size = 6;
-    const thickness = 1.2;
+    const box = new THREE.Box3().setFromObject(parentMesh);
+    const sizeVec = new THREE.Vector3();
+    box.getSize(sizeVec);
+
+    const faceMin = Math.max(8, Math.min(sizeVec.x, sizeVec.z));
+    const crossLen = faceMin * 0.8;
+    const barThick = Math.max(1.5, faceMin * 0.12);
     const color = 0xcc0000;
 
-    const geom = new THREE.BoxGeometry(size, thickness, thickness);
+    // Croix bien visible au-dessus
+    const geom = new THREE.BoxGeometry(crossLen, barThick, barThick);
     const mat = new THREE.MeshBasicMaterial({ color });
-
     const cross1 = new THREE.Mesh(geom, mat);
     const cross2 = new THREE.Mesh(geom, mat.clone());
 
-    // Positionner au-dessus de l'objet
-    const box = new THREE.Box3().setFromObject(parentMesh);
-    const topY = box.max.y + 6;
+    const topY = box.max.y + Math.max(6, sizeVec.y * 0.05);
+    const centerX = (box.min.x + box.max.x) / 2;
+    const centerZ = (box.min.z + box.max.z) / 2;
 
-    cross1.position.set((box.min.x + box.max.x) / 2, topY, (box.min.z + box.max.z) / 2);
+    cross1.position.set(centerX, topY, centerZ);
     cross1.rotation.y = Math.PI / 4;
-
     cross2.position.copy(cross1.position);
     cross2.rotation.y = -Math.PI / 4;
-
     parentMesh.add(cross1);
     parentMesh.add(cross2);
+
+    // Anneau "interdit" (style panneau d'interdiction)
+    const ringOuter = Math.max(10, faceMin * 0.55);
+    const ringTube = Math.max(1.2, ringOuter * 0.10);
+    const torus = new THREE.Mesh(new THREE.TorusGeometry(ringOuter, ringTube, 12, 48), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.8 }));
+    torus.rotation.x = -Math.PI / 2;
+    torus.position.set(centerX, topY + ringTube * 0.5, centerZ);
+    parentMesh.add(torus);
+
+    // Étiquette billboard "NON EMPILABLE"
+    const label = this.createBillboardLabel('NON EMPILABLE', '#991b1b', '#ffffff');
+    const scaleFactor = Math.max(22, Math.min(90, faceMin * 0.5));
+    label.scale.setScalar(scaleFactor);
+    label.position.set(centerX - parentMesh.position.x,
+                       topY - parentMesh.position.y + scaleFactor * 0.03,
+                       centerZ - parentMesh.position.z);
+    parentMesh.add(label);
+  }
+
+  /**
+   * Crée un sprite billboard avec une étiquette lisible en 3D
+   */
+  private createBillboardLabel(text: string, bgColor = '#111827', textColor = '#ffffff'): any {
+    const padding = 8;
+    const fontSize = 28;
+
+    // Canvas pour dessiner l'étiquette
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d')!;
+    const font = `bold ${fontSize}px sans-serif`;
+    ctx.font = font;
+    const metrics = ctx.measureText(text);
+    const textWidth = Math.ceil(metrics.width);
+    const textHeight = Math.ceil(fontSize * 1.4);
+    canvas.width = textWidth + padding * 2;
+    canvas.height = textHeight + padding * 2;
+
+    // Redessiner avec dimension réelle
+    const radius = 8;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = font;
+    // Fond avec coins arrondis
+    this.roundRect(ctx, 0, 0, canvas.width, canvas.height, radius, bgColor);
+    // Texte
+    ctx.fillStyle = textColor;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.minFilter = THREE.LinearFilter;
+    const material = new THREE.SpriteMaterial({ map: texture, transparent: true });
+    const sprite = new THREE.Sprite(material);
+    // Sprite par défaut: 1 unité = 1 pixel en scale; on gère le scale ailleurs
+    sprite.scale.set(canvas.width / 2, canvas.height / 2, 1);
+    return sprite;
+  }
+
+  /**
+   * Dessine un rectangle à coins arrondis rempli
+   */
+  private roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number, fillStyle: string) {
+    const min = Math.min(w, h) / 2;
+    const radius = Math.min(r, min);
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + w - radius, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+    ctx.lineTo(x + w, y + h - radius);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+    ctx.lineTo(x + radius, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    ctx.fillStyle = fillStyle;
+    ctx.fill();
   }
 
   /**
