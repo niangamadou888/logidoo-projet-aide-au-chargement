@@ -91,7 +91,13 @@ export class SimulationComponent implements OnInit {
       const file = input.files[0];
       this.excelService.importerDepuisExcel(file).subscribe({
         next: (colisImportes) => {
-          this.listeColis = this.listeColis.concat(colisImportes);
+          const enriched = colisImportes.map((c) => ({
+            ...c,
+            fragile: c.fragile ?? false,
+            gerbable: c.gerbable ?? true,
+            couleur: c.couleur || this.getRandomColor()
+          }));
+          this.listeColis = this.listeColis.concat(enriched);
           this.snackBar.open('Colis importés avec succès', 'OK', { duration: 3000 });
 
           if (this.selectionAutoOptimal && this.listeColis.length > 0) {
@@ -110,20 +116,46 @@ export class SimulationComponent implements OnInit {
   }
 
 
-  private readonly defaultColorPalette = [
-    '#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6',
-    '#EC4899', '#22C55E', '#EAB308', '#06B6D4', '#F97316',
-    '#84CC16', '#14B8A6', '#A855F7', '#D946EF', '#F43F5E'
-  ];
+  // Génère une couleur vive aléatoire en hex
+  private hslToHex(h: number, s: number, l: number): string {
+    s /= 100; l /= 100;
+    const k = (n: number) => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = (n: number) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    const toHex = (x: number) => Math.round(255 * x).toString(16).padStart(2, '0');
+    return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`.toUpperCase();
+  }
 
-  private getDefaultColor(index: number): string {
-    const i = Math.max(0, index) % this.defaultColorPalette.length;
-    return this.defaultColorPalette[i];
+  private getRandomColor(): string {
+    const hue = Math.floor(Math.random() * 360); // 0-359
+    const saturation = 70 + Math.floor(Math.random() * 21); // 70-90%
+    const lightness = 45 + Math.floor(Math.random() * 11); // 45-55%
+    return this.hslToHex(hue, saturation, lightness);
   }
 
   updateColisCouleur(index: number, couleur: string) {
     if (!this.listeColis[index]) return;
-    this.listeColis[index].couleur = couleur || this.getDefaultColor(index);
+    this.listeColis[index].couleur = couleur || this.getRandomColor();
+  }
+
+  toggleFragile(index: number) {
+    if (!this.listeColis[index]) return;
+    this.listeColis[index].fragile = !this.listeColis[index].fragile;
+    // Toute modification d'un colis invalide les résultats précédents
+    this.resetResultats();
+  }
+
+  toggleGerbable(index: number) {
+    if (!this.listeColis[index]) return;
+    const current = this.listeColis[index].gerbable;
+    this.listeColis[index].gerbable = current === undefined ? false : !current;
+    // Toute modification d'un colis invalide les résultats précédents
+    this.resetResultats();
+  }
+
+  randomizeColor(index: number) {
+    if (!this.listeColis[index]) return;
+    this.listeColis[index].couleur = this.getRandomColor();
   }
 
   nouvelleSimulation() {
@@ -239,7 +271,7 @@ export class SimulationComponent implements OnInit {
           telephone: formValues.telephone || undefined,
           fragile: Boolean(formValues.fragile),
           gerbable: Boolean(formValues.gerbable),
-          couleur: formValues.couleur || this.getDefaultColor(this.listeColis.length),
+          couleur: formValues.couleur || this.getRandomColor(),
           statut: 'actif',
           dateAjout: new Date()
         };
@@ -282,7 +314,7 @@ export class SimulationComponent implements OnInit {
           telephone: '',
           fragile: false,
           gerbable: true,
-          couleur: this.getDefaultColor(this.listeColis.length)
+          couleur: this.getRandomColor()
         });
 
         // Réinitialiser les résultats de simulation
@@ -401,7 +433,7 @@ export class SimulationComponent implements OnInit {
       return;
     }
 
-    if (!this.selectedContainerId) {
+    if (!this.selectedContainerId && !this.selectionAutoOptimal) {
       this.snackBar.open('Veuillez sélectionner un conteneur ou activer la sélection automatique', 'OK', {
         duration: 3000
       });
@@ -414,7 +446,7 @@ export class SimulationComponent implements OnInit {
     // Options de simulation
     let options: { preferredCategories?: string[], forceUseContainers?: string[] } = {};
 
-    // Toujours utiliser le conteneur sélectionné, qu'il soit optimal ou manuel
+    // Utiliser le conteneur sélectionné si présent (manuel ou issu de l'optimal)
     if (this.selectedContainerId) {
       // Trouver le contenant sélectionné une seule fois
       const selectedContainer = this.containers.find(c => c._id === this.selectedContainerId);
@@ -426,6 +458,12 @@ export class SimulationComponent implements OnInit {
 
       // Ajouter l'ID du contenant
       options.forceUseContainers = [this.selectedContainerId];
+    } else if (this.selectionAutoOptimal) {
+      // En mode auto: ne pas forcer de conteneur, laisser le backend choisir
+      // Optionnel: si on dispose d'un optimalContainer précédent, on peut favoriser sa catégorie
+      if (this.optimalContainer?.containerCategory) {
+        options.preferredCategories = [this.optimalContainer.containerCategory];
+      }
     }
 
     // Afficher les données envoyées à la simulation pour debug
@@ -568,7 +606,12 @@ export class SimulationComponent implements OnInit {
   ngOnInit() {
     // Restaurer uniquement si on revient explicitement de la visualisation
     // via navigation d'état (goBackToSimulation). Sinon, démarrer proprement.
-    const restored = (window.history && (window.history.state as any))?.simulationData;
+    let restored: any = null;
+    if (typeof window !== 'undefined') {
+      try {
+        restored = (window.history && (window.history.state as any))?.simulationData ?? null;
+      } catch {}
+    }
 
     if (restored) {
       this.listeColis = Array.isArray(restored.colis) ? restored.colis : [];
@@ -614,17 +657,19 @@ export class SimulationComponent implements OnInit {
 
     console.log('Données test:', testData);
 
-    // Méthode robuste : sessionStorage + state + replaceState
-    sessionStorage.setItem('simulationData', JSON.stringify(testData));
+    // Méthode robuste : sessionStorage + state + replaceState (browser only)
+    if (typeof sessionStorage !== 'undefined') {
+      try { sessionStorage.setItem('simulationData', JSON.stringify(testData)); } catch {}
+    }
 
     this.router.navigate(['/visualization'], {
       state: { simulationData: testData }
     }).then(success => {
       console.log('Navigation résultat:', success);
-      if (success) {
+      if (success && typeof window !== 'undefined') {
         // Force l'état dans l'historique
         setTimeout(() => {
-          window.history.replaceState({ simulationData: testData }, '', '/visualization');
+          try { window.history.replaceState({ simulationData: testData }, '', '/visualization'); } catch {}
         }, 100);
       }
     }).catch(error => {

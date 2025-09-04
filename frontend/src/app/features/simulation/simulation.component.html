@@ -326,6 +326,18 @@
           <input type="color" [value]="colis.couleur || '#999999'"
             (input)="updateColisCouleur(i, $any($event.target).value)"
             style="width:36px;height:28px;padding:0;border:none;background:transparent;cursor:pointer;" />
+          <button type="button" (click)="randomizeColor(i)" title="Couleur aléatoire"
+            style="margin-left:6px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:4px;background:#f8fafc;cursor:pointer;">
+            🎲
+          </button>
+        </div>
+        <div class="colis-flags" style="display:flex;gap:12px;align-items:center;margin-right:10px;">
+          <label style="font-size:12px;color:#374151;display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" [checked]="!!colis.fragile" (change)="toggleFragile(i)" /> Fragile
+          </label>
+          <label style="font-size:12px;color:#374151;display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" [checked]="colis.gerbable !== false" (change)="toggleGerbable(i)" /> Empilable
+          </label>
         </div>
         <button (click)="supprimerColis(i)" class="btn-delete">
           Supprimer
@@ -336,9 +348,13 @@
     <!-- Boutons d'action -->
     <div class="action-buttons">
       <button (click)="lancerSimulation()" class="btn-primary full-width"
-        *ngIf="(!simulationResultats && !simulationEnCours) && listeColis.length > 0 && selectedContainerId"
+        *ngIf="(!simulationResultats && !simulationEnCours) && listeColis.length > 0 && (selectedContainerId || selectionAutoOptimal)"
         [disabled]="findingOptimal">
-        {{ findingOptimal ? 'Recherche du conteneur optimal...' : 'Lancer la simulation avec le conteneur sélectionné'
+        {{ findingOptimal
+          ? 'Recherche du conteneur optimal...'
+          : (selectionAutoOptimal
+              ? 'Lancer la simulation (sélection auto)'
+              : 'Lancer la simulation avec le conteneur sélectionné')
         }}
       </button>
       <button (click)="validerSimulation()" class="btn-validate full-width"

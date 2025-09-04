@@ -19,9 +19,12 @@ export class ExcelService {
         "Hauteur(cm)": 20,
         "Poids(kg)": 2.5,
         "Quantité": 1,
-        "Destinataire": "JAdiaOumy fall",
+        "Destinataire": "JAdiaOumy Fall",
         "Adresse": "Medina rue 6",
-        "Téléphone": "+221778128426"
+        "Téléphone": "+221778128426",
+        "Fragile": "Non",
+        "Gerbable": "Oui",
+        "Couleur": "#F97316"
       }
     ]);
 
@@ -42,7 +45,11 @@ export class ExcelService {
       "Quantité": "quantite",
       "Destinataire": "nomDestinataire",
       "Adresse": "adresse",
-      "Téléphone": "telephone"
+      "Téléphone": "telephone",
+      // Champs optionnels pris en charge
+      "Fragile": "fragile",
+      "Gerbable": "gerbable",
+      "Couleur": "couleur"
     };
 
     const reader = new FileReader();
@@ -54,24 +61,43 @@ export class ExcelService {
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
 
+        const toBool = (val: any): boolean | undefined => {
+          if (val === undefined || val === null || val === '') return undefined;
+          const s = String(val).trim().toLowerCase();
+          if (["1", "true", "vrai", "oui", "yes", "y", "x"].includes(s)) return true;
+          if (["0", "false", "faux", "non", "no", "n"].includes(s)) return false;
+          return undefined;
+        };
+
+        const normalizeColor = (val: any): string | undefined => {
+          if (!val) return undefined;
+          const s = String(val).trim();
+          // Accept formats like #RRGGBB or rgb(...)
+          if (/^#([0-9a-fA-F]{6})$/.test(s)) return s.toUpperCase();
+          return s; // leave as provided; UI will still display
+        };
+
         const colisImportes: Colis[] = jsonData.map((row, index) => {
           const mapped: Partial<Colis> = {};
           for (const key in row) {
             if (colonneMap[key]) {
-              mapped[colonneMap[key]] = row[key];
+              (mapped as any)[colonneMap[key]] = row[key];
             }
           }
           return {
             id: Date.now() + index,
-            type: mapped.type || '',
+            type: (mapped.type as any) || '',
             longueur: Number(mapped.longueur) || 0,
             largeur: Number(mapped.largeur) || 0,
             hauteur: Number(mapped.hauteur) || 0,
             poids: Number(mapped.poids) || 0,
             quantite: Number(mapped.quantite) || 1,
-            nomDestinataire: mapped.nomDestinataire || '',
-            adresse: mapped.adresse || '',
-            telephone: mapped.telephone || ''
+            nomDestinataire: (mapped.nomDestinataire as any) || '',
+            adresse: (mapped.adresse as any) || '',
+            telephone: (mapped.telephone as any) || '',
+            fragile: toBool((mapped as any).fragile),
+            gerbable: toBool((mapped as any).gerbable),
+            couleur: normalizeColor((mapped as any).couleur)
           };
         });
 
