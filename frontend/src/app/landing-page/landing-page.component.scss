@@ -126,3 +126,36 @@ footer {
   margin-top: 2rem;
 }
 
+footer {
+    background: #000;
+    color: #fff;
+    padding: 50px 20px 20px;
+  }
+  .footer-top {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+  .footer-top h4 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: #f1c40f;
+  }
+  .footer-top p, .footer-top a {
+    font-size: 0.95rem;
+    color: #bbb;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .footer-top a:hover {
+    color: #fff;
+  }
+  .footer-bottom {
+    border-top: 1px solid #444;
+    padding-top: 15px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #777;
+  }
