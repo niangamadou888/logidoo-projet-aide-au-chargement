@@ -379,11 +379,11 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     ctx.strokeRect(x, y, width, height);
 
     // Marqueurs spéciaux
-    if (item.fragile) {
+    if (item.fragile && (this.config?.showFragileItems ?? true)) {
       this.drawFragileMarkerToCtx(ctx, x, y, width, height);
     }
 
-    if (!item.gerbable) {
+    if (!item.gerbable && (this.config?.highlightNonGerbable ?? true)) {
       this.drawNonStackableMarkerToCtx(ctx, x, y, width, height);
     }
 

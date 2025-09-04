@@ -369,11 +369,16 @@ export class ThreeDRendererService {
 
     // Matériau
     const color = new THREE.Color(item.color);
-    const material = new THREE.MeshLambertMaterial({
+    const materialParams: any = {
       color: color,
       transparent: item.opacity !== undefined,
       opacity: item.opacity || 1
-    });
+    };
+    // Mise en évidence des colis non gerbables si activé
+    if (this.currentConfig?.highlightNonGerbable && item.gerbable === false) {
+      materialParams.emissive = new THREE.Color(0xffd54f); // jaune/orangé
+    }
+    const material = new THREE.MeshLambertMaterial(materialParams);
 
     // Mesh
     const mesh = new THREE.Mesh(geometry, material);
@@ -395,8 +400,12 @@ export class ThreeDRendererService {
     mesh.userData = { item };
 
     // Marqueurs spéciaux
-    if (item.fragile) {
+    if (item.fragile && (this.currentConfig?.showFragileItems ?? true)) {
       this.addFragileMarker(mesh);
+    }
+
+    if (item.gerbable === false) {
+      this.addNonStackableMarker(mesh);
     }
 
     return mesh;
@@ -416,6 +425,34 @@ export class ThreeDRendererService {
     marker.position.y += 10;
 
     parentMesh.add(marker);
+  }
+
+  /**
+   * Ajoute un marqueur visuel pour les colis non gerbables (croix rouge sur le dessus)
+   */
+  private addNonStackableMarker(parentMesh: any): void {
+    const size = 6;
+    const thickness = 1.2;
+    const color = 0xcc0000;
+
+    const geom = new THREE.BoxGeometry(size, thickness, thickness);
+    const mat = new THREE.MeshBasicMaterial({ color });
+
+    const cross1 = new THREE.Mesh(geom, mat);
+    const cross2 = new THREE.Mesh(geom, mat.clone());
+
+    // Positionner au-dessus de l'objet
+    const box = new THREE.Box3().setFromObject(parentMesh);
+    const topY = box.max.y + 6;
+
+    cross1.position.set((box.min.x + box.max.x) / 2, topY, (box.min.z + box.max.z) / 2);
+    cross1.rotation.y = Math.PI / 4;
+
+    cross2.position.copy(cross1.position);
+    cross2.rotation.y = -Math.PI / 4;
+
+    parentMesh.add(cross1);
+    parentMesh.add(cross2);
   }
 
   /**
