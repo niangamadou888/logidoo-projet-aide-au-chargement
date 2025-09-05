@@ -39,6 +39,23 @@ export class ThreeDRendererService {
   // Espace visuel entre les colis (en centimètres)
   private readonly gapCm: number = 2;
 
+  // Indexation des meshes pour interactions (sélection, focus)
+  private itemMeshMap: Map<string, any> = new Map();
+  private selectionOutline: any | null = null;
+  private selectedItemId: string | null = null;
+
+  // Mise en évidence avancée
+  private dimmedMeshes: Set<any> = new Set();
+  private highlightGroup: any | null = null; // groupe pour label/anneau
+  private pulseStartMs: number | null = null;
+  private highlightTimeout: any | null = null;
+
+  // Animation de caméra
+  private camAnimStartMs: number | null = null;
+  private camAnimDurationMs = 700;
+  private camFrom: any | null = null; // THREE.Vector3
+  private camTo: any | null = null;   // THREE.Vector3
+
   constructor() { }
 
   /**
@@ -219,6 +236,9 @@ export class ThreeDRendererService {
         this.controls.update();
       }
 
+      // Mise à jour animations personnalisées
+      this.updateAnimations();
+
       this.renderer.render(this.scene, this.camera);
     };
 
@@ -257,6 +277,7 @@ export class ThreeDRendererService {
 
     // Vider les groupes
     this.clearScene();
+    this.itemMeshMap.clear();
 
     if (containers.length > 0) {
       const currentContainer = containers[currentIndex];
@@ -286,6 +307,16 @@ export class ThreeDRendererService {
       if (child.geometry) child.geometry.dispose();
       if (child.material) child.material.dispose();
     }
+
+    // Nettoyage sélection
+    if (this.selectionOutline && this.selectionOutline.parent) {
+      this.selectionOutline.parent.remove(this.selectionOutline);
+    }
+    this.selectionOutline = null;
+    this.selectedItemId = null;
+
+    // Nettoyage des effets de surbrillance
+    this.clearProminentHighlight();
   }
 
   /**
@@ -346,6 +377,9 @@ export class ThreeDRendererService {
     items.forEach(item => {
       const mesh = this.createItemMesh(item);
       this.itemsGroup.add(mesh);
+      if (item.id) {
+        this.itemMeshMap.set(item.id, mesh);
+      }
     });
   }
 
@@ -409,6 +443,195 @@ export class ThreeDRendererService {
     }
 
     return mesh;
+  }
+
+  /**
+   * Met en évidence un item et centre la caméra dessus
+   */
+  public focusOnItem(item: VisualizationItem): void {
+    if (!item?.id) return;
+    const mesh = this.itemMeshMap.get(item.id);
+    if (!mesh || !this.camera || !this.controls) return;
+
+    // Calculer le centre de l'objet
+    const box = new THREE.Box3().setFromObject(mesh);
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+
+    // Déplacer la cible des contrôles vers le centre
+    if (this.controls.target) {
+      this.controls.target.copy(center);
+    }
+
+    // Positionner la caméra à une distance adaptée à la taille du colis
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const dist = maxDim * 2.5 + 60; // marge
+
+    // Animation de la caméra (fly-to)
+    this.camFrom = this.camera.position.clone();
+    this.camTo = new THREE.Vector3(center.x + dist, center.y + dist * 0.7, center.z + dist);
+    this.camAnimStartMs = performance.now();
+
+    this.applySelectionOutline(mesh, item.id);
+
+    // Mise en évidence avancée (anneau pulsant + label + atténuer autres colis)
+    this.applyProminentHighlight(mesh);
+    this.dimOtherItems(mesh);
+
+    // Auto-clear après 3s (ne retire pas l'outline)
+    if (this.highlightTimeout) {
+      clearTimeout(this.highlightTimeout);
+      this.highlightTimeout = null;
+    }
+    this.highlightTimeout = setTimeout(() => {
+      this.clearProminentHighlight();
+      this.highlightTimeout = null;
+    }, 5000);
+  }
+
+  private applySelectionOutline(targetMesh: any, itemId: string): void {
+    // Supprimer l'ancien outline
+    if (this.selectionOutline && this.selectionOutline.parent) {
+      this.selectionOutline.parent.remove(this.selectionOutline);
+    }
+    this.selectionOutline = null;
+    this.selectedItemId = itemId;
+
+    try {
+      const edges = new THREE.EdgesGeometry(targetMesh.geometry);
+      const lineMat = new THREE.LineBasicMaterial({ color: 0x00a2ff });
+      const outline = new THREE.LineSegments(edges, lineMat);
+      outline.position.copy(targetMesh.position);
+      outline.rotation.copy(targetMesh.rotation);
+      outline.scale.copy(targetMesh.scale);
+      targetMesh.add(outline);
+      this.selectionOutline = outline;
+    } catch (e) {
+      const helper = new THREE.BoxHelper(targetMesh, 0x00a2ff);
+      this.scene.add(helper);
+      this.selectionOutline = helper;
+    }
+  }
+
+  private applyProminentHighlight(targetMesh: any): void {
+    this.clearProminentHighlight();
+
+    const group = new THREE.Group();
+
+    // Calcul de la boîte pour positionner les éléments
+    const box = new THREE.Box3().setFromObject(targetMesh);
+    const size = new THREE.Vector3();
+    const center = new THREE.Vector3();
+    box.getSize(size);
+    box.getCenter(center);
+
+    // Anneau pulsant au-dessus du colis
+    const ringOuter = Math.max(20, Math.min(size.x, size.z) * 0.8);
+    const ringTube = Math.max(1.2, ringOuter * 0.08);
+    const ringGeom = new THREE.TorusGeometry(ringOuter, ringTube, 12, 48);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x00a2ff, transparent: true, opacity: 0.65 });
+    const ring = new THREE.Mesh(ringGeom, ringMat);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.set(0, size.y * 0.55, 0);
+    group.add(ring);
+
+    // Label flottant "ICI"
+    const label = this.createBillboardLabel('ICI', '#075985', '#ffffff');
+    const scaleFactor = Math.max(28, Math.min(110, Math.min(size.x, size.z) * 0.7));
+    label.scale.setScalar(scaleFactor);
+    label.position.set(0, size.y * 0.7 + scaleFactor * 0.03, 0);
+    group.add(label);
+
+    // Attacher le groupe au mesh ciblé pour suivre ses transformations
+    group.position.set(
+      center.x - targetMesh.position.x,
+      center.y - targetMesh.position.y,
+      center.z - targetMesh.position.z
+    );
+    targetMesh.add(group);
+
+    this.highlightGroup = group;
+    this.pulseStartMs = performance.now();
+  }
+
+  private clearProminentHighlight(): void {
+    if (this.highlightGroup && this.highlightGroup.parent) {
+      this.highlightGroup.parent.remove(this.highlightGroup);
+    }
+    this.highlightGroup = null;
+    this.pulseStartMs = null;
+    if (this.highlightTimeout) {
+      clearTimeout(this.highlightTimeout);
+      this.highlightTimeout = null;
+    }
+
+    // Restaurer l'opacité des autres colis
+    if (this.dimmedMeshes.size) {
+      this.dimmedMeshes.forEach((m: any) => {
+        const orig = m.userData?.origOpacity;
+        if (orig !== undefined && m.material) {
+          m.material.transparent = orig < 1;
+          m.material.opacity = orig;
+        }
+        if (m.userData) delete m.userData.origOpacity;
+      });
+      this.dimmedMeshes.clear();
+    }
+  }
+
+  private dimOtherItems(selectedMesh: any): void {
+    if (!this.itemsGroup) return;
+    this.itemsGroup.children.forEach((child: any) => {
+      if (child !== selectedMesh && child.material) {
+        if (child.userData && child.userData.item) {
+          // Stocker opacité d'origine
+          if (child.userData.origOpacity === undefined) {
+            child.userData.origOpacity = child.material.opacity ?? 1;
+          }
+          child.material.transparent = true;
+          child.material.opacity = 0.15;
+          this.dimmedMeshes.add(child);
+        }
+      }
+    });
+  }
+
+  private updateAnimations(): void {
+    const now = performance.now();
+
+    // Animation de caméra
+    if (this.camAnimStartMs !== null && this.camFrom && this.camTo) {
+      const t = Math.min(1, (now - this.camAnimStartMs) / this.camAnimDurationMs);
+      // easing cubic out
+      const ease = 1 - Math.pow(1 - t, 3);
+      const x = this.camFrom.x + (this.camTo.x - this.camFrom.x) * ease;
+      const y = this.camFrom.y + (this.camTo.y - this.camFrom.y) * ease;
+      const z = this.camFrom.z + (this.camTo.z - this.camFrom.z) * ease;
+      this.camera.position.set(x, y, z);
+      if (t >= 1) {
+        this.camAnimStartMs = null;
+      }
+    }
+
+    // Pulsation de l'anneau
+    if (this.pulseStartMs !== null && this.highlightGroup) {
+      const elapsed = (now - this.pulseStartMs) / 1000; // s
+      const ring = this.highlightGroup.children?.find((c: any) => c.geometry && c.geometry.type === 'TorusGeometry');
+      if (ring) {
+        const scale = 1 + 0.12 * Math.sin(elapsed * 4 * Math.PI);
+        ring.scale.setScalar(scale);
+        if (ring.material) {
+          ring.material.opacity = 0.4 + 0.35 * (0.5 + 0.5 * Math.sin(elapsed * 4 * Math.PI));
+        }
+      }
+      // Faire légèrement flotter le label
+      const label = this.highlightGroup.children?.find((c: any) => c.isSprite);
+      if (label) {
+        label.position.y += Math.sin(elapsed * 3) * 0.2;
+      }
+    }
   }
 
   /**
