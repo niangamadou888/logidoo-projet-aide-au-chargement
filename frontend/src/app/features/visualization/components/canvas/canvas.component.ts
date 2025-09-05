@@ -9,6 +9,7 @@ import {
   VisualizationContainer,
   VisualizationItem 
 } from '../../models/visualization.model';
+import { VisualizationService } from '../../services/visualization.service';
 
 @Component({
   selector: 'app-canvas',
@@ -51,7 +52,9 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   // Mode de vue 2D: plan (dessus), dessous, côté, côté opposé, avant, arrière
   viewMode: 'top' | 'bottom' | 'side' | 'side-opposite' | 'front' | 'back' = 'top';
 
-  constructor() { }
+  private lastSelectedItemId: string | null = null;
+
+  constructor(private visualizationService: VisualizationService) { }
 
   ngOnInit(): void {
     this.initializeCanvas();
@@ -70,6 +73,17 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
       // Scene or configuration changed: rebuild static layer
       this.staticDirty = true;
       this.render();
+    }
+
+    // Recentrer si la sélection change
+    if (changes['scene'] && this.scene) {
+      const selectedId = this.scene.selectedItem?.id || null;
+      if (selectedId && selectedId !== this.lastSelectedItemId) {
+        this.lastSelectedItemId = selectedId;
+        this.centerOnSelectedItem();
+      } else if (!selectedId) {
+        this.lastSelectedItemId = null;
+      }
     }
   }
 
@@ -185,12 +199,38 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private onClick(event: MouseEvent): void {
-    // TODO: Implémenter la sélection d'items au clic
     const rect = this.canvasRef.nativeElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    
-    console.log('Click à', x, y);
+
+    const container = this.scene?.containers[this.scene?.currentContainerIndex || 0];
+    if (!container) return;
+
+    // Reproduire les transformations appliquées dans draw()
+    const base = this.getProjectedContainerSize(container);
+    const baseW = base.width;
+    const baseH = base.height;
+    const containerScale = Math.min(
+      (this.containerDimensions.width - 2 * this.padding) / baseW,
+      (this.containerDimensions.height - 2 * this.padding) / baseH
+    ) * 0.8;
+    const unitScale = this.offscreenScale || 1;
+    const sceneScale = containerScale / unitScale;
+
+    // Espace calque offscreen centré
+    const ox = (x - (this.offsetX + this.containerDimensions.width / 2)) / (this.scale * sceneScale);
+    const oy = (y - (this.offsetY + this.containerDimensions.height / 2)) / (this.scale * sceneScale);
+
+    // Chercher l'item le plus proche visuellement (ordre inverse de dessin)
+    const itemsInDepth = [...container.items].sort((a, b) => this.getDepth(b) - this.getDepth(a));
+    const hit = itemsInDepth.find(item => {
+      const r = this.getProjectedItemRectPx(item, container, unitScale);
+      return ox >= r.x && ox <= r.x + r.width && oy >= r.y && oy <= r.y + r.height;
+    });
+
+    if (hit) {
+      this.selectAndCenter(hit, container, unitScale, sceneScale);
+    }
   }
 
   private render(): void {
@@ -241,6 +281,12 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
         const oh = this.offscreenCanvas.height;
         // Le calque offscreen est centré sur l'origine
         this.ctx.drawImage(this.offscreenCanvas, -ow / 2, -oh / 2);
+
+        // Surbrillance dynamique de l'élément sélectionné
+        const selected = this.scene?.selectedItem;
+        if (selected) {
+          this.drawSelectedHighlight(this.ctx, selected, currentContainer, this.offscreenScale || 1);
+        }
       }
 
       this.ctx.restore();
@@ -326,7 +372,46 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     containerScale: number
   ): void {
 
-    // Déterminer les axes projetés selon la vue
+    const { x, y, width, height } = this.getProjectedItemRectPx(item, container, containerScale);
+
+    // Dessiner l'item (avec opacité si définie)
+    const prevAlpha = ctx.globalAlpha;
+    const alpha = typeof item.opacity === 'number' ? Math.max(0, Math.min(1, item.opacity)) : 1;
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = item.color;
+    ctx.fillRect(x, y, width, height);
+    ctx.globalAlpha = prevAlpha;
+
+    // Contour
+    ctx.strokeStyle = this.darkenColor(item.color, 20);
+    ctx.lineWidth = 1;
+    ctx.setLineDash([]);
+    ctx.strokeRect(x, y, width, height);
+
+    // Marqueurs spéciaux
+    if (item.fragile && (this.config?.showFragileItems ?? true)) {
+      this.drawFragileMarkerToCtx(ctx, x, y, width, height);
+    }
+
+    if (!item.gerbable && (this.config?.highlightNonGerbable ?? true)) {
+      this.drawNonStackableMarkerToCtx(ctx, x, y, width, height);
+    }
+
+    // Texte (si assez de place)
+    if (width > 40 && height > 20) {
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '10px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(item.type, x + width / 2, y + height / 2);
+    }
+  }
+
+  // Calcul du rectangle projeté (coordonnées pixels du calque, origine centrée)
+  private getProjectedItemRectPx(
+    item: VisualizationItem,
+    container: VisualizationContainer,
+    unitScale: number
+  ): { x: number, y: number, width: number, height: number } {
     let projContainerW: number;
     let projContainerH: number;
     let posX: number;
@@ -357,43 +442,83 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
       itemH = item.dimensions.hauteur;
     }
 
-    const containerHalfWidth = projContainerW * containerScale / 2;
-    const containerHalfHeight = projContainerH * containerScale / 2;
+    const containerHalfWidth = projContainerW * unitScale / 2;
+    const containerHalfHeight = projContainerH * unitScale / 2;
 
-    const x = -containerHalfWidth + (posX * containerScale);
-    // Pour les vues avec l'axe vertical (hauteur), inverser Y pour avoir l'origine en bas
+    const x = -containerHalfWidth + (posX * unitScale);
     const y = (this.viewMode === 'side' || this.viewMode === 'side-opposite' || this.viewMode === 'back' || this.viewMode === 'front')
-      ? (containerHalfHeight - ((posY + itemH) * containerScale))
-      : (-containerHalfHeight + (posY * containerScale));
-    const width = itemW * containerScale;
-    const height = itemH * containerScale;
+      ? (containerHalfHeight - ((posY + itemH) * unitScale))
+      : (-containerHalfHeight + (posY * unitScale));
+    const width = itemW * unitScale;
+    const height = itemH * unitScale;
 
-    // Dessiner l'item
-    ctx.fillStyle = item.color;
-    ctx.fillRect(x, y, width, height);
+    return { x, y, width, height };
+  }
 
-    // Contour
-    ctx.strokeStyle = this.darkenColor(item.color, 20);
-    ctx.lineWidth = 1;
+  private drawSelectedHighlight(
+    ctx: CanvasRenderingContext2D,
+    item: VisualizationItem,
+    container: VisualizationContainer,
+    unitScale: number
+  ): void {
+    const { x, y, width, height } = this.getProjectedItemRectPx(item, container, unitScale);
+
+    ctx.save();
+    // Halo extérieur
+    ctx.strokeStyle = 'rgba(59, 130, 246, 0.6)';
+    ctx.lineWidth = 6;
     ctx.setLineDash([]);
     ctx.strokeRect(x, y, width, height);
 
-    // Marqueurs spéciaux
-    if (item.fragile && (this.config?.showFragileItems ?? true)) {
-      this.drawFragileMarkerToCtx(ctx, x, y, width, height);
-    }
+    // Bordure en pointillé
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 3]);
+    ctx.strokeRect(x, y, width, height);
+    ctx.restore();
+  }
 
-    if (!item.gerbable && (this.config?.highlightNonGerbable ?? true)) {
-      this.drawNonStackableMarkerToCtx(ctx, x, y, width, height);
-    }
+  private centerOnSelectedItem(): void {
+    const container = this.scene?.containers[this.scene?.currentContainerIndex || 0];
+    const selected = this.scene?.selectedItem;
+    if (!container || !selected) return;
 
-    // Texte (si assez de place)
-    if (width > 40 && height > 20) {
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '10px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText(item.type, x + width / 2, y + height / 2);
-    }
+    const base = this.getProjectedContainerSize(container);
+    const baseW = base.width;
+    const baseH = base.height;
+    const containerScale = Math.min(
+      (this.containerDimensions.width - 2 * this.padding) / baseW,
+      (this.containerDimensions.height - 2 * this.padding) / baseH
+    ) * 0.8;
+    const unitScale = this.offscreenScale || 1;
+    const sceneScale = containerScale / unitScale;
+
+    const r = this.getProjectedItemRectPx(selected, container, unitScale);
+    const cx = r.x + r.width / 2;
+    const cy = r.y + r.height / 2;
+
+    this.offsetX = -cx * this.scale * sceneScale;
+    this.offsetY = -cy * this.scale * sceneScale;
+    this.render();
+  }
+
+  private selectAndCenter(
+    item: VisualizationItem,
+    container: VisualizationContainer,
+    unitScale: number,
+    sceneScale: number
+  ): void {
+    // Propager la sélection via le service pour synchroniser tous les composants
+    this.visualizationService.selectItem(item);
+
+    // Centrer immédiatement
+    const r = this.getProjectedItemRectPx(item, container, unitScale);
+    const cx = r.x + r.width / 2;
+    const cy = r.y + r.height / 2;
+    this.offsetX = -cx * this.scale * sceneScale;
+    this.offsetY = -cy * this.scale * sceneScale;
+    this.lastSelectedItemId = item.id;
+    this.render();
   }
 
   private drawFragileMarkerToCtx(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
