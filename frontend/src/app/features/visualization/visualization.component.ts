@@ -1,6 +1,6 @@
 // src/app/features/visualization/visualization.component.ts
 
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -51,6 +51,10 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   sidebarCollapsed = false;
 
   private destroy$ = new Subject<void>();
+
+  // Références aux vues pour déclencher un reset contextuel
+  @ViewChild(CanvasComponent) private canvasComp?: CanvasComponent;
+  @ViewChild(SceneComponent) private sceneComp?: SceneComponent;
 
   constructor(
     private visualizationService: VisualizationService,
@@ -332,7 +336,14 @@ export class VisualizationComponent implements OnInit, OnDestroy {
    * Réinitialisation de la vue
    */
   resetView(): void {
-    // Créer les paramètres de viewport par défaut
+    // Réinitialise selon la vue active
+    if (this.currentView === '2d') {
+      this.canvasComp?.resetZoom();
+    } else {
+      this.sceneComp?.resetView();
+    }
+
+    // Mettre aussi à jour le viewport partagé pour garder la cohérence d'état
     const defaultViewport: ViewportSettings = {
       zoom: 1,
       rotation: { x: -0.3, y: 0.5, z: 0 },
@@ -344,7 +355,6 @@ export class VisualizationComponent implements OnInit, OnDestroy {
       showDimensions: true,
       backgroundColor: '#f5f5f5'
     };
-
     this.visualizationService.updateViewport(defaultViewport);
   }
 

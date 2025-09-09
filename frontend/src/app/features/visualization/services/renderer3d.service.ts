@@ -799,6 +799,13 @@ export class ThreeDRendererService {
   }
 
   /**
+   * Réinitialise la caméra/contrôles sur le conteneur courant
+   */
+  public resetCamera(container: VisualizationContainer): void {
+    this.focusOnContainer(container);
+  }
+
+  /**
    * Met à jour la configuration de rendu
    */
   updateConfig(config: VisualizationConfig): void {

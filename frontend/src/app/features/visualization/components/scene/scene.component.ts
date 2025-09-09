@@ -91,4 +91,15 @@ export class SceneComponent implements OnInit, OnChanges, OnDestroy {
       this.threeDRenderer.dispose();
     }
   }
+
+  /**
+   * Réinitialise la vue 3D (caméra + cible) sur le conteneur courant
+   */
+  public resetView(): void {
+    if (!this.isInitialized || !this.scene) return;
+    const container = this.scene.containers[this.scene.currentContainerIndex];
+    if (container) {
+      this.threeDRenderer.resetCamera(container);
+    }
+  }
 }
