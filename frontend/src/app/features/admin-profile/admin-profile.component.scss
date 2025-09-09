@@ -1,0 +1,27 @@
+/* Reuse admin dashboard layout styles for consistency */
+.admin-dashboard-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar { position: fixed; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; }
+.logo-section { display: flex; align-items: center; }
+.logo-section .logo { height: 40px; margin-right: 16px; }
+.logo-section .app-title { font-size: 20px; font-weight: 500; }
+.toolbar-spacer { flex: 1; }
+.user-section { display: flex; align-items: center; }
+.user-section .username { margin-right: 8px; }
+
+.sidenav-container { flex: 1; margin-top: 64px; }
+.sidenav { width: 240px; background: #fff; border-right: 1px solid rgba(0,0,0,0.12); }
+.sidenav-content { padding: 20px; background: #f5f5f5; }
+.content-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+.dashboard-header { margin-bottom: 24px; }
+.dashboard-header h1 { margin: 0; font-size: 28px; font-weight: 500; color: #333; }
+.dashboard-header p { margin-top: 8px; color: #666; font-size: 16px; }
+
+.profile-container { display: flex; justify-content: center; }
+.profile-card { width: 100%; max-width: 720px; }
+.avatar { background: #e0e0e0; display: flex; justify-content: center; align-items: center; }
