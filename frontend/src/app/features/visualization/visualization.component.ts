@@ -1,23 +1,14 @@
 // src/app/features/visualization/visualization.component.ts
 
-<<<<<<< HEAD
 import { Component, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
-=======
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
 // Imports des composants de visualisation
 import { CanvasComponent } from './components/canvas/canvas.component';
 import { SceneComponent } from './components/scene/scene.component';
-<<<<<<< HEAD
-=======
-import { ToolbarComponent } from './components/toolbar/toolbar.component';
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
 import { PanelComponent } from './components/panel/panel.component';
 
 // Imports des services et modèles
@@ -38,10 +29,6 @@ import { ExportService } from './services/export.service';
     CommonModule,
     CanvasComponent,
     SceneComponent,
-<<<<<<< HEAD
-=======
-    ToolbarComponent,
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
     PanelComponent
   ],
   templateUrl: './visualization.component.html',
@@ -64,20 +51,16 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   sidebarCollapsed = false;
 
   private destroy$ = new Subject<void>();
-<<<<<<< HEAD
   private isInitializing = false;
 
   // Références aux vues pour déclencher un reset contextuel
   @ViewChild(CanvasComponent) private canvasComp?: CanvasComponent;
   @ViewChild(SceneComponent) private sceneComp?: SceneComponent;
-=======
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
 
   constructor(
     private visualizationService: VisualizationService,
     private router: Router,
     private route: ActivatedRoute,
-<<<<<<< HEAD
     private exportService: ExportService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
@@ -87,14 +70,6 @@ export class VisualizationComponent implements OnInit, OnDestroy {
     this.subscribeToVisualizationState();
     // Puis initialiser la visualisation (déclenche le chargement)
     this.initializeVisualization();
-=======
-    private exportService: ExportService
-  ) { }
-
-  ngOnInit(): void {
-    this.initializeVisualization();
-    this.subscribeToVisualizationState();
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
   }
 
   ngOnDestroy(): void {
@@ -108,9 +83,7 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   private initializeVisualization(): void {
     console.log('🎯 INIT: Début initialisation visualisation');
 
-<<<<<<< HEAD
     const isBrowser = isPlatformBrowser(this.platformId);
-
     if (isBrowser) {
       // Vérifier sessionStorage immédiatement (navigateur uniquement)
       try {
@@ -145,33 +118,6 @@ export class VisualizationComponent implements OnInit, OnDestroy {
       } catch (e) {
         console.warn('Accès à history.state indisponible:', e);
       }
-=======
-    // Vérifier sessionStorage immédiatement
-    const sessionData = sessionStorage.getItem('simulationData');
-    console.log('💾 SessionStorage data:', sessionData ? 'TROUVÉ' : 'VIDE');
-
-    if (sessionData) {
-      try {
-        this.simulationData = JSON.parse(sessionData);
-        console.log('✅ Données récupérées:', this.simulationData);
-        sessionStorage.removeItem('simulationData');
-        this.loadVisualization();
-        return;
-      } catch (error) {
-        console.error('❌ Erreur parsing:', error);
-      }
-    }
-
-    // Si pas de sessionStorage, essayer les autres méthodes
-    console.log('🔍 Vérification history.state...');
-    const historyState = window.history.state;
-
-    if (historyState?.simulationData) {
-      console.log('✅ Trouvé dans history.state');
-      this.simulationData = historyState.simulationData;
-      this.loadVisualization();
-      return;
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
     }
 
     console.log('❌ Aucune donnée trouvée');
@@ -190,7 +136,6 @@ export class VisualizationComponent implements OnInit, OnDestroy {
     }
 
     try {
-<<<<<<< HEAD
       // Activer l'état de chargement et masquer l'ancienne scène
       this.isInitializing = true;
       this.loading = true;
@@ -198,11 +143,7 @@ export class VisualizationComponent implements OnInit, OnDestroy {
       this.scene = null;
       // Initialiser la visualisation avec les données (asynchrone)
       this.visualizationService.initializeVisualization(this.simulationData);
-=======
-      // Initialiser la visualisation avec les données
-      this.visualizationService.initializeVisualization(this.simulationData);
-      this.loading = false;
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
+      
     } catch (error) {
       console.error('Erreur lors de l\'initialisation de la visualisation:', error);
       this.error = 'Erreur lors du chargement de la visualisation';
@@ -229,14 +170,11 @@ export class VisualizationComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(scene => {
         this.scene = scene;
-<<<<<<< HEAD
         // Désactiver le loader après réception d'une nouvelle scène post-init
         if (this.isInitializing) {
           this.loading = false;
           this.isInitializing = false;
         }
-=======
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
       });
 
     // Écouter les changements de configuration
@@ -287,15 +225,11 @@ export class VisualizationComponent implements OnInit, OnDestroy {
 
   /**
    * Retour à la simulation
-   */
+  */
   goBackToSimulation(): void {
-<<<<<<< HEAD
     this.router.navigate(['/simulation'], {
       state: { simulationData: this.simulationData }
     });
-=======
-    this.router.navigate(['/simulation']);
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
   }
 
   /**
@@ -414,7 +348,6 @@ export class VisualizationComponent implements OnInit, OnDestroy {
    * Réinitialisation de la vue
    */
   resetView(): void {
-<<<<<<< HEAD
     // Réinitialise selon la vue active
     if (this.currentView === '2d') {
       this.canvasComp?.resetZoom();
@@ -423,9 +356,6 @@ export class VisualizationComponent implements OnInit, OnDestroy {
     }
 
     // Mettre aussi à jour le viewport partagé pour garder la cohérence d'état
-=======
-    // Créer les paramètres de viewport par défaut
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
     const defaultViewport: ViewportSettings = {
       zoom: 1,
       rotation: { x: -0.3, y: 0.5, z: 0 },
@@ -437,10 +367,6 @@ export class VisualizationComponent implements OnInit, OnDestroy {
       showDimensions: true,
       backgroundColor: '#f5f5f5'
     };
-<<<<<<< HEAD
-=======
-
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
     this.visualizationService.updateViewport(defaultViewport);
   }
 
@@ -473,8 +399,4 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   hasMultipleContainers(): boolean {
     return (this.scene?.containers?.length || 0) > 1;
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
