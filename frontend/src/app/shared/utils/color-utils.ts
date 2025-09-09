@@ -108,6 +108,90 @@ export class ColorUtils {
   }
 
   /**
+   * Convertit HSL en HEX (génère des couleurs vives)
+   */
+  static hslToHex(h: number, s: number, l: number): string {
+    s /= 100; l /= 100;
+    const k = (n: number) => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = (n: number) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    const toHex = (x: number) => Math.round(255 * x).toString(16).padStart(2, '0');
+    return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`.toUpperCase();
+  }
+
+  /**
+   * Conversion RGB -> XYZ (D65)
+   */
+  private static rgbToXyz(r: number, g: number, b: number) {
+    r = r / 255; g = g / 255; b = b / 255;
+    const srgbToLinear = (c: number) => c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    r = srgbToLinear(r); g = srgbToLinear(g); b = srgbToLinear(b);
+    const x = r * 0.4124 + g * 0.3576 + b * 0.1805;
+    const y = r * 0.2126 + g * 0.7152 + b * 0.0722;
+    const z = r * 0.0193 + g * 0.1192 + b * 0.9505;
+    return { x: x * 100, y: y * 100, z: z * 100 };
+  }
+
+  /**
+   * Conversion XYZ -> Lab (D65)
+   */
+  private static xyzToLab(x: number, y: number, z: number) {
+    const refX = 95.047, refY = 100.0, refZ = 108.883;
+    x = x / refX; y = y / refY; z = z / refZ;
+    const f = (t: number) => t > 0.008856 ? Math.cbrt(t) : (7.787 * t) + (16 / 116);
+    const fx = f(x), fy = f(y), fz = f(z);
+    const L = (116 * fy) - 16;
+    const a = 500 * (fx - fy);
+    const b = 200 * (fy - fz);
+    return { L, a, b };
+  }
+
+  private static hexToLab(hex: string) {
+    const rgb = this.hexToRgb(hex);
+    if (!rgb) return null;
+    const xyz = this.rgbToXyz(rgb.r, rgb.g, rgb.b);
+    return this.xyzToLab(xyz.x, xyz.y, xyz.z);
+  }
+
+  /**
+   * DeltaE (CIE76) – suffisante pour distinguer visuellement
+   */
+  static deltaE(hex1: string, hex2: string): number {
+    const lab1 = this.hexToLab(hex1);
+    const lab2 = this.hexToLab(hex2);
+    if (!lab1 || !lab2) return Infinity;
+    const dL = lab1.L - lab2.L;
+    const da = lab1.a - lab2.a;
+    const db = lab1.b - lab2.b;
+    return Math.sqrt(dL * dL + da * da + db * db);
+  }
+
+  /**
+   * Vérifie si deux couleurs sont trop similaires selon un seuil DeltaE
+   */
+  static areSimilar(hex1: string, hex2: string, minDeltaE = 25): boolean {
+    return this.deltaE(hex1, hex2) < minDeltaE;
+  }
+
+  /**
+   * Génère une couleur aléatoire distincte d'une liste existante.
+   * Utilise des couleurs vives (HSL) et évite les similaires selon DeltaE.
+   */
+  static getDistinctRandomColor(existingColors: string[] = [], minDeltaE = 25, maxAttempts = 50): string {
+    const normalized = (existingColors || []).map(c => c?.toUpperCase()).filter(Boolean) as string[];
+    for (let i = 0; i < maxAttempts; i++) {
+      const hue = Math.floor(Math.random() * 360);
+      const saturation = 70 + Math.floor(Math.random() * 21); // 70–90%
+      const lightness = 45 + Math.floor(Math.random() * 11); // 45–55%
+      const candidate = this.hslToHex(hue, saturation, lightness);
+      const similar = normalized.some(c => this.areSimilar(c, candidate, minDeltaE));
+      if (!similar) return candidate;
+    }
+    // Fallback si toutes les tentatives échouent
+    return this.getRandomColor().toUpperCase();
+  }
+
+  /**
    * Vérifie le contraste entre deux couleurs
    */
   static getContrastRatio(hex1: string, hex2: string): number {

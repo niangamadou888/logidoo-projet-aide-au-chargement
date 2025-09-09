@@ -3,11 +3,19 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { userRoleGuard } from '../core/guards/user-role.guard';
 import { ConteneursPageComponent } from './conteneurs/conteneurs-page.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { AdminProfileComponent } from './admin-profile/admin-profile.component';
 
 export const DASHBOARD_ROUTES: Routes = [
   {
     path: 'admin',
     component: AdminDashboardComponent,
+    canActivate: [userRoleGuard],
+    data: { requiredRole: 'admin' }
+  },
+  {
+    path: 'admin/profile',
+    component: AdminProfileComponent,
     canActivate: [userRoleGuard],
     data: { requiredRole: 'admin' }
   },
@@ -20,6 +28,12 @@ export const DASHBOARD_ROUTES: Routes = [
   {
     path: 'user',
     component: UserDashboardComponent,
+    canActivate: [userRoleGuard],
+    data: { requiredRole: 'user' }
+  },
+  {
+    path: 'user/profile',
+    component: UserProfileComponent,
     canActivate: [userRoleGuard],
     data: { requiredRole: 'user' }
   },

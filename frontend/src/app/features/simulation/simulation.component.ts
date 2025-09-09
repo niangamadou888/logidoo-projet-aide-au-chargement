@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Contenant } from '../../core/models/contenant.model';
 import { Simulation, Colis, ContainerStats } from '../../models/simulation.model';
 import { ExcelService } from '../../services/excelService';
+import { ColorUtils } from '../../shared/utils/color-utils';
 import { Router } from '@angular/router';
 
 
@@ -95,7 +96,7 @@ export class SimulationComponent implements OnInit {
             ...c,
             fragile: c.fragile ?? false,
             gerbable: c.gerbable ?? true,
-            couleur: c.couleur || this.getRandomColor()
+            couleur: c.couleur || this.getDistinctRandomColor()
           }));
           this.listeColis = this.listeColis.concat(enriched);
           this.snackBar.open('Colis importés avec succès', 'OK', { duration: 3000 });
@@ -115,27 +116,16 @@ export class SimulationComponent implements OnInit {
     }
   }
 
-
-  // Génère une couleur vive aléatoire en hex
-  private hslToHex(h: number, s: number, l: number): string {
-    s /= 100; l /= 100;
-    const k = (n: number) => (n + h / 30) % 12;
-    const a = s * Math.min(l, 1 - l);
-    const f = (n: number) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-    const toHex = (x: number) => Math.round(255 * x).toString(16).padStart(2, '0');
-    return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`.toUpperCase();
-  }
-
-  private getRandomColor(): string {
-    const hue = Math.floor(Math.random() * 360); // 0-359
-    const saturation = 70 + Math.floor(Math.random() * 21); // 70-90%
-    const lightness = 45 + Math.floor(Math.random() * 11); // 45-55%
-    return this.hslToHex(hue, saturation, lightness);
+  private getDistinctRandomColor(): string {
+    const existing = (this.listeColis || [])
+      .map(c => c.couleur)
+      .filter((c): c is string => !!c);
+    return ColorUtils.getDistinctRandomColor(existing, 25, 50);
   }
 
   updateColisCouleur(index: number, couleur: string) {
     if (!this.listeColis[index]) return;
-    this.listeColis[index].couleur = couleur || this.getRandomColor();
+    this.listeColis[index].couleur = couleur || this.getDistinctRandomColor();
   }
 
   toggleFragile(index: number) {
@@ -155,7 +145,7 @@ export class SimulationComponent implements OnInit {
 
   randomizeColor(index: number) {
     if (!this.listeColis[index]) return;
-    this.listeColis[index].couleur = this.getRandomColor();
+    this.listeColis[index].couleur = this.getDistinctRandomColor();
   }
 
   nouvelleSimulation() {
@@ -271,7 +261,7 @@ export class SimulationComponent implements OnInit {
           telephone: formValues.telephone || undefined,
           fragile: Boolean(formValues.fragile),
           gerbable: Boolean(formValues.gerbable),
-          couleur: formValues.couleur || this.getRandomColor(),
+          couleur: formValues.couleur || this.getDistinctRandomColor(),
           statut: 'actif',
           dateAjout: new Date()
         };
@@ -314,7 +304,7 @@ export class SimulationComponent implements OnInit {
           telephone: '',
           fragile: false,
           gerbable: true,
-          couleur: this.getRandomColor()
+          couleur: this.getDistinctRandomColor()
         });
 
         // Réinitialiser les résultats de simulation

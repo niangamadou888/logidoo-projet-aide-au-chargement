@@ -44,9 +44,9 @@
           <mat-icon matListItemIcon>assignment</mat-icon>
           <span matListItemTitle>Projects</span>
         </a>
-        <a mat-list-item>
-          <mat-icon matListItemIcon>settings</mat-icon>
-          <span matListItemTitle>Settings</span>
+        <a mat-list-item [routerLink]="['/dashboard/admin/profile']" routerLinkActive="active">
+          <mat-icon matListItemIcon>person</mat-icon>
+          <span matListItemTitle>Profile</span>
         </a>
       </mat-nav-list>
     </mat-sidenav>
