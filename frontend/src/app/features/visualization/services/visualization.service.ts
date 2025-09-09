@@ -13,6 +13,8 @@ import {
 } from '../models/visualization.model';
 import { SimulationData, OptimizedLayout } from '../models/placement.model';
 import { ColorUtils } from '../../../shared/utils/color-utils';
+import { ConteneurService } from '../../../services/conteneur.service';
+import { Contenant } from '../../../core/models/contenant.model';
 import { GeometryUtils } from '../../../shared/utils/geometry-utils';
 
 @Injectable({
@@ -29,7 +31,9 @@ export class VisualizationService {
   public config$ = this.configSubject.asObservable();
   public viewport$ = this.viewportSubject.asObservable();
 
-  constructor() { }
+  private containersCache: Record<string, Contenant> = {};
+
+  constructor(private conteneurService: ConteneurService) { }
 
   /**
    * Initialise la visualisation avec les données de simulation
@@ -37,16 +41,46 @@ export class VisualizationService {
   initializeVisualization(simulationData: SimulationData): void {
     console.log('Initialisation de la visualisation avec:', simulationData);
 
-    const containers = this.convertSimulationToContainers(simulationData);
-
-    const scene: VisualizationScene = {
-      containers,
-      viewMode: containers.length === 1 ? 'individual' : 'all',
-      renderMode: '3d',
-      currentContainerIndex: 0
-    };
-
-    this.sceneSubject.next(scene);
+    // Tenter d'enrichir avec les dimensions exactes des contenants via l'API
+    try {
+      this.conteneurService.listerContenants().subscribe({
+        next: (list) => {
+          this.containersCache = {};
+          for (const c of list || []) {
+            if (c && c._id) this.containersCache[c._id] = c;
+          }
+          const containers = this.convertSimulationToContainers(simulationData);
+          const scene: VisualizationScene = {
+            containers,
+            viewMode: containers.length === 1 ? 'individual' : 'all',
+            renderMode: '3d',
+            currentContainerIndex: 0
+          };
+          this.sceneSubject.next(scene);
+        },
+        error: (err) => {
+          console.warn('Impossible de charger la liste des contenants pour enrichir les dimensions:', err);
+          const containers = this.convertSimulationToContainers(simulationData);
+          const scene: VisualizationScene = {
+            containers,
+            viewMode: containers.length === 1 ? 'individual' : 'all',
+            renderMode: '3d',
+            currentContainerIndex: 0
+          };
+          this.sceneSubject.next(scene);
+        }
+      });
+    } catch (e) {
+      console.warn('Erreur inattendue lors du chargement des contenants:', e);
+      const containers = this.convertSimulationToContainers(simulationData);
+      const scene: VisualizationScene = {
+        containers,
+        viewMode: containers.length === 1 ? 'individual' : 'all',
+        renderMode: '3d',
+        currentContainerIndex: 0
+      };
+      this.sceneSubject.next(scene);
+    }
   }
 
   /**
@@ -60,29 +94,60 @@ export class VisualizationService {
     return simulationData.resultats.containers.map((container: any, index: number) => {
       console.log('🚚 Container du backend:', container);
 
+      // Essayer de récupérer les dimensions exactes depuis le cache par ref (ObjectId)
+      const fromCache = container?.ref ? this.containersCache[container.ref] : undefined;
+
+      let chosenDims: Dimensions3D = {
+        longueur: container.dimensions?.longueur
+          ?? fromCache?.dimensions?.longueur
+          ?? container.capacity?.longueur
+          ?? 1200,
+        largeur: container.dimensions?.largeur
+          ?? fromCache?.dimensions?.largeur
+          ?? container.capacity?.largeur
+          ?? 240,
+        hauteur: container.dimensions?.hauteur
+          ?? fromCache?.dimensions?.hauteur
+          ?? container.capacity?.hauteur
+          ?? 260
+      };
+
+      // Normaliser les unités: certaines sources stockent en mm, convertir en cm
+      const looksLikeMM = (chosenDims.largeur >= 1000) || (chosenDims.hauteur >= 1000);
+      if (looksLikeMM) {
+        chosenDims = {
+          longueur: chosenDims.longueur / 10,
+          largeur: chosenDims.largeur / 10,
+          hauteur: chosenDims.hauteur / 10
+        };
+      }
+
+      // Calculs d'utilisation basés sur dimensions fiables
+      const usedVolume = container.used?.volume ?? this.calculateUsedVolume(container.items || []);
+      const containerVolume = (chosenDims.longueur * chosenDims.largeur * chosenDims.hauteur) / 1_000_000;
+      const volumeUtilPercent = container.utilization?.volume ?? (containerVolume > 0 ? (usedVolume / containerVolume) * 100 : 0);
+      const usedWeight = container.used?.poids ?? this.calculateUsedWeight(container.items || []);
+      const maxWeight = container.capacity?.poids || (container.categorie === 'conteneur' ? 28000 : 40000);
+      const weightUtilPercent = container.utilization?.poids ?? (maxWeight > 0 ? (usedWeight / maxWeight) * 100 : 0);
+
       const visualizationContainer: VisualizationContainer = {
         id: container.id || `container-${index}`,
         ref: container.ref,
         type: container.type || 'Container',
         categorie: container.categorie || 'conteneur',
-        dimensions: {
-          // Utiliser des dimensions réalistes de conteneur
-          longueur: container.capacity?.longueur || 1200,  // 12m
-          largeur: container.capacity?.largeur || 240,     // 2.4m 
-          hauteur: container.capacity?.hauteur || 260      // 2.6m
-        },
+        dimensions: chosenDims,
         items: this.convertItemsToVisualization(container.items || [], container.id),
         capacity: {
           volume: container.capacity?.volume || 0,
           poids: container.capacity?.poids || 0
         },
         used: {
-          volume: container.used?.volume || this.calculateUsedVolume(container.items || []),
-          poids: container.used?.poids || this.calculateUsedWeight(container.items || [])
+          volume: usedVolume,
+          poids: usedWeight
         },
         utilization: {
-          volume: container.utilization?.volume || this.calculateVolumeUtilization(container),
-          poids: container.utilization?.poids || this.calculateWeightUtilization(container)
+          volume: volumeUtilPercent,
+          poids: weightUtilPercent
         },
         color: this.getContainerColor(container.categorie),
         position: { x: index * 800, y: 0, z: 0 }

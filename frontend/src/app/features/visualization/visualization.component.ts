@@ -1,6 +1,6 @@
 // src/app/features/visualization/visualization.component.ts
 
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -51,6 +51,11 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   sidebarCollapsed = false;
 
   private destroy$ = new Subject<void>();
+  private isInitializing = false;
+
+  // Références aux vues pour déclencher un reset contextuel
+  @ViewChild(CanvasComponent) private canvasComp?: CanvasComponent;
+  @ViewChild(SceneComponent) private sceneComp?: SceneComponent;
 
   constructor(
     private visualizationService: VisualizationService,
@@ -61,8 +66,10 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.initializeVisualization();
+    // S'abonner d'abord pour capter le prochain état de scène
     this.subscribeToVisualizationState();
+    // Puis initialiser la visualisation (déclenche le chargement)
+    this.initializeVisualization();
   }
 
   ngOnDestroy(): void {
@@ -130,9 +137,13 @@ export class VisualizationComponent implements OnInit, OnDestroy {
     }
 
     try {
-      // Initialiser la visualisation avec les données
+      // Activer l'état de chargement et masquer l'ancienne scène
+      this.isInitializing = true;
+      this.loading = true;
+      this.error = null;
+      this.scene = null;
+      // Initialiser la visualisation avec les données (asynchrone)
       this.visualizationService.initializeVisualization(this.simulationData);
-      this.loading = false;
     } catch (error) {
       console.error('Erreur lors de l\'initialisation de la visualisation:', error);
       this.error = 'Erreur lors du chargement de la visualisation';
@@ -159,6 +170,11 @@ export class VisualizationComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(scene => {
         this.scene = scene;
+        // Désactiver le loader après réception d'une nouvelle scène post-init
+        if (this.isInitializing) {
+          this.loading = false;
+          this.isInitializing = false;
+        }
       });
 
     // Écouter les changements de configuration
@@ -332,7 +348,14 @@ export class VisualizationComponent implements OnInit, OnDestroy {
    * Réinitialisation de la vue
    */
   resetView(): void {
-    // Créer les paramètres de viewport par défaut
+    // Réinitialise selon la vue active
+    if (this.currentView === '2d') {
+      this.canvasComp?.resetZoom();
+    } else {
+      this.sceneComp?.resetView();
+    }
+
+    // Mettre aussi à jour le viewport partagé pour garder la cohérence d'état
     const defaultViewport: ViewportSettings = {
       zoom: 1,
       rotation: { x: -0.3, y: 0.5, z: 0 },
@@ -344,7 +367,6 @@ export class VisualizationComponent implements OnInit, OnDestroy {
       showDimensions: true,
       backgroundColor: '#f5f5f5'
     };
-
     this.visualizationService.updateViewport(defaultViewport);
   }
 
