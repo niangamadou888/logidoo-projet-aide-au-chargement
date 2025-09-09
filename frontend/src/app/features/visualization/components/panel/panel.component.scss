@@ -18,10 +18,23 @@
     }
   }
 
-  .panel-content {
+.panel-content {
     flex: 1;
     padding: 1.5rem;
     overflow-y: auto;
+  }
+}
+
+.search-box {
+  margin: 0 0 1rem 0;
+
+  input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    outline: none;
+    font-size: 0.875rem;
   }
 }
 

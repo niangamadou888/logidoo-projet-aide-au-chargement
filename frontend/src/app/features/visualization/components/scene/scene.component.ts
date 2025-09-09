@@ -1,7 +1,8 @@
 // src/app/features/visualization/components/scene/scene.component.ts
 
-import { Component, Input, OnInit, OnChanges, SimpleChanges, ElementRef, ViewChild, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, ElementRef, ViewChild, OnDestroy, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
 import { 
   VisualizationScene, 
   VisualizationConfig, 
@@ -27,16 +28,23 @@ export class SceneComponent implements OnInit, OnChanges, OnDestroy {
   isInitialized = false;
   initializationError: string | null = null;
 
-  constructor(private threeDRenderer: ThreeDRendererService) { }
+  constructor(private threeDRenderer: ThreeDRendererService, @Inject(PLATFORM_ID) private platformId: Object) { }
 
   ngOnInit(): void {
-    this.initializeScene();
+    if (isPlatformBrowser(this.platformId)) {
+      this.initializeScene();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.isInitialized) {
       if (changes['scene'] && this.scene) {
         this.updateScene();
+        // Si un item est sélectionné, centrer/mettre en évidence
+        const selected = this.scene.selectedItem;
+        if (selected) {
+          this.threeDRenderer.focusOnItem(selected);
+        }
       }
       if (changes['config'] && this.config) {
         this.threeDRenderer.updateConfig(this.config);

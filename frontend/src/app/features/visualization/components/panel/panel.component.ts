@@ -8,6 +8,7 @@ import {
   VisualizationContainer,
   VisualizationItem
 } from '../../models/visualization.model';
+import { VisualizationService } from '../../services/visualization.service';
 
 @Component({
   selector: 'app-panel',
@@ -21,14 +22,16 @@ export class PanelComponent implements OnInit {
   @Input() scene: VisualizationScene | null = null;
   @Input() config: VisualizationConfig | null = null;
 
-  constructor() { }
+  // Champ de recherche local
+  searchTerm = '';
+
+  constructor(private visualizationService: VisualizationService) { }
 
   ngOnInit(): void {
   }
 
   selectItem(item: VisualizationItem): void {
-    console.log('Select item:', item);
-    // TODO: Émettre un événement vers le parent ou utiliser le service
+    this.visualizationService.selectItem(item);
   }
 
   /**
@@ -67,5 +70,35 @@ export class PanelComponent implements OnInit {
    */
   trackByItemId(index: number, item: VisualizationItem): string {
     return item.id || index.toString();
+  }
+
+  /**
+   * Filtre les items selon le champ de recherche
+   */
+  getFilteredItems(items: VisualizationItem[] | undefined): VisualizationItem[] {
+    if (!items || !items.length) return [];
+    const q = (this.searchTerm || '').trim().toLowerCase();
+    if (!q) return items;
+    return items.filter(it => {
+      const values = [
+        it.id,
+        it.reference,
+        it.type,
+        it.nomDestinataire,
+        it.adresse,
+        it.telephone
+      ]
+        .filter(Boolean)
+        .map(v => String(v).toLowerCase());
+      return values.some(v => v.includes(q));
+    });
+  }
+
+  /**
+   * Handler input pour éviter les erreurs de cast dans le template
+   */
+  onSearch(event: Event): void {
+    const target = event.target as HTMLInputElement | null;
+    this.searchTerm = target?.value ?? '';
   }
 }

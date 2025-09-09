@@ -1,7 +1,8 @@
 // src/app/features/visualization/visualization.component.ts
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -55,7 +56,8 @@ export class VisualizationComponent implements OnInit, OnDestroy {
     private visualizationService: VisualizationService,
     private router: Router,
     private route: ActivatedRoute,
-    private exportService: ExportService
+    private exportService: ExportService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
   ngOnInit(): void {
@@ -74,30 +76,42 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   private initializeVisualization(): void {
     console.log('🎯 INIT: Début initialisation visualisation');
 
-    // Vérifier sessionStorage immédiatement
-    const sessionData = sessionStorage.getItem('simulationData');
-    console.log('💾 SessionStorage data:', sessionData ? 'TROUVÉ' : 'VIDE');
+    const isBrowser = isPlatformBrowser(this.platformId);
 
-    if (sessionData) {
+    if (isBrowser) {
+      // Vérifier sessionStorage immédiatement (navigateur uniquement)
       try {
-        this.simulationData = JSON.parse(sessionData);
-        console.log('✅ Données récupérées:', this.simulationData);
-        this.loadVisualization();
-        return;
-      } catch (error) {
-        console.error('❌ Erreur parsing:', error);
+        const sessionData = sessionStorage.getItem('simulationData');
+        console.log('💾 SessionStorage data:', sessionData ? 'TROUVÉ' : 'VIDE');
+
+        if (sessionData) {
+          try {
+            this.simulationData = JSON.parse(sessionData);
+            console.log('✅ Données récupérées:', this.simulationData);
+            this.loadVisualization();
+            return;
+          } catch (error) {
+            console.error('❌ Erreur parsing:', error);
+          }
+        }
+      } catch (e) {
+        console.warn('SessionStorage non disponible:', e);
       }
-    }
 
-    // Si pas de sessionStorage, essayer les autres méthodes
-    console.log('🔍 Vérification history.state...');
-    const historyState = window.history.state;
+      // Si pas de sessionStorage, essayer les autres méthodes
+      try {
+        console.log('🔍 Vérification history.state...');
+        const historyState = window.history?.state;
 
-    if (historyState?.simulationData) {
-      console.log('✅ Trouvé dans history.state');
-      this.simulationData = historyState.simulationData;
-      this.loadVisualization();
-      return;
+        if (historyState?.simulationData) {
+          console.log('✅ Trouvé dans history.state');
+          this.simulationData = historyState.simulationData;
+          this.loadVisualization();
+          return;
+        }
+      } catch (e) {
+        console.warn('Accès à history.state indisponible:', e);
+      }
     }
 
     console.log('❌ Aucune donnée trouvée');
