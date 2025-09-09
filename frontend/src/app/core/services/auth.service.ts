@@ -72,6 +72,14 @@ export class AuthService {
     );
   }
 
+  requestPasswordReset(email: string): Observable<{ success: boolean; message: string; resetUrl?: string; devToken?: string; }> {
+    return this.http.post<{ success: boolean; message: string; resetUrl?: string; devToken?: string; }>(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, password: string): Observable<{ success: boolean; message: string; }> {
+    return this.http.post<{ success: boolean; message: string; }>(`${this.apiUrl}/reset-password`, { token, password });
+  }
+
   logout(): void {
     // Remove token and user info from localStorage
     if (this.isBrowser) {
