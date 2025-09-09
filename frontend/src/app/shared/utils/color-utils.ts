@@ -108,7 +108,6 @@ export class ColorUtils {
   }
 
   /**
-<<<<<<< HEAD
    * Convertit HSL en HEX (génère des couleurs vives)
    */
   static hslToHex(h: number, s: number, l: number): string {
@@ -193,8 +192,6 @@ export class ColorUtils {
   }
 
   /**
-=======
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
    * Vérifie le contraste entre deux couleurs
    */
   static getContrastRatio(hex1: string, hex2: string): number {
@@ -218,8 +215,4 @@ export class ColorUtils {
 
     return (brightest + 0.05) / (darkest + 0.05);
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
