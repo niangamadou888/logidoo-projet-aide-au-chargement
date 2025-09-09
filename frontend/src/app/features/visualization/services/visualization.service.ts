@@ -13,8 +13,11 @@ import {
 } from '../models/visualization.model';
 import { SimulationData, OptimizedLayout } from '../models/placement.model';
 import { ColorUtils } from '../../../shared/utils/color-utils';
+<<<<<<< HEAD
 import { ConteneurService } from '../../../services/conteneur.service';
 import { Contenant } from '../../../core/models/contenant.model';
+=======
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
 import { GeometryUtils } from '../../../shared/utils/geometry-utils';
 
 @Injectable({
@@ -31,9 +34,13 @@ export class VisualizationService {
   public config$ = this.configSubject.asObservable();
   public viewport$ = this.viewportSubject.asObservable();
 
+<<<<<<< HEAD
   private containersCache: Record<string, Contenant> = {};
 
   constructor(private conteneurService: ConteneurService) { }
+=======
+  constructor() { }
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
 
   /**
    * Initialise la visualisation avec les données de simulation
@@ -41,6 +48,7 @@ export class VisualizationService {
   initializeVisualization(simulationData: SimulationData): void {
     console.log('Initialisation de la visualisation avec:', simulationData);
 
+<<<<<<< HEAD
     // Tenter d'enrichir avec les dimensions exactes des contenants via l'API
     try {
       this.conteneurService.listerContenants().subscribe({
@@ -81,6 +89,18 @@ export class VisualizationService {
       };
       this.sceneSubject.next(scene);
     }
+=======
+    const containers = this.convertSimulationToContainers(simulationData);
+
+    const scene: VisualizationScene = {
+      containers,
+      viewMode: containers.length === 1 ? 'individual' : 'all',
+      renderMode: '3d',
+      currentContainerIndex: 0
+    };
+
+    this.sceneSubject.next(scene);
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
   }
 
   /**
@@ -94,6 +114,7 @@ export class VisualizationService {
     return simulationData.resultats.containers.map((container: any, index: number) => {
       console.log('🚚 Container du backend:', container);
 
+<<<<<<< HEAD
       // Essayer de récupérer les dimensions exactes depuis le cache par ref (ObjectId)
       const fromCache = container?.ref ? this.containersCache[container.ref] : undefined;
 
@@ -130,24 +151,44 @@ export class VisualizationService {
       const maxWeight = container.capacity?.poids || (container.categorie === 'conteneur' ? 28000 : 40000);
       const weightUtilPercent = container.utilization?.poids ?? (maxWeight > 0 ? (usedWeight / maxWeight) * 100 : 0);
 
+=======
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
       const visualizationContainer: VisualizationContainer = {
         id: container.id || `container-${index}`,
         ref: container.ref,
         type: container.type || 'Container',
         categorie: container.categorie || 'conteneur',
+<<<<<<< HEAD
         dimensions: chosenDims,
+=======
+        dimensions: {
+          // Utiliser des dimensions réalistes de conteneur
+          longueur: container.capacity?.longueur || 1200,  // 12m
+          largeur: container.capacity?.largeur || 240,     // 2.4m 
+          hauteur: container.capacity?.hauteur || 260      // 2.6m
+        },
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
         items: this.convertItemsToVisualization(container.items || [], container.id),
         capacity: {
           volume: container.capacity?.volume || 0,
           poids: container.capacity?.poids || 0
         },
         used: {
+<<<<<<< HEAD
           volume: usedVolume,
           poids: usedWeight
         },
         utilization: {
           volume: volumeUtilPercent,
           poids: weightUtilPercent
+=======
+          volume: container.used?.volume || this.calculateUsedVolume(container.items || []),
+          poids: container.used?.poids || this.calculateUsedWeight(container.items || [])
+        },
+        utilization: {
+          volume: container.utilization?.volume || this.calculateVolumeUtilization(container),
+          poids: container.utilization?.poids || this.calculateWeightUtilization(container)
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
         },
         color: this.getContainerColor(container.categorie),
         position: { x: index * 800, y: 0, z: 0 }
@@ -244,6 +285,7 @@ export class VisualizationService {
   private calculateItemPositions(container: VisualizationContainer): void {
     if (!container.items?.length) return;
 
+<<<<<<< HEAD
     console.log('📦 Calcul des positions (optimisé, anti-collision) pour container:', container.dimensions);
 
     const containerDims: Dimensions3D = { ...container.dimensions };
@@ -355,6 +397,58 @@ export class VisualizationService {
         }
       }
     }
+=======
+    console.log('📦 Calcul des positions pour container:', container.dimensions);
+
+    const margin = 20;
+    const spacing = 5;
+    const maxX = container.dimensions.longueur - margin;
+    const maxY = container.dimensions.largeur - margin;
+    const maxZ = container.dimensions.hauteur - margin;
+
+    let currentX = margin;
+    let currentY = margin;
+    let currentZ = margin;
+    let currentRowMaxWidth = 0;
+    let currentLayerMaxHeight = 0;
+
+    container.items.forEach((item, index) => {
+      const { longueur, largeur, hauteur } = item.dimensions;
+
+      // Vérification CORRECTE : est-ce que l'item entier rentre ?
+      if (currentX + longueur > maxX) {
+        console.log(`⬅️ Item ${index + 1}: Fin de ligne (${currentX} + ${longueur} > ${maxX})`);
+
+        currentX = margin;
+        currentY += currentRowMaxWidth + spacing;
+        currentRowMaxWidth = 0;
+
+        if (currentY + largeur > maxY) {
+          console.log(`⬆️ Item ${index + 1}: Fin de couche (${currentY} + ${largeur} > ${maxY})`);
+
+          currentY = margin;
+          currentZ += currentLayerMaxHeight + spacing;
+          currentLayerMaxHeight = 0;
+
+          if (currentZ + hauteur > maxZ) {
+            console.log(`❌ Item ${index + 1}: Ne rentre pas (${currentZ} + ${hauteur} > ${maxZ})`);
+            item.position = { x: margin, y: margin, z: margin };
+            item.opacity = 0.3;
+            return;
+          }
+        }
+      }
+
+      item.position = { x: currentX, y: currentY, z: currentZ };
+      item.opacity = 1.0;
+
+      console.log(`✅ Item ${index + 1}: placé à x=${currentX}, y=${currentY}, z=${currentZ} (limite: ${maxX}, ${maxY}, ${maxZ})`);
+
+      currentX += longueur + spacing;
+      currentRowMaxWidth = Math.max(currentRowMaxWidth, largeur);
+      currentLayerMaxHeight = Math.max(currentLayerMaxHeight, hauteur);
+    });
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
   }
 
   /**
@@ -477,4 +571,8 @@ export class VisualizationService {
       backgroundColor: '#f5f5f5'
     };
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5

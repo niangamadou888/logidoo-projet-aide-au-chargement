@@ -26,7 +26,10 @@ export class ThreeDRendererService {
   private containerGroup: any = null;
   private itemsGroup: any = null;
   private helpersGroup: any = null;
+<<<<<<< HEAD
   private currentContainerDims: { longueur: number; largeur: number; hauteur: number } | null = null;
+=======
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
 
   // État du rendu
   private isInitialized = false;
@@ -36,6 +39,7 @@ export class ThreeDRendererService {
   // Configuration actuelle
   private currentConfig: VisualizationConfig | null = null;
   private currentViewport: ViewportSettings | null = null;
+<<<<<<< HEAD
   // Espace visuel entre les colis (en centimètres)
   private readonly gapCm: number = 2;
 
@@ -55,6 +59,8 @@ export class ThreeDRendererService {
   private camAnimDurationMs = 700;
   private camFrom: any | null = null; // THREE.Vector3
   private camTo: any | null = null;   // THREE.Vector3
+=======
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
 
   constructor() { }
 
@@ -236,9 +242,12 @@ export class ThreeDRendererService {
         this.controls.update();
       }
 
+<<<<<<< HEAD
       // Mise à jour animations personnalisées
       this.updateAnimations();
 
+=======
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
       this.renderer.render(this.scene, this.camera);
     };
 
@@ -277,7 +286,10 @@ export class ThreeDRendererService {
 
     // Vider les groupes
     this.clearScene();
+<<<<<<< HEAD
     this.itemMeshMap.clear();
+=======
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
 
     if (containers.length > 0) {
       const currentContainer = containers[currentIndex];
@@ -307,6 +319,7 @@ export class ThreeDRendererService {
       if (child.geometry) child.geometry.dispose();
       if (child.material) child.material.dispose();
     }
+<<<<<<< HEAD
 
     // Nettoyage sélection
     if (this.selectionOutline && this.selectionOutline.parent) {
@@ -317,6 +330,8 @@ export class ThreeDRendererService {
 
     // Nettoyage des effets de surbrillance
     this.clearProminentHighlight();
+=======
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
   }
 
   /**
@@ -365,9 +380,12 @@ export class ThreeDRendererService {
     floor.receiveShadow = true;
 
     this.containerGroup.add(floor);
+<<<<<<< HEAD
 
     // Mémoriser les dimensions courantes pour positionner correctement les colis
     this.currentContainerDims = { longueur, largeur, hauteur };
+=======
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
   }
 
   /**
@@ -377,9 +395,12 @@ export class ThreeDRendererService {
     items.forEach(item => {
       const mesh = this.createItemMesh(item);
       this.itemsGroup.add(mesh);
+<<<<<<< HEAD
       if (item.id) {
         this.itemMeshMap.set(item.id, mesh);
       }
+=======
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
     });
   }
 
@@ -389,6 +410,7 @@ export class ThreeDRendererService {
   private createItemMesh(item: VisualizationItem): any {
     const { longueur, largeur, hauteur } = item.dimensions;
 
+<<<<<<< HEAD
     // Réduire légèrement la géométrie pour créer un espace visuel entre les colis
     const adjLongueur = Math.max(1, longueur - this.gapCm);
     const adjLargeur = Math.max(1, largeur - this.gapCm);
@@ -399,10 +421,18 @@ export class ThreeDRendererService {
       this.cmToUnits(adjLongueur),
       this.cmToUnits(adjHauteur),
       this.cmToUnits(adjLargeur)
+=======
+    // Géométrie
+    const geometry = new THREE.BoxGeometry(
+      this.cmToUnits(longueur),
+      this.cmToUnits(hauteur),
+      this.cmToUnits(largeur)
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
     );
 
     // Matériau
     const color = new THREE.Color(item.color);
+<<<<<<< HEAD
     const materialParams: any = {
       color: color,
       transparent: item.opacity !== undefined,
@@ -413,10 +443,18 @@ export class ThreeDRendererService {
       materialParams.emissive = new THREE.Color(0xffd54f); // jaune/orangé
     }
     const material = new THREE.MeshLambertMaterial(materialParams);
+=======
+    const material = new THREE.MeshLambertMaterial({
+      color: color,
+      transparent: item.opacity !== undefined,
+      opacity: item.opacity || 1
+    });
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
 
     // Mesh
     const mesh = new THREE.Mesh(geometry, material);
 
+<<<<<<< HEAD
     // Position (conversion des coordonnées) basée sur les dimensions du conteneur courant
     const cont = this.currentContainerDims || { longueur: 1200, largeur: 240, hauteur: 260 };
     mesh.position.set(
@@ -424,6 +462,13 @@ export class ThreeDRendererService {
       this.cmToUnits(item.position.x + longueur / 2) - this.cmToUnits(cont.longueur) / 2,
       this.cmToUnits(item.position.z + hauteur / 2),
       this.cmToUnits(item.position.y + largeur / 2) - this.cmToUnits(cont.largeur) / 2
+=======
+    // Position (conversion des coordonnées) - CORRIGÉ
+    mesh.position.set(
+      this.cmToUnits(item.position.x + longueur / 2) - this.cmToUnits(1200) / 2, // Utiliser 1200 au lieu de 600
+      this.cmToUnits(item.position.z + hauteur / 2),
+      this.cmToUnits(item.position.y + largeur / 2) - this.cmToUnits(240) / 2
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
     );
 
     // Ombres
@@ -434,6 +479,7 @@ export class ThreeDRendererService {
     mesh.userData = { item };
 
     // Marqueurs spéciaux
+<<<<<<< HEAD
     if (item.fragile && (this.currentConfig?.showFragileItems ?? true)) {
       this.addFragileMarker(mesh);
     }
@@ -442,10 +488,17 @@ export class ThreeDRendererService {
       this.addNonStackableMarker(mesh);
     }
 
+=======
+    if (item.fragile) {
+      this.addFragileMarker(mesh);
+    }
+
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
     return mesh;
   }
 
   /**
+<<<<<<< HEAD
    * Met en évidence un item et centre la caméra dessus
    */
   public focusOnItem(item: VisualizationItem): void {
@@ -777,6 +830,21 @@ export class ThreeDRendererService {
     ctx.closePath();
     ctx.fillStyle = fillStyle;
     ctx.fill();
+=======
+   * Ajoute un marqueur fragile
+   */
+  private addFragileMarker(parentMesh: any): void {
+    const markerGeometry = new THREE.SphereGeometry(5, 8, 6);
+    const markerMaterial = new THREE.MeshBasicMaterial({ color: 0xff4444 });
+    const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+
+    // Position au-dessus de l'item
+    const box = new THREE.Box3().setFromObject(parentMesh);
+    marker.position.copy(box.max);
+    marker.position.y += 10;
+
+    parentMesh.add(marker);
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
   }
 
   /**
@@ -799,6 +867,7 @@ export class ThreeDRendererService {
   }
 
   /**
+<<<<<<< HEAD
    * Réinitialise la caméra/contrôles sur le conteneur courant
    */
   public resetCamera(container: VisualizationContainer): void {
@@ -806,6 +875,8 @@ export class ThreeDRendererService {
   }
 
   /**
+=======
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
    * Met à jour la configuration de rendu
    */
   updateConfig(config: VisualizationConfig): void {
@@ -869,4 +940,8 @@ export class ThreeDRendererService {
     this.clearScene();
     this.isInitialized = false;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5

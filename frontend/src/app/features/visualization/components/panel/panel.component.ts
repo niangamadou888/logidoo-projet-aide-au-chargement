@@ -8,7 +8,10 @@ import {
   VisualizationContainer,
   VisualizationItem
 } from '../../models/visualization.model';
+<<<<<<< HEAD
 import { VisualizationService } from '../../services/visualization.service';
+=======
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
 
 @Component({
   selector: 'app-panel',
@@ -22,16 +25,25 @@ export class PanelComponent implements OnInit {
   @Input() scene: VisualizationScene | null = null;
   @Input() config: VisualizationConfig | null = null;
 
+<<<<<<< HEAD
   // Champ de recherche local
   searchTerm = '';
 
   constructor(private visualizationService: VisualizationService) { }
+=======
+  constructor() { }
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
 
   ngOnInit(): void {
   }
 
   selectItem(item: VisualizationItem): void {
+<<<<<<< HEAD
     this.visualizationService.selectItem(item);
+=======
+    console.log('Select item:', item);
+    // TODO: Émettre un événement vers le parent ou utiliser le service
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
   }
 
   /**
@@ -71,6 +83,7 @@ export class PanelComponent implements OnInit {
   trackByItemId(index: number, item: VisualizationItem): string {
     return item.id || index.toString();
   }
+<<<<<<< HEAD
 
   /**
    * Filtre les items selon le champ de recherche
@@ -102,3 +115,6 @@ export class PanelComponent implements OnInit {
     this.searchTerm = target?.value ?? '';
   }
 }
+=======
+}
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5

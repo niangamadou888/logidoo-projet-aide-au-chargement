@@ -53,6 +53,7 @@ export class GeometryUtils {
   static findBestPosition(
     containerDims: Dimensions3D,
     itemDims: Dimensions3D,
+<<<<<<< HEAD
     existingItems: Array<{position: Position3D, dimensions: Dimensions3D, gerbable?: boolean, fragile?: boolean}>,
     fragile = false,
     step = 10
@@ -99,6 +100,34 @@ export class GeometryUtils {
             if (!this.collides(position, itemDims, existingItems)) {
               return position;
             }
+=======
+    existingItems: Array<{position: Position3D, dimensions: Dimensions3D}>,
+    fragile = false
+  ): Position3D | null {
+    const step = 10; // Pas de recherche en centimètres
+    
+    // Si l'objet est fragile, commencer par le haut
+    const startZ = fragile ? containerDims.hauteur - itemDims.hauteur : 0;
+    const endZ = fragile ? containerDims.hauteur - itemDims.hauteur : containerDims.hauteur - itemDims.hauteur;
+    const stepZ = fragile ? -step : step;
+
+    for (let z = startZ; fragile ? z >= 0 : z <= endZ; z += stepZ) {
+      for (let y = 0; y <= containerDims.largeur - itemDims.largeur; y += step) {
+        for (let x = 0; x <= containerDims.longueur - itemDims.longueur; x += step) {
+          const position: Position3D = { x, y, z };
+          
+          // Vérifier s'il n'y a pas de collision avec les objets existants
+          let hasCollision = false;
+          for (const existing of existingItems) {
+            if (this.isOverlapping(position, itemDims, existing.position, existing.dimensions)) {
+              hasCollision = true;
+              break;
+            }
+          }
+
+          if (!hasCollision) {
+            return position;
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
           }
         }
       }
@@ -108,6 +137,7 @@ export class GeometryUtils {
   }
 
   /**
+<<<<<<< HEAD
    * Vérifie collision contre une liste d'objets
    */
   static collides(
@@ -224,6 +254,8 @@ export class GeometryUtils {
   }
 
   /**
+=======
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
    * Calcule les dimensions optimales d'orientation pour un objet
    */
   static getOptimalOrientation(
@@ -320,4 +352,8 @@ export class GeometryUtils {
       }
     };
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5

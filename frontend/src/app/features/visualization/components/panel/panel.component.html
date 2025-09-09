@@ -12,6 +12,7 @@
 
     <!-- Contenu si containers disponibles -->
     <ng-container *ngIf="hasContainers()">
+<<<<<<< HEAD
       <!-- Barre de recherche -->
       <div class="search-box">
         <input
@@ -21,6 +22,8 @@
           placeholder="Rechercher un colis (référence, destinataire...)"
         />
       </div>
+=======
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
       
       <!-- Informations du conteneur -->
       <div class="container-info" *ngIf="getCurrentContainer() as container">
@@ -53,17 +56,27 @@
 
       <!-- Liste des items -->
       <div class="items-list" *ngIf="getCurrentContainer() as container">
+<<<<<<< HEAD
         <h4>Items ({{ getFilteredItems(container.items).length }} / {{ container.items.length }})</h4>
+=======
+        <h4>Items ({{ container.items.length }})</h4>
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
         
         <div class="no-items" *ngIf="!container.items || container.items.length === 0">
           <p>Aucun item dans ce conteneur</p>
         </div>
+<<<<<<< HEAD
         <div class="no-items" *ngIf="container.items?.length && !getFilteredItems(container.items).length">
           <p>Aucun résultat pour "{{ searchTerm }}"</p>
         </div>
         
         <div class="item" 
              *ngFor="let item of getFilteredItems(container.items); trackBy: trackByItemId" 
+=======
+        
+        <div class="item" 
+             *ngFor="let item of container.items; trackBy: trackByItemId" 
+>>>>>>> 4d8f7c8dea01b1871f2750c3593f2e597433c2d5
              (click)="selectItem(item)"
              [class.selected]="scene?.selectedItem?.id === item.id">
           
