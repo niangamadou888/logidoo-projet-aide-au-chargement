@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -13,6 +13,7 @@ import { Simulation, Colis, ContainerStats } from '../../models/simulation.model
 import { ExcelService } from '../../services/excelService';
 import { ColorUtils } from '../../shared/utils/color-utils';
 import { Router } from '@angular/router';
+import { PLATFORM_ID } from '@angular/core';
 
 
 
@@ -47,6 +48,7 @@ export class SimulationComponent implements OnInit {
   previewTime: number | null = null;
   selectionAutoOptimal = true; // Par défaut, la sélection automatique est activée
   evaluatingContainer = false; // Pour afficher un indicateur de chargement lors de l'évaluation d'un conteneur
+  private isBrowser = true;
 
   constructor(
     private fb: FormBuilder,
@@ -55,8 +57,10 @@ export class SimulationComponent implements OnInit {
     private simulationService: SimulationService,
     private excelService: ExcelService,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    @Inject(PLATFORM_ID) platformId: Object
   ) {
+    this.isBrowser = isPlatformBrowser(platformId);
     this.colisForm = this.fb.group({
       type: ['', Validators.required],
       longueur: ['', [Validators.required, Validators.min(1)]],
@@ -614,7 +618,10 @@ export class SimulationComponent implements OnInit {
       this.nouvelleSimulation();
     }
 
-    this.loadConteneurs();
+    // Éviter les appels HTTP pendant le prerender (build statique)
+    if (this.isBrowser) {
+      this.loadConteneurs();
+    }
   }
 
   loadConteneurs() {

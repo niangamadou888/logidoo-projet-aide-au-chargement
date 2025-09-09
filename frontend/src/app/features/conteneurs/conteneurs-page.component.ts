@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ConteneurService } from '../../services/conteneur.service';
 import { Contenant } from '../../core/models/contenant.model';
 import { AjouteConteneurComponent } from '../ajoute-conteneur/ajoute-conteneur.component';
@@ -13,6 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/models/user.model';
 import { RouterModule } from '@angular/router';
+import { PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'app-conteneurs-page',
@@ -36,18 +37,25 @@ export class ConteneursPageComponent implements OnInit {
   loading = false;
   contenants: Contenant[] = [];
   currentUser: User | null = null;
+  private isBrowser = true;
 
   constructor(
     private conteneurService: ConteneurService,
     private snackBar: MatSnackBar,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
     });
-    this.fetchContenants();
+    // Pas d'appel API pendant le prerender
+    if (this.isBrowser) {
+      this.fetchContenants();
+    }
   }
 
   fetchContenants(): void {
