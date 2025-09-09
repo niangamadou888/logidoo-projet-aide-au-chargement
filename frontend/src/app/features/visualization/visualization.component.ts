@@ -51,6 +51,7 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   sidebarCollapsed = false;
 
   private destroy$ = new Subject<void>();
+  private isInitializing = false;
 
   // Références aux vues pour déclencher un reset contextuel
   @ViewChild(CanvasComponent) private canvasComp?: CanvasComponent;
@@ -65,8 +66,10 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.initializeVisualization();
+    // S'abonner d'abord pour capter le prochain état de scène
     this.subscribeToVisualizationState();
+    // Puis initialiser la visualisation (déclenche le chargement)
+    this.initializeVisualization();
   }
 
   ngOnDestroy(): void {
@@ -134,9 +137,13 @@ export class VisualizationComponent implements OnInit, OnDestroy {
     }
 
     try {
-      // Initialiser la visualisation avec les données
+      // Activer l'état de chargement et masquer l'ancienne scène
+      this.isInitializing = true;
+      this.loading = true;
+      this.error = null;
+      this.scene = null;
+      // Initialiser la visualisation avec les données (asynchrone)
       this.visualizationService.initializeVisualization(this.simulationData);
-      this.loading = false;
     } catch (error) {
       console.error('Erreur lors de l\'initialisation de la visualisation:', error);
       this.error = 'Erreur lors du chargement de la visualisation';
@@ -163,6 +170,11 @@ export class VisualizationComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(scene => {
         this.scene = scene;
+        // Désactiver le loader après réception d'une nouvelle scène post-init
+        if (this.isInitializing) {
+          this.loading = false;
+          this.isInitializing = false;
+        }
       });
 
     // Écouter les changements de configuration
