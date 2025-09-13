@@ -483,6 +483,12 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     const selected = this.scene?.selectedItem;
     if (!container || !selected) return;
 
+    // Déterminer et basculer vers la meilleure vue pour voir le package
+    const bestView = this.getBestViewForItem(selected, container);
+    if (bestView !== this.viewMode) {
+      this.setViewMode(bestView);
+    }
+
     const base = this.getProjectedContainerSize(container);
     const baseW = base.width;
     const baseH = base.height;
@@ -511,12 +517,36 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     // Propager la sélection via le service pour synchroniser tous les composants
     this.visualizationService.selectItem(item);
 
-    // Centrer immédiatement
-    const r = this.getProjectedItemRectPx(item, container, unitScale);
-    const cx = r.x + r.width / 2;
-    const cy = r.y + r.height / 2;
-    this.offsetX = -cx * this.scale * sceneScale;
-    this.offsetY = -cy * this.scale * sceneScale;
+    // Déterminer et basculer vers la meilleure vue pour voir le package
+    const bestView = this.getBestViewForItem(item, container);
+    if (bestView !== this.viewMode) {
+      this.setViewMode(bestView);
+      // Après changement de vue, recalculer les dimensions et échelles
+      const base = this.getProjectedContainerSize(container);
+      const baseW = base.width;
+      const baseH = base.height;
+      const containerScale = Math.min(
+        (this.containerDimensions.width - 2 * this.padding) / baseW,
+        (this.containerDimensions.height - 2 * this.padding) / baseH
+      ) * 0.8;
+      const newUnitScale = this.offscreenScale || 1;
+      const newSceneScale = containerScale / newUnitScale;
+      
+      // Centrer avec les nouvelles coordonnées projetées
+      const r = this.getProjectedItemRectPx(item, container, newUnitScale);
+      const cx = r.x + r.width / 2;
+      const cy = r.y + r.height / 2;
+      this.offsetX = -cx * this.scale * newSceneScale;
+      this.offsetY = -cy * this.scale * newSceneScale;
+    } else {
+      // Centrer immédiatement avec la vue actuelle
+      const r = this.getProjectedItemRectPx(item, container, unitScale);
+      const cx = r.x + r.width / 2;
+      const cy = r.y + r.height / 2;
+      this.offsetX = -cx * this.scale * sceneScale;
+      this.offsetY = -cy * this.scale * sceneScale;
+    }
+    
     this.lastSelectedItemId = item.id;
     this.render();
   }
@@ -674,5 +704,178 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     // Vue avant, profondeur inversée le long de X
     const containerL = this.scene?.containers[this.scene.currentContainerIndex]?.dimensions.longueur || 0;
     return containerL - item.position.x;
+  }
+
+  /**
+   * Détermine la meilleure vue pour visualiser un package spécifique
+   */
+  private getBestViewForItem(item: VisualizationItem, container: VisualizationContainer): 'top' | 'bottom' | 'side' | 'side-opposite' | 'front' | 'back' {
+    const pos = item.position;
+    const dims = item.dimensions;
+    const containerDims = container.dimensions;
+    
+    // Calculer les positions relatives (0 à 1) du package dans le conteneur
+    const relativeX = (pos.x + dims.longueur / 2) / containerDims.longueur; // Centre X normalisé
+    const relativeY = (pos.y + dims.largeur / 2) / containerDims.largeur;   // Centre Y normalisé  
+    const relativeZ = (pos.z + dims.hauteur / 2) / containerDims.hauteur;   // Centre Z normalisé
+    
+    // Calculer la visibilité dans chaque vue en fonction de la position et des obstacles
+    const viewScores = {
+      top: this.calculateViewScore(item, container, 'top'),
+      bottom: this.calculateViewScore(item, container, 'bottom'),
+      side: this.calculateViewScore(item, container, 'side'),
+      'side-opposite': this.calculateViewScore(item, container, 'side-opposite'),
+      front: this.calculateViewScore(item, container, 'front'),
+      back: this.calculateViewScore(item, container, 'back')
+    };
+    
+    // Retourner la vue avec le meilleur score
+    const bestView = Object.entries(viewScores).reduce((best, [view, score]) => 
+      score > best.score ? { view: view as keyof typeof viewScores, score } : best, 
+      { view: 'top' as keyof typeof viewScores, score: -1 }
+    );
+    
+    return bestView.view;
+  }
+
+  /**
+   * Calcule un score de visibilité pour une vue donnée
+   */
+  private calculateViewScore(item: VisualizationItem, container: VisualizationContainer, view: 'top' | 'bottom' | 'side' | 'side-opposite' | 'front' | 'back'): number {
+    const pos = item.position;
+    const dims = item.dimensions;
+    const containerDims = container.dimensions;
+    
+    let score = 0;
+    
+    // Score basé sur la position dans le conteneur (favoriser les éléments près des bords)
+    switch (view) {
+      case 'top':
+        // Vue du dessus : favoriser les éléments en haut du conteneur
+        score += (pos.z + dims.hauteur) / containerDims.hauteur * 30;
+        // Pénalité si l'élément est caché par d'autres au-dessus
+        score -= this.countItemsAbove(item, container) * 10;
+        break;
+        
+      case 'bottom':
+        // Vue du dessous : favoriser les éléments en bas du conteneur
+        score += (1 - pos.z / containerDims.hauteur) * 30;
+        // Pénalité si l'élément est caché par d'autres en dessous
+        score -= this.countItemsBelow(item, container) * 10;
+        break;
+        
+      case 'side':
+        // Vue de côté : favoriser les éléments près du côté droit (Y+)
+        score += (pos.y + dims.largeur) / containerDims.largeur * 30;
+        // Pénalité si l'élément est caché par d'autres devant
+        score -= this.countItemsInFront(item, container, 'side') * 10;
+        break;
+        
+      case 'side-opposite':
+        // Vue du côté opposé : favoriser les éléments près du côté gauche (Y-)
+        score += (1 - pos.y / containerDims.largeur) * 30;
+        // Pénalité si l'élément est caché par d'autres devant
+        score -= this.countItemsInFront(item, container, 'side-opposite') * 10;
+        break;
+        
+      case 'front':
+        // Vue de face : favoriser les éléments près de l'avant (X-)
+        score += (1 - pos.x / containerDims.longueur) * 30;
+        // Pénalité si l'élément est caché par d'autres devant
+        score -= this.countItemsInFront(item, container, 'front') * 10;
+        break;
+        
+      case 'back':
+        // Vue de l'arrière : favoriser les éléments près de l'arrière (X+)
+        score += (pos.x + dims.longueur) / containerDims.longueur * 30;
+        // Pénalité si l'élément est caché par d'autres devant
+        score -= this.countItemsInFront(item, container, 'back') * 10;
+        break;
+    }
+    
+    // Bonus pour les éléments plus grands (plus visibles)
+    const itemVolume = dims.longueur * dims.largeur * dims.hauteur;
+    const avgItemVolume = container.items.reduce((sum, i) => sum + i.dimensions.longueur * i.dimensions.largeur * i.dimensions.hauteur, 0) / container.items.length;
+    score += (itemVolume / avgItemVolume - 1) * 10;
+    
+    return score;
+  }
+
+  /**
+   * Compte le nombre d'éléments au-dessus d'un item donné
+   */
+  private countItemsAbove(targetItem: VisualizationItem, container: VisualizationContainer): number {
+    return container.items.filter(item => 
+      item.id !== targetItem.id && 
+      item.position.z > targetItem.position.z + targetItem.dimensions.hauteur &&
+      this.itemsOverlap2D(targetItem, item, 'xy')
+    ).length;
+  }
+
+  /**
+   * Compte le nombre d'éléments en dessous d'un item donné
+   */
+  private countItemsBelow(targetItem: VisualizationItem, container: VisualizationContainer): number {
+    return container.items.filter(item => 
+      item.id !== targetItem.id && 
+      item.position.z + item.dimensions.hauteur < targetItem.position.z &&
+      this.itemsOverlap2D(targetItem, item, 'xy')
+    ).length;
+  }
+
+  /**
+   * Compte le nombre d'éléments devant un item donné selon la vue
+   */
+  private countItemsInFront(targetItem: VisualizationItem, container: VisualizationContainer, view: 'side' | 'side-opposite' | 'front' | 'back'): number {
+    return container.items.filter(item => {
+      if (item.id === targetItem.id) return false;
+      
+      switch (view) {
+        case 'side':
+          return item.position.y > targetItem.position.y + targetItem.dimensions.largeur &&
+                 this.itemsOverlap2D(targetItem, item, 'xz');
+        case 'side-opposite':
+          return item.position.y + item.dimensions.largeur < targetItem.position.y &&
+                 this.itemsOverlap2D(targetItem, item, 'xz');
+        case 'front':
+          return item.position.x + item.dimensions.longueur < targetItem.position.x &&
+                 this.itemsOverlap2D(targetItem, item, 'yz');
+        case 'back':
+          return item.position.x > targetItem.position.x + targetItem.dimensions.longueur &&
+                 this.itemsOverlap2D(targetItem, item, 'yz');
+        default:
+          return false;
+      }
+    }).length;
+  }
+
+  /**
+   * Vérifie si deux éléments se chevauchent dans un plan 2D donné
+   */
+  private itemsOverlap2D(item1: VisualizationItem, item2: VisualizationItem, plane: 'xy' | 'xz' | 'yz'): boolean {
+    const pos1 = item1.position;
+    const dims1 = item1.dimensions;
+    const pos2 = item2.position;
+    const dims2 = item2.dimensions;
+    
+    switch (plane) {
+      case 'xy':
+        return !(pos1.x + dims1.longueur <= pos2.x || 
+                 pos2.x + dims2.longueur <= pos1.x ||
+                 pos1.y + dims1.largeur <= pos2.y || 
+                 pos2.y + dims2.largeur <= pos1.y);
+      case 'xz':
+        return !(pos1.x + dims1.longueur <= pos2.x || 
+                 pos2.x + dims2.longueur <= pos1.x ||
+                 pos1.z + dims1.hauteur <= pos2.z || 
+                 pos2.z + dims2.hauteur <= pos1.z);
+      case 'yz':
+        return !(pos1.y + dims1.largeur <= pos2.y || 
+                 pos2.y + dims2.largeur <= pos1.y ||
+                 pos1.z + dims1.hauteur <= pos2.z || 
+                 pos2.z + dims2.hauteur <= pos1.z);
+      default:
+        return false;
+    }
   }
 }
