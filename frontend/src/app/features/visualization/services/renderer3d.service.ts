@@ -672,7 +672,7 @@ export class ThreeDRendererService {
   }
 
   /**
-   * Ajoute un marqueur visuel pour les colis non gerbables (croix rouge sur le dessus)
+   * Ajoute un marqueur visuel pour les colis non gerbables (étiquette seulement)
    */
   private addNonStackableMarker(parentMesh: any): void {
     const box = new THREE.Box3().setFromObject(parentMesh);
@@ -680,34 +680,9 @@ export class ThreeDRendererService {
     box.getSize(sizeVec);
 
     const faceMin = Math.max(8, Math.min(sizeVec.x, sizeVec.z));
-    const crossLen = faceMin * 0.8;
-    const barThick = Math.max(1.5, faceMin * 0.12);
-    const color = 0xcc0000;
-
-    // Croix bien visible au-dessus
-    const geom = new THREE.BoxGeometry(crossLen, barThick, barThick);
-    const mat = new THREE.MeshBasicMaterial({ color });
-    const cross1 = new THREE.Mesh(geom, mat);
-    const cross2 = new THREE.Mesh(geom, mat.clone());
-
     const topY = box.max.y + Math.max(6, sizeVec.y * 0.05);
     const centerX = (box.min.x + box.max.x) / 2;
     const centerZ = (box.min.z + box.max.z) / 2;
-
-    cross1.position.set(centerX, topY, centerZ);
-    cross1.rotation.y = Math.PI / 4;
-    cross2.position.copy(cross1.position);
-    cross2.rotation.y = -Math.PI / 4;
-    parentMesh.add(cross1);
-    parentMesh.add(cross2);
-
-    // Anneau "interdit" (style panneau d'interdiction)
-    const ringOuter = Math.max(10, faceMin * 0.55);
-    const ringTube = Math.max(1.2, ringOuter * 0.10);
-    const torus = new THREE.Mesh(new THREE.TorusGeometry(ringOuter, ringTube, 12, 48), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.8 }));
-    torus.rotation.x = -Math.PI / 2;
-    torus.position.set(centerX, topY + ringTube * 0.5, centerZ);
-    parentMesh.add(torus);
 
     // Étiquette billboard "NON EMPILABLE"
     const label = this.createBillboardLabel('NON EMPILABLE', '#991b1b', '#ffffff');
