@@ -1,44 +1,39 @@
 <div class="landing-container">
-
-  
+  <!-- HEADER -->
   <header class="header">
-    <img src="assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo">
+    <img [src]="'assets/images/logo-logidoo.png'" alt="Logidoo Logo" class="logo">
     <nav class="nav">
       <ul>
+        <li><a href="#services">Services</a></li>
         <li><a href="#features">Fonctionnalités</a></li>
-        <li><a href="#solutions">Solutions</a></li>
+        <li><a href="#testimonials">Témoignages</a></li>
         <li><a href="#contact">Contact</a></li>
-        <li><a routerLink="/auth/login" class="btn-login">Connexion</a></li>
       </ul>
     </nav>
+    <div class="header-buttons">
+      <a [routerLink]="['/auth/login']" class="btn-secondary">Se connecter</a>
+      <a [routerLink]="['/auth/register']" class="btn-outline">S'inscrire</a>
+    </div>
   </header>
 
-  
+  <!-- HERO -->
   <section class="hero">
-    <div class="hero-content">
-      <h1>Optimisez vos <span class="highlight">chargements</span> en toute simplicité</h1>
+    <div class="hero-text">
+      <h1>
+        Optimisez vos <span class="highlight">chargements</span><br />
+        en toute simplicité
+      </h1>
       <p>
-        Maximisez l'espace et la rentabilité de vos expéditions avec notre module d'aide au 
-        chargement intelligent. Réduisez les coûts et évitez les erreurs.
+        Maximisez l'espace et la rentabilité de vos expéditions avec notre module d'aide au chargement intelligent. Réduisez les coûts et évitez les erreurs.
       </p>
-      <div class="cta-buttons">
-        <a routerLink="/auth/register" class="btn-primary">Démarrer</a>
-        <a href="#demo" class="btn-secondary">Voir la démo</a>
+      <div class="hero-buttons">
+        <a href="#cta" class="btn-primary">Démarrer</a>
+        <a href="#demo" class="btn-outline">Voir la démo</a>
       </div>
-
       <div class="hero-stats">
-        <div>
-          <h2>85%</h2>
-          <p>Taux de remplissage</p>
-        </div>
-        <div>
-          <h2>-30%</h2>
-          <p>Coûts logistiques</p>
-        </div>
-        <div>
-          <h2>21+</h2>
-          <p>Experts dédiés</p>
-        </div>
+        <div><strong>85%</strong><br />Taux de remplissage</div>
+        <div><strong>-30%</strong><br />Coûts logistiques</div>
+        <div><strong>21+</strong><br />Experts dédiés</div>
       </div>
     </div>
     <div class="hero-image">
@@ -46,87 +41,126 @@
     </div>
   </section>
 
- 
+  <!-- SERVICES -->
+  <section id="services" class="services">
+    <h2>Services à valeur ajoutée</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <img src="assets/images/avion.png" alt="Aérien">
+        <h3>Aérien</h3>
+        <p>Hubs de consolidation, flexibilité et options de fret, service express innovant.</p>
+      </div>
+      <div class="service-card">
+        <img src="assets/images/bateau.png" alt="Maritime">
+        <h3>Maritime</h3>
+        <p>Transport complet, expertise et infrastructure, transport en groupage maritime.</p>
+      </div>
+      <div class="service-card">
+        <img src="assets/images/routier.png" alt="Routier">
+        <h3>Routier</h3>
+        <p>Affrètement camion, équipements spéciaux, groupage routier intra-africain.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
   <section id="features" class="features">
     <h2>Fonctionnalités puissantes pour <span class="highlight">optimiser vos chargements</span></h2>
     <p>Notre module d'aide au chargement vous offre tous les outils nécessaires pour une logistique efficace et rentable.</p>
-
     <div class="features-grid">
-      <div class="feature">
+      <div class="feature-card">📐
         <h3>Calcul automatique</h3>
-        <p>Volume total, poids et pourcentage de remplissage calculés en temps réel avec précision.</p>
+        <p>Volume, poids et plans de chargement calculés avec précision.</p>
       </div>
-      <div class="feature">
+      <div class="feature-card">📊
         <h3>Visualisation 3D</h3>
-        <p>Schémas clairs et visualisation 3D pour une meilleure compréhension du chargement.</p>
+        <p>Schémas 3D clairs et interactifs pour visualiser vos chargements.</p>
       </div>
-      <div class="feature">
+      <div class="feature-card">⬇️
         <h3>Import/Export Excel</h3>
-        <p>Importez vos données et exportez vos plans en PDF ou Excel.</p>
+        <p>Importez vos données et exportez vos résultats en quelques clics.</p>
       </div>
-      <div class="feature">
-        <h3>Suggestion de véhicules</h3>
-        <p>Recommandation automatique du contenant optimal selon vos contraintes.</p>
+      <div class="feature-card">🚚
+        <h3>Suggestion véhicules</h3>
+        <p>Recommandation automatique des moyens de transport adaptés.</p>
       </div>
-      <div class="feature">
-        <h3>Optimisation intelligente</h3>
-        <p>Algorithmes avancés pour maximiser l'espace et minimiser les coûts.</p>
+      <div class="feature-card">🧠
+        <h3>Optimisation avancée</h3>
+        <p>Algorithmes puissants pour maximiser l’espace.</p>
       </div>
-      <div class="feature">
+      <div class="feature-card">🔒
         <h3>Contrôle sécurisé</h3>
-        <p>Vérification du poids maximal autorisé et prévention des surcharges.</p>
+        <p>Vérification des poids maximaux et prévention des surcharges.</p>
       </div>
-      <div class="feature">
+      <div class="feature-card">📈
         <h3>Analyse prédictive</h3>
-        <p>Machine learning pour anticiper vos besoins futurs de chargement.</p>
+        <p>Machine learning pour anticiper vos futurs besoins logistiques.</p>
       </div>
-      <div class="feature">
+      <div class="feature-card">🔗
         <h3>Intégration native</h3>
-        <p>Connexion seamless avec OMS, WMS, TMS et autres systèmes Logidoo.</p>
+        <p>Connexion simple avec vos systèmes existants.</p>
       </div>
     </div>
   </section>
 
-  
-  <section class="cta-section">
+  <!-- TESTIMONIALS -->
+  <section id="testimonials" class="testimonials">
+    <h2>Ce que disent nos clients</h2>
+    <div class="rating">⭐⭐⭐⭐⭐ <span>9,5/10 (124 avis)</span></div>
+    <div class="testimonials-container">
+      <div class="testimonial-card">
+        <p>"Logidoo a révolutionné notre approche du chargement. Nous économisons 30% sur nos coûts de transport grâce à leur optimisation intelligente."</p>
+        <span>Marie Dubois<br/>TransLog Solutions</span>
+      </div>
+      <div class="testimonial-card">
+        <p>"Grâce à cette solution, nos coûts logistiques ont chuté de 30% et nous avons gagné un temps précieux."</p>
+        <span>Pierre Martin<br/>Express Cargo</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta" class="cta">
     <h2>Prêt à optimiser votre logistique ?</h2>
-    <p>Rejoignez plus de 100 entreprises qui font confiance à Logidoo pour optimiser leurs opérations logistiques et réduire leurs coûts.</p>
+    <p>Rejoignez plus de 100 entreprises qui font confiance à Logidoo.</p>
     <div class="cta-buttons">
-      <a routerLink="/auth/register" class="btn-primary">Commencer maintenant</a>
-      <a href="#demo" class="btn-secondary">Planifier une démo</a>
+      <a href="#contact" class="btn-primary">Commencer maintenant</a>
+      <a href="#demo" class="btn-outline">Planifier une démo</a>
     </div>
   </section>
 
-
-  <footer class="footer">
-    <div class="footer-top">
+  <!-- FOOTER -->
+  <footer class="footer" id="contact">
+    <div class="footer-columns">
       <div>
-        <h4>Logidoo</h4>
-        <p>Optimisez vos opérations logistiques avec nos solutions intelligentes depuis 2019.</p>
+        <h3>Logidoo</h3>
+        <p>Optimisez vos opérations logistiques avec nos solutions depuis 2019.</p>
       </div>
       <div>
-        <h4>Solutions</h4>
-        <a href="#">Module Aide au Chargement</a>
-        <a href="#">OMS Afridoo</a>
-        <a href="#">DooMarket</a>
+        <h3>Solutions</h3>
+        <ul>
+          <li>Module Aide au Chargement</li>
+          <li>OMS AirHub</li>
+          <li>Dashboard</li>
+        </ul>
       </div>
       <div>
-        <h4>Support</h4>
-        <a href="#">Documentation</a>
-        <a href="#">Formation</a>
-        <a href="#">Support Technique</a>
-        <a href="#">FAQ</a>
+        <h3>Support</h3>
+        <ul>
+          <li>Documentation</li>
+          <li>FAQ</li>
+          <li>Support Technique</li>
+        </ul>
       </div>
       <div>
-        <h4 id="contact">Contact</h4>
-        <p>Email : contact&#64;logidoo.com</p>
-        <p>Téléphone : +221 78 602 72 79</p>
-        <p>Siège social : Cité Keur Gorgui</p>
+        <h3>Contact</h3>
+        <ul>
+          <li>contact&#64;logidoo.com</li>
+          <li>+221 78 862 97 79</li>
+          <li>Sicap Liberté 6, Dakar</li>
+        </ul>
       </div>
     </div>
-    <div class="footer-bottom">
-      © 2025 Logidoo. Tous droits réservés. | Mentions légales | Politique de confidentialité
-    </div>
+    <p class="footer-bottom">© 2025 Logidoo. Tous droits réservés.</p>
   </footer>
-
 </div>
