@@ -40,7 +40,7 @@ export class AjouteConteneurComponent implements OnInit{
   categories:string[]=[];
 
 
-backgroundUrl = '/assets/images/camion.png'
+// backgroundUrl removed - no longer needed
 
 
     constructor(
