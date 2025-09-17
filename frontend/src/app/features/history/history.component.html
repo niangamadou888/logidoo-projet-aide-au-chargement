@@ -1,94 +1,131 @@
-<div class="history-page-container">
-  <mat-toolbar color="primary" class="toolbar">
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
     <div class="logo-section">
       <img src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo">
-      <span class="app-title">Logidoo</span>
     </div>
-    <div class="toolbar-spacer"></div>
-    <div class="user-section" *ngIf="currentUser">
-      <span class="username">{{ currentUser.username }}</span>
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
-        <mat-icon>account_circle</mat-icon>
+    
+    <nav class="navigation">
+      <a class="nav-item" routerLink="/dashboard/user">
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">Dashboard</span>
+      </a>
+      <a class="nav-item" routerLink="/simulation">
+        <span class="nav-icon">➕</span>
+        <span class="nav-text">Nouvelle simulation</span>
+      </a>
+      <a class="nav-item active" routerLink="/history">
+        <span class="nav-icon">🕒</span>
+        <span class="nav-text">Historique</span>
+      </a>
+      <div class="nav-section-title">ADMINISTRATION</div>
+      <a class="nav-item" routerLink="/dashboard/user/profile">
+        <span class="nav-icon">👤</span>
+        <span class="nav-text">Profil</span>
+      </a>
+      <a class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-text">Paramètres</span>
+      </a>
+    </nav>
+    
+    <div class="logout-section">
+      <button class="logout-btn" (click)="logout()">
+        <mat-icon class="logout-icon">power_settings_new</mat-icon>
+        <span class="logout-text">Log Out</span>
       </button>
-      <mat-menu #userMenu="matMenu">
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>exit_to_app</mat-icon>
-          <span>Logout</span>
-        </button>
-      </mat-menu>
     </div>
-  </mat-toolbar>
+  </aside>
 
-  <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #sidenav mode="side" opened class="sidenav">
-      <mat-nav-list>
-        <a mat-list-item routerLink="/dashboard/user">
-          <mat-icon matListItemIcon>dashboard</mat-icon>
-          <span matListItemTitle>Dashboard</span>
-        </a>
-        <a mat-list-item routerLink="/simulation">
-          <mat-icon matListItemIcon>add_box</mat-icon>
-          <span matListItemTitle>New Simulation</span>
-        </a>
-        <a mat-list-item routerLink="/history">
-          <mat-icon matListItemIcon>history</mat-icon>
-          <span matListItemTitle>History</span>
-        </a>
-      </mat-nav-list>
-    </mat-sidenav>
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="welcome-header">
+      <div class="avatar-section">
+        <div class="avatar">🕒</div>
+        <span class="welcome-text">Historique des simulations</span>
+      </div>
+      <div class="user-menu">
+        <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
+          <span class="user-avatar">👤</span>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+    </header>
 
-    <mat-sidenav-content class="sidenav-content">
-      <div class="content-container">
-        <div class="page-header">
-          <h1>Simulation History</h1>
-          <p>Browse and load your saved simulations</p>
+    <!-- Content -->
+    <div class="page-content">
+      <div class="history-container">
+        <div *ngIf="loading" class="loading-state">
+          <div class="loading-spinner">Chargement...</div>
+        </div>
+        
+        <div *ngIf="error" class="error-state">
+          <div class="error-message">{{ error }}</div>
         </div>
 
-        <mat-card class="history-card">
-          <mat-card-content>
-            <div *ngIf="loading">Loading...</div>
-            <div *ngIf="error" class="error">{{ error }}</div>
-
-            <table class="simulations-table" *ngIf="!loading && simulations.length">
+        <div class="simulations-grid" *ngIf="!loading && simulations.length">
+          <div class="table-container">
+            <table class="simulations-table">
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Date</th>
-                  <th>Packages</th>
-                  <th>Containers</th>
-                  <th>Fill Rate</th>
-                  <th>Actions</th>
+                  <th>ID</th>
+                  <th>NOM</th>
+                  <th>DESCRIPTION</th>
+                  <th>DATE</th>
+                  <th>COLIS</th>
+                  <th>TAUX DE REMPLISSAGE</th>
+                  <th>ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let sim of simulations">
-                  <td>{{ sim.nom || ('Simulation ' + (sim._id || sim.id)) }}</td>
-                  <td class="description-cell">{{ sim.description || '-' }}</td>
-                  <td>{{ sim.date | date:'yyyy-MM-dd HH:mm' }}</td>
-                  <td>{{ sim.colis?.length || sim.resultats?.stats?.colisCount || 0 }}</td>
-                  <td>{{ sim.resultats?.stats?.containersCount || sim.resultats?.containers?.length || 0 }}</td>
-                  <td>
-                    <div class="fill-rate-bar">
-                      <div class="fill-rate-progress" [style.width.%]="(sim.resultats?.stats?.avgVolumeUtilization || 0) * 100"></div>
-                      <span>{{ ((sim.resultats?.stats?.avgVolumeUtilization || 0) * 100) | number:'1.0-0' }}%</span>
+                  <td class="sim-id">{{ sim.nom || ('SIM\n' + (sim._id || sim.id)?.toString().substr(-5)) }}</td>
+                  <td class="sim-name">{{ sim.nom || ('Simulation ' + (sim._id || sim.id)) }}</td>
+                  <td class="sim-description">{{ sim.description || '-' }}</td>
+                  <td class="sim-date">{{ sim.date | date:'dd/MM/yyyy' }}</td>
+                  <td class="sim-packages">{{ sim.colis?.length || sim.resultats?.stats?.colisCount || 0 }}</td>
+                  <td class="sim-progress">
+                    <div class="progress-bar">
+                      <div class="progress-fill" [style.width.%]="(sim.resultats?.stats?.avgVolumeUtilization || 0) * 100"></div>
+                      <span class="progress-text">{{ ((sim.resultats?.stats?.avgVolumeUtilization || 0) * 100) | number:'1.0-0' }}%</span>
                     </div>
                   </td>
-                  <td class="action-buttons">
-                    <button mat-icon-button color="primary" aria-label="Load" (click)="loadSimulation(sim)">
-                      <mat-icon>play_circle</mat-icon>
+                  <td class="sim-actions">
+                    <button class="action-menu-btn" [matMenuTriggerFor]="actionMenu">
+                      ⋯
                     </button>
+                    <mat-menu #actionMenu="matMenu">
+                      <button mat-menu-item (click)="loadSimulation(sim)">
+                        <mat-icon>visibility</mat-icon>
+                        <span>Voir</span>
+                      </button>
+                      <button mat-menu-item>
+                        <mat-icon>picture_as_pdf</mat-icon>
+                        <span>Exporter PDF</span>
+                      </button>
+                    </mat-menu>
                   </td>
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
 
-            <div *ngIf="!loading && !simulations.length" class="empty-state">
-              No simulations found.
-            </div>
-          </mat-card-content>
-        </mat-card>
+        <div *ngIf="!loading && !simulations.length" class="empty-state">
+          <div class="empty-icon">📭</div>
+          <div class="empty-title">Aucune simulation trouvée</div>
+          <div class="empty-description">Créez votre première simulation pour commencer</div>
+          <button class="empty-action-btn" routerLink="/simulation">
+            Nouvelle simulation
+          </button>
+        </div>
       </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+    </div>
+  </main>
 </div>
