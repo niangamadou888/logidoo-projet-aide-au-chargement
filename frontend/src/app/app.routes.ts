@@ -5,12 +5,12 @@ import { DASHBOARD_ROUTES } from './features/dashboard.routes';
 import { authGuard } from './core/guards/auth.guard';
 import { SimulationComponent } from './features/simulation/simulation.component';
 import { AuthService } from './core/services/auth.service';
-import { LandingPageComponent } from './landing-page/landing-page.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { TestLoggerComponent } from './test-logger.component';
 import { ConteneursPageComponent } from './features/conteneurs/conteneurs-page.component';
 import { VisualizationComponent } from './features/visualization/visualization.component';
 import { HistoryComponent } from './features/history/history.component';
+import { LandingPageComponent } from './landing-page/landing-page.component';
 
 
 export const routes: Routes = [
@@ -23,6 +23,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       ...DASHBOARD_ROUTES,
+       
       {
         path: '',
         canActivate: [authGuard],

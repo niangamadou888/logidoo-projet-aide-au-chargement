@@ -25,7 +25,6 @@ import { SimulationService } from '../../services/simulation.service';
     MatCardModule,
     MatMenuModule,
     RouterModule,
-    
 ],
   templateUrl: './user-dashboard.component.html',
   styleUrl: './user-dashboard.component.scss'

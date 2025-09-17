@@ -27,8 +27,9 @@ import { RouterModule } from '@angular/router';
     MatSidenavModule,
     MatListModule,
     MatMenuModule,
-    AjouteConteneurComponent
-  ],
+    AjouteConteneurComponent,
+   
+],
   templateUrl: './conteneurs-page.component.html',
   styleUrl: './conteneurs-page.component.scss'
 })
