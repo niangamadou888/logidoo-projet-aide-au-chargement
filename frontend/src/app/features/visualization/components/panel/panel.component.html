@@ -67,7 +67,7 @@
              (click)="selectItem(item)"
              [class.selected]="scene?.selectedItem?.id === item.id">
           
-          <div class="item-color" [style.background]="item.color || '#999999'"></div>
+          <div class="item-color" [style.background]="item.color || '#999999'" [title]="'Couleur: ' + (item.color || '#999999')"></div>
           
           <div class="item-info">
             <div class="item-header">
