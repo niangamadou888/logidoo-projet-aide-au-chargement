@@ -97,6 +97,8 @@ export class VisualizationService {
 
       // Essayer de récupérer les dimensions exactes depuis le cache par ref (ObjectId)
       const fromCache = container?.ref ? this.containersCache[container.ref] : undefined;
+      console.log('🗂️ Container depuis cache:', fromCache);
+      console.log('📷 Images du conteneur:', fromCache?.images);
 
       let chosenDims: Dimensions3D = {
         longueur: container.dimensions?.longueur
@@ -151,7 +153,9 @@ export class VisualizationService {
           poids: weightUtilPercent
         },
         color: this.getContainerColor(container.categorie),
-        position: { x: index * 800, y: 0, z: 0 }
+        position: { x: index * 800, y: 0, z: 0 },
+        // Ajouter les images depuis le cache pour synchroniser avec l'interface de sélection
+        images: fromCache?.images || []
       };
 
       console.log('📏 Dimensions utilisées:', visualizationContainer.dimensions);

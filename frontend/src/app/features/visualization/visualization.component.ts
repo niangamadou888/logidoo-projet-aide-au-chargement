@@ -421,20 +421,21 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Export package complet avec ZIP
+   * Export package complet avec image camion et calculs
    */
   async exportCompletePackage(): Promise<void> {
     try {
-      console.log('📦 Création du package complet...');
+      console.log('📦 Création du rapport complet avec calculs...');
       
-      this.showNotification('📦 Création du package complet...', 'info');
+      this.showNotification('📦 Création du rapport complet avec calculs...', 'info');
       
-      await this.exportService.exportCompletePackage(this.scene!, `simulation-${this.getSimulationTitle()}`);
+      // Utilise le service Logidoo pour un rapport complet avec image camion et calculs
+      await this.exportLogidooService.exportToPDFWithAll2DViewsAndColors(this.scene!);
       
-      this.showNotification('✅ Package complet créé avec succès !', 'success');
+      this.showNotification('✅ Rapport complet créé avec succès !', 'success');
     } catch (error) {
-      console.error('❌ Erreur package complet:', error);
-      this.showNotification('❌ Erreur lors de la création du package', 'error');
+      console.error('❌ Erreur rapport complet:', error);
+      this.showNotification('❌ Erreur lors de la création du rapport', 'error');
     }
   }
 

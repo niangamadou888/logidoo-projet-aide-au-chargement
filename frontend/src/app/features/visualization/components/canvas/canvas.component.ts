@@ -447,13 +447,18 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     container: VisualizationContainer,
     unitScale: number
   ): void {
-    // Contour du conteneur
+    // Contour du conteneur avec meilleure visibilité
     const base = this.getProjectedContainerSize(container);
     const baseW = base.width;
     const baseH = base.height;
 
-    ctx.strokeStyle = container.color || '#666666';
-    ctx.lineWidth = 3;
+    // Fond léger du conteneur pour meilleure visibilité
+    ctx.fillStyle = 'rgba(240, 240, 240, 0.3)';
+    ctx.fillRect(-baseW * unitScale / 2, -baseH * unitScale / 2, baseW * unitScale, baseH * unitScale);
+
+    // Contour du conteneur plus visible
+    ctx.strokeStyle = container.color || '#333333';
+    ctx.lineWidth = 4;
     ctx.setLineDash([]);
     ctx.strokeRect(-baseW * unitScale / 2, -baseH * unitScale / 2, baseW * unitScale, baseH * unitScale);
 

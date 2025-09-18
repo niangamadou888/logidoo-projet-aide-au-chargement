@@ -134,41 +134,98 @@
 // ===== CONTRÔLES DE ZOOM =====
 .zoom-controls {
   position: absolute;
-  bottom: 1rem;
+  top: 5rem;
   left: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  background: rgba(255, 255, 255, 0.95);
+  gap: 3px;
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
 
   .zoom-btn {
-    width: 2.5rem;
-    height: 2.5rem;
-    border: none;
-    background: transparent;
-    color: #374151;
+    width: 3rem;
+    height: 3rem;
+    border: 2px solid #d1d5db;
+    background: rgba(255, 255, 255, 0.98);
+    color: #1f2937;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s ease;
+    position: relative;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(8px);
+    font-weight: 900;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
 
     &:hover {
-      background: rgba(59, 130, 246, 0.1);
-      color: #3b82f6;
+      background: rgba(59, 130, 246, 0.95);
+      color: #ffffff;
+      border-color: #2563eb;
+      transform: scale(1.08);
+      box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
     }
 
     &:active {
-      background: rgba(59, 130, 246, 0.2);
+      background: rgba(37, 99, 235, 1);
+      transform: scale(0.98);
     }
 
+    // Utiliser le texte comme élément principal
+    .zoom-text {
+      position: relative;
+      z-index: 3;
+      font-size: 20px;
+      font-weight: 900;
+      line-height: 1;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    // SVG masqué par défaut, le texte est prioritaire
     svg {
-      width: 16px;
-      height: 16px;
+      display: none;
+    }
+
+    // Styles spécifiques pour chaque bouton
+    &:first-child {
+      // Zoom in (+)
+      .zoom-text {
+        font-size: 24px;
+        color: #059669;
+      }
+      
+      &:hover .zoom-text {
+        color: #ffffff;
+      }
+    }
+
+    &:nth-child(2) {
+      // Zoom out (-)
+      .zoom-text {
+        font-size: 28px;
+        color: #dc2626;
+      }
+      
+      &:hover .zoom-text {
+        color: #ffffff;
+      }
+    }
+
+    &:last-child {
+      // Reset (home)
+      .zoom-text {
+        font-size: 18px;
+        color: #7c3aed;
+      }
+      
+      &:hover .zoom-text {
+        color: #ffffff;
+      }
     }
   }
 }

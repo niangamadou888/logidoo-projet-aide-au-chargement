@@ -54,6 +54,7 @@ export interface VisualizationContainer {
   color?: string;
   wireframe?: boolean;
   position?: Position3D;
+  images?: string[]; // Images du conteneur, comme dans l'interface de sélection
 }
 
 export interface VisualizationScene {

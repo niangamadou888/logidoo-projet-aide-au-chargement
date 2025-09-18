@@ -70,7 +70,12 @@
           <div class="item-color" [style.background]="item.color || '#999999'"></div>
           
           <div class="item-info">
-            <div class="item-type">{{ item.type || 'Item' }}</div>
+            <div class="item-header">
+              <div class="item-title">
+                <span class="item-id">{{ item.reference || item.id }}</span>
+                <span class="item-type" *ngIf="item.nomDestinataire"> - {{ item.nomDestinataire }}</span>
+              </div>
+            </div>
             
             <div class="item-details">
               {{ item.dimensions.longueur || 0 }}×{{ item.dimensions.largeur || 0 }}×{{ item.dimensions.hauteur || 0 }}cm
@@ -83,8 +88,10 @@
               <span class="flag non-stackable" *ngIf="item.gerbable === false">Non empilable</span>
             </div>
             
-            <div class="item-destination" *ngIf="item.nomDestinataire">
-              <small>{{ item.nomDestinataire }}</small>
+            <div class="item-destination" *ngIf="item.nomDestinataire || item.adresse">
+              <small *ngIf="item.nomDestinataire">👤 {{ item.nomDestinataire }}</small>
+              <small *ngIf="item.adresse">📍 {{ item.adresse }}</small>
+              <small *ngIf="item.telephone">📞 {{ item.telephone }}</small>
             </div>
           </div>
         </div>
