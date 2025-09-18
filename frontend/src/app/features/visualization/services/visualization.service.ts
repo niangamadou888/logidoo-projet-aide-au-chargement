@@ -325,9 +325,22 @@ export class VisualizationService {
       }
 
       if (!placedOK) {
-        // Marquer comme non placé visuellement (semi-transparent), mais éviter chevauchement
-        item.opacity = 0.3;
-        item.position = { x: 0, y: 0, z: 0 };
+        // Fallback: placement forcé avec recherche d'espaces vides
+        console.warn(`⚠️ Fallback placement for item: ${item.reference}`);
+        const fallbackPos = this.findFallbackPosition(containerDims, item.dimensions, placed.map(p => ({ position: p.position, dimensions: p.dimensions })));
+
+        if (fallbackPos) {
+          // Placement trouvé avec fallback
+          item.position = fallbackPos;
+          item.dimensions = item.dimensions; // Garder dimensions originales
+          item.opacity = 0.7; // Légèrement transparent pour indiquer placement suboptimal
+          placed.push({ position: fallbackPos, dimensions: item.dimensions, ref: item.id, gerbable: item.gerbable, fragile: item.fragile });
+        } else {
+          // Vraiment aucun espace: placer dans un coin avec transparence
+          item.opacity = 0.3;
+          item.position = { x: 0, y: 0, z: containerDims.hauteur - item.dimensions.hauteur }; // En haut à gauche
+          console.warn(`❌ No space found for item: ${item.reference}, placed with transparency`);
+        }
         continue;
       }
 
@@ -361,6 +374,50 @@ export class VisualizationService {
       }
     }
 
+  }
+
+  /**
+   * Recherche une position de fallback pour un item qui ne peut pas être placé normalement
+   */
+  private findFallbackPosition(
+    containerDims: Dimensions3D,
+    itemDims: Dimensions3D,
+    existingItems: Array<{position: Position3D, dimensions: Dimensions3D}>
+  ): Position3D | null {
+    // Essayer avec une grille plus grossière et sans contraintes de support
+    const step = 10;
+    const margin = 2;
+
+    for (let z = 0; z <= containerDims.hauteur - itemDims.hauteur - margin; z += step) {
+      for (let y = 0; y <= containerDims.largeur - itemDims.largeur - margin; y += step) {
+        for (let x = 0; x <= containerDims.longueur - itemDims.longueur - margin; x += step) {
+          const position: Position3D = { x, y, z };
+
+          // Seulement vérifier les collisions volumiques strictes
+          let hasCollision = false;
+          for (const existing of existingItems) {
+            if (GeometryUtils.isOverlapping(position, itemDims, existing.position, existing.dimensions)) {
+              hasCollision = true;
+              break;
+            }
+          }
+
+          // Vérifier que l'item reste dans le conteneur
+          if (!hasCollision && GeometryUtils.isWithinContainer(position, itemDims, containerDims)) {
+            return GeometryUtils.validateAndClampPosition(position, itemDims, containerDims);
+          }
+        }
+      }
+    }
+
+    // Dernier recours: utiliser les espaces vides connus
+    const emptySpaces = GeometryUtils.findEmptySpaces(containerDims, existingItems, itemDims, 15);
+    if (emptySpaces.length > 0) {
+      // Prendre le premier espace vide
+      return GeometryUtils.validateAndClampPosition(emptySpaces[0], itemDims, containerDims);
+    }
+
+    return null;
   }
 
   /**

@@ -12,6 +12,7 @@
     "/dashboard/admin/conteneurs": {},
     "/dashboard/admin/profile": {},
     "/dashboard/user": {},
+    "/dashboard/user/history": {},
     "/dashboard/user/profile": {},
     "/history": {},
     "/simulation": {},
