@@ -9,16 +9,6 @@
   
   <!-- Overlays d'information -->
   <div class="canvas-overlays">
-    <!-- Contrôle de la vue 2D -->
-    <div class="view-controls">
-      <button class="view-btn" [class.active]="viewMode === 'top'" (click)="setViewMode('top')" title="Vue de dessus">Plan</button>
-      <button class="view-btn" [class.active]="viewMode === 'bottom'" (click)="setViewMode('bottom')" title="Vue de dessous">Dessous</button>
-      <button class="view-btn" [class.active]="viewMode === 'side'" (click)="setViewMode('side')" title="Vue de côté">Côté</button>
-      <button class="view-btn" [class.active]="viewMode === 'side-opposite'" (click)="setViewMode('side-opposite')" title="Vue de côté opposé">Côté opposé</button>
-      <button class="view-btn" [class.active]="viewMode === 'front'" (click)="setViewMode('front')" title="Vue avant">Avant</button>
-      <button class="view-btn" [class.active]="viewMode === 'back'" (click)="setViewMode('back')" title="Vue arrière">Arrière</button>
-    </div>
-    
     <!-- Légende -->
     <div class="legend" *ngIf="config?.showFragileItems || config?.highlightNonGerbable">
       <h4>Légende</h4>
