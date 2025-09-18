@@ -22,6 +22,9 @@ import { GeometryUtils } from '../../../shared/utils/geometry-utils';
 })
 export class VisualizationService {
 
+  // Compteur global pour les IDs des colis
+  private globalItemCounter = 0;
+
   // Observables pour l'état de la visualisation
   private sceneSubject = new BehaviorSubject<VisualizationScene>(this.getDefaultScene());
   private configSubject = new BehaviorSubject<VisualizationConfig>(this.getDefaultConfig());
@@ -88,6 +91,9 @@ export class VisualizationService {
    * Convertit les données de simulation en containers visualisables
    */
   private convertSimulationToContainers(simulationData: SimulationData): VisualizationContainer[] {
+    // Réinitialiser le compteur global pour chaque nouvelle simulation
+    this.globalItemCounter = 0;
+    
     if (!simulationData.resultats?.containers) {
       return [];
     }
@@ -217,30 +223,39 @@ export class VisualizationService {
   }
 
   /**
-   * Convertit les items de simulation en items visualisables
+   * Convertit les items de simulation en items visualisables avec IDs uniformes
    */
   private convertItemsToVisualization(items: any[], containerId: string): VisualizationItem[] {
-    console.log('🔍 Items reçus du backend:', items); // ← Ajoutez cette ligne
+    console.log('🔍 Items reçus du backend:', items);
 
-    return items.map((item, index) => ({
-      id: `${containerId}-item-${index}`,
-      reference: item.reference || `REF-${index}`,
-      type: item.type || 'Colis',
-      dimensions: {
-        longueur: item.longueur || 30,
-        largeur: item.largeur || 25,
-        hauteur: item.hauteur || 20
-      },
-      position: { x: 0, y: 0, z: 0 }, // Sera calculé plus tard
-      color: item.couleur || ColorUtils.getColorByType(item.type || 'default'),
-      poids: item.poids || 0,
-      quantite: item.quantite || 1,
-      fragile: item.fragile || false,
-      gerbable: item.gerbable !== false, // true par défaut
-      nomDestinataire: item.nomDestinataire,
-      adresse: item.adresse,
-      telephone: item.telephone
-    }));
+    return items.map((item, index) => {
+      // Générer un ID uniforme et unique pour chaque colis
+      this.globalItemCounter++;
+      const uniformId = `COLIS-${this.globalItemCounter.toString().padStart(3, '0')}`;
+      
+      const result = {
+        id: uniformId,
+        reference: item.reference || uniformId,
+        type: item.type || 'Colis',
+        dimensions: {
+          longueur: item.longueur || 30,
+          largeur: item.largeur || 25,
+          hauteur: item.hauteur || 20
+        },
+        position: { x: 0, y: 0, z: 0 }, // Sera calculé plus tard
+        color: item.couleur || ColorUtils.getColorByType(item.type || 'default'),
+        poids: item.poids || 0,
+        quantite: item.quantite || 1,
+        fragile: item.fragile || false,
+        gerbable: item.gerbable !== false, // true par défaut
+        nomDestinataire: item.nomDestinataire,
+        adresse: item.adresse,
+        telephone: item.telephone
+      };
+      
+      console.log('🔍 Item créé:', { original: item, converted: result });
+      return result;
+    });
   }
 
   /**

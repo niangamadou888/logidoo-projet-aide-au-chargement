@@ -970,15 +970,15 @@ export class ExportLogidooService {
    * Dessine les en-têtes du tableau
    */
   private drawTableHeaders(pdf: any, colors: any, yPos: number): number {
-    const headers = ['Couleur', 'Référence', 'Type', 'Destinataire', 'Dimensions (L×l×h)', 'Volume', 'Poids', 'Statut'];
-    const colWidths = [12, 22, 20, 30, 30, 18, 16, 32];
+    const headers = ['Couleur', 'Référence', 'Type', 'Destinataire', 'Dimensions (L×l×h)', 'Volume', 'Poids', 'Empilable', 'Fragile'];
+    const colWidths = [12, 20, 18, 26, 28, 16, 14, 16, 15];
     let xPos = 15;
     
     // Fond d'en-tête
     pdf.setFillColor(colors.blue);
     pdf.rect(15, yPos - 3, 180, 10, 'F');
     
-    pdf.setFontSize(9);
+    pdf.setFontSize(8);
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(colors.white);
     
@@ -999,7 +999,7 @@ export class ExportLogidooService {
    */
   private drawItemRow(pdf: any, colors: any, item: any, itemIndex: number, containerIndex: number, 
                       itemColors: string[], yPos: number): number {
-    const colWidths = [12, 22, 20, 30, 30, 18, 16, 32];
+    const colWidths = [12, 20, 18, 26, 28, 16, 14, 16, 15];
     let xPos = 15;
     
     // Alternance de couleur
@@ -1019,24 +1019,43 @@ export class ExportLogidooService {
     xPos += colWidths[0];
     
     pdf.setTextColor(colors.black);
+    pdf.setFontSize(8);
     
-    // Données du tableau
+    // Données du tableau avec nouvelles colonnes
     const rowData = [
       item.reference || item.id || `C${containerIndex + 1}-${itemIndex + 1}`,
-      this.getItemType(item),
+      this.getItemRealType(item), // Type physique (carton, palette, etc.)
       item.nomDestinataire || 'N/A',
       `${item.dimensions.longueur}×${item.dimensions.largeur}×${item.dimensions.hauteur}`,
       `${(item.dimensions.longueur * item.dimensions.largeur * item.dimensions.hauteur / 1000000).toFixed(3)}m³`,
       item.poids ? `${item.poids}kg` : 'N/A',
-      this.getItemStatusText(item)
+      item.gerbable !== false ? 'Oui' : 'Non', // Empilable
+      item.fragile ? 'Oui' : 'Non' // Fragile
     ];
     
     rowData.forEach((data, i) => {
-      if (i === 6 && (item.fragile || item.gerbable === false)) {
-        pdf.setTextColor(colors.error);
-        pdf.text('⚠ ' + data, xPos + 1, yPos + 2);
-        pdf.setTextColor(colors.black);
-      } else if (i === 1) {
+      // Coloration spéciale pour certaines colonnes
+      if (i === 6) { // Colonne Empilable
+        if (data === 'Non') {
+          pdf.setTextColor(colors.error);
+          pdf.text('⚠ ' + data, xPos + 1, yPos + 2);
+          pdf.setTextColor(colors.black);
+        } else {
+          pdf.setTextColor(colors.success);
+          pdf.text('✓ ' + data, xPos + 1, yPos + 2);
+          pdf.setTextColor(colors.black);
+        }
+      } else if (i === 7) { // Colonne Fragile
+        if (data === 'Oui') {
+          pdf.setTextColor(colors.error);
+          pdf.text('⚠ ' + data, xPos + 1, yPos + 2);
+          pdf.setTextColor(colors.black);
+        } else {
+          pdf.setTextColor(colors.mediumGray);
+          pdf.text(data, xPos + 1, yPos + 2);
+          pdf.setTextColor(colors.black);
+        }
+      } else if (i === 1) { // Colonne Type
         pdf.setTextColor(this.getTypeColor(data, colors));
         pdf.text(data, xPos + 1, yPos + 2);
         pdf.setTextColor(colors.black);
@@ -1086,17 +1105,46 @@ export class ExportLogidooService {
   }
 
   /**
-   * Détermine le type de colis - utilise la référence ou l'ID pour plus de clarté
+   * Obtient le type réel du colis (carton, palette, etc.)
    */
-  private getItemType(item: any): string {
-    // Priorité 1: utiliser la référence si disponible
-    if (item.reference && item.reference !== 'REF-0' && !item.reference.startsWith('REF-')) {
-      return item.reference;
+   private getItemRealType(item: any): string {
+    // Retourner le type original s'il existe
+    if (item.type && item.type !== 'Colis') {
+      return item.type;
     }
     
-    // Priorité 2: utiliser l'ID si plus informatif
-    if (item.id && !item.id.includes('item-')) {
+    // Déduire le type selon les dimensions et caractéristiques
+    const volume = (item.dimensions.longueur * item.dimensions.largeur * item.dimensions.hauteur) / 1000;
+    const longueur = item.dimensions.longueur;
+    const largeur = item.dimensions.largeur;
+    const hauteur = item.dimensions.hauteur;
+    
+    // Logique pour déterminer carton vs palette vs autres
+    if (longueur >= 120 && largeur >= 80) {
+      return 'Palette';
+    } else if (longueur >= 100 || largeur >= 60 || hauteur >= 60) {
+      return 'Caisse';
+    } else if (volume <= 10) {
+      return 'Carton';
+    } else if (volume <= 50) {
+      return 'Carton Moyen';
+    } else {
+      return 'Carton Volumineux';
+    }
+  }
+
+  /**
+   * Détermine le type de colis - utilise l'ID uniforme en priorité
+   */
+  private getItemType(item: any): string {
+    // Priorité 1: utiliser l'ID uniforme si disponible (format COLIS-XXX)
+    if (item.id && item.id.match(/^COLIS-\d{3}$/)) {
       return item.id;
+    }
+    
+    // Priorité 2: utiliser la référence si disponible et significative
+    if (item.reference && item.reference !== 'REF-0' && !item.reference.startsWith('REF-') && item.reference !== item.id) {
+      return item.reference;
     }
     
     // Priorité 3: utiliser le type original si défini et pas générique
@@ -1106,8 +1154,8 @@ export class ExportLogidooService {
     
     // Priorité 4: générer un nom descriptif basé sur les caractéristiques
     const volume = (item.dimensions.longueur * item.dimensions.largeur * item.dimensions.hauteur) / 1000;
-    const indexMatch = item.id ? item.id.match(/item-(\d+)/) : null;
-    const itemNumber = indexMatch ? parseInt(indexMatch[1]) + 1 : 1;
+    const indexMatch = item.id ? item.id.match(/(\d+)/) : null;
+    const itemNumber = indexMatch ? indexMatch[1] : '1';
     
     if (item.fragile) {
       if (volume < 10) {
@@ -1160,15 +1208,17 @@ export class ExportLogidooService {
    */
   private getTypeColor(type: string, colors: any): string {
     const typeColors: { [key: string]: string } = {
+      'Carton': colors.success,
+      'Carton Moyen': colors.blue,
+      'Carton Volumineux': colors.mediumBlue,
+      'Palette': colors.warning,
+      'Caisse': colors.darkBlue,
       'Fragile': colors.error,
-      'Non-Empilable': colors.warning,
+      'Non-Empilable': colors.error,
       'Petit Colis': colors.success,
       'Colis Standard': colors.blue,
       'Colis Volumineux': colors.mediumBlue,
-      'Gros Colis': colors.darkBlue,
-      'Fragile Petit': colors.error,
-      'Fragile Moyen': colors.error,
-      'Fragile Volumineux': colors.error
+      'Gros Colis': colors.darkBlue
     };
     
     return typeColors[type] || colors.black;

@@ -504,12 +504,14 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
       this.drawNonStackableMarkerToCtx(ctx, x, y, width, height);
     }
 
-    // Texte (si assez de place)
+    // Texte (si assez de place) - Afficher la référence au lieu du type
     if (width > 40 && height > 20) {
       ctx.fillStyle = '#ffffff';
       ctx.font = '10px Arial';
       ctx.textAlign = 'center';
-      ctx.fillText(item.type, x + width / 2, y + height / 2);
+      // Priorité : référence > ID > type
+      const displayText = item.reference || item.id || item.type;
+      ctx.fillText(displayText, x + width / 2, y + height / 2);
     }
   }
 
