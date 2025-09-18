@@ -129,7 +129,8 @@ export class SimulationComponent implements OnInit {
 
   updateColisCouleur(index: number, couleur: string) {
     if (!this.listeColis[index]) return;
-    this.listeColis[index].couleur = couleur || this.getDistinctRandomColor();
+    const normalizedColor = couleur ? ColorUtils.validateAndNormalizeHex(couleur) : null;
+    this.listeColis[index].couleur = normalizedColor || this.getDistinctRandomColor();
   }
 
   toggleFragile(index: number) {
@@ -265,7 +266,7 @@ export class SimulationComponent implements OnInit {
           telephone: formValues.telephone || undefined,
           fragile: Boolean(formValues.fragile),
           gerbable: Boolean(formValues.gerbable),
-          couleur: formValues.couleur || this.getDistinctRandomColor(),
+          couleur: formValues.couleur ? (ColorUtils.validateAndNormalizeHex(formValues.couleur) || this.getDistinctRandomColor()) : this.getDistinctRandomColor(),
           statut: 'actif',
           dateAjout: new Date()
         };

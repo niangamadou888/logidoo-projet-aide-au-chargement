@@ -220,27 +220,43 @@ export class VisualizationService {
    * Convertit les items de simulation en items visualisables
    */
   private convertItemsToVisualization(items: any[], containerId: string): VisualizationItem[] {
-    console.log('🔍 Items reçus du backend:', items); // ← Ajoutez cette ligne
+    console.log('🔍 Items reçus du backend:', items);
 
-    return items.map((item, index) => ({
-      id: `${containerId}-item-${index}`,
-      reference: item.reference || `REF-${index}`,
-      type: item.type || 'Colis',
-      dimensions: {
-        longueur: item.longueur || 30,
-        largeur: item.largeur || 25,
-        hauteur: item.hauteur || 20
-      },
-      position: { x: 0, y: 0, z: 0 }, // Sera calculé plus tard
-      color: item.couleur || ColorUtils.getColorByType(item.type || 'default'),
-      poids: item.poids || 0,
-      quantite: item.quantite || 1,
-      fragile: item.fragile || false,
-      gerbable: item.gerbable !== false, // true par défaut
-      nomDestinataire: item.nomDestinataire,
-      adresse: item.adresse,
-      telephone: item.telephone
-    }));
+    return items.map((item, index) => {
+      // Ensure color consistency: prioritize user-chosen colors from couleur field
+      const userColor = item.couleur || item.color; // Handle both possible field names
+      const validatedColor = userColor ? ColorUtils.validateAndNormalizeHex(userColor) : null;
+      const finalColor = validatedColor || ColorUtils.getColorByType(item.type || 'default');
+
+      const visualizationItem: VisualizationItem = {
+        id: `${containerId}-item-${index}`,
+        reference: item.reference || `REF-${index}`,
+        type: item.type || 'Colis',
+        dimensions: {
+          longueur: item.longueur || 30,
+          largeur: item.largeur || 25,
+          hauteur: item.hauteur || 20
+        },
+        position: { x: 0, y: 0, z: 0 }, // Sera calculé plus tard
+        color: finalColor,
+        poids: item.poids || 0,
+        quantite: item.quantite || 1,
+        fragile: item.fragile || false,
+        gerbable: item.gerbable !== false, // true par défaut
+        nomDestinataire: item.nomDestinataire,
+        adresse: item.adresse,
+        telephone: item.telephone
+      };
+
+      // Log for debugging color consistency
+      if (userColor && !validatedColor) {
+        console.warn(`⚠️ Invalid color format for item ${index}: "${userColor}" - using fallback "${finalColor}"`);
+      } else if (userColor && validatedColor !== userColor) {
+        console.log(`✅ Color normalized for item ${index}: "${userColor}" → "${validatedColor}"`);
+      }
+
+      return visualizationItem;
+    });
   }
 
   /**
