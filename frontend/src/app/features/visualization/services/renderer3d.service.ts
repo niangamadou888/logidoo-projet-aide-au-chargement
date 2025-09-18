@@ -419,12 +419,25 @@ export class ThreeDRendererService {
 
     // Position (conversion des coordonnées) basée sur les dimensions du conteneur courant
     const cont = this.currentContainerDims || { longueur: 1200, largeur: 240, hauteur: 260 };
+
+    // Vérifier que la position ne sort pas du conteneur
+    const clampedX = Math.max(0, Math.min(item.position.x, cont.longueur - longueur));
+    const clampedY = Math.max(0, Math.min(item.position.y, cont.largeur - largeur));
+    const clampedZ = Math.max(0, Math.min(item.position.z, cont.hauteur - hauteur));
+
     mesh.position.set(
-      // Conserver le centre basé sur les dimensions d'origine
-      this.cmToUnits(item.position.x + longueur / 2) - this.cmToUnits(cont.longueur) / 2,
-      this.cmToUnits(item.position.z + hauteur / 2),
-      this.cmToUnits(item.position.y + largeur / 2) - this.cmToUnits(cont.largeur) / 2
+      // Position X: centre de l'objet par rapport au centre du conteneur
+      this.cmToUnits(clampedX + longueur / 2) - this.cmToUnits(cont.longueur) / 2,
+      // Position Y (hauteur): Z + hauteur/2 pour centrer verticalement
+      this.cmToUnits(clampedZ + hauteur / 2),
+      // Position Z: Y + largeur/2 pour centrer en profondeur - centre du conteneur
+      this.cmToUnits(clampedY + largeur / 2) - this.cmToUnits(cont.largeur) / 2
     );
+
+    // Log pour debug en cas de repositionnement
+    if (clampedX !== item.position.x || clampedY !== item.position.y || clampedZ !== item.position.z) {
+      console.warn(`📍 Position clamped for item: original(${item.position.x},${item.position.y},${item.position.z}) → clamped(${clampedX},${clampedY},${clampedZ})`);
+    }
 
     // Ombres
     mesh.castShadow = true;

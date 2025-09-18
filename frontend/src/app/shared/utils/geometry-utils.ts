@@ -53,13 +53,13 @@ export class GeometryUtils {
   static findBestPosition(
     containerDims: Dimensions3D,
     itemDims: Dimensions3D,
- 
+
     existingItems: Array<{position: Position3D, dimensions: Dimensions3D, gerbable?: boolean, fragile?: boolean}>,
     fragile = false,
     step = 10
   ): Position3D | null {
     // Bordures de sécurité pour éviter de coller les parois
-    const margin = 0;
+    const margin = 1; // 1cm margin pour éviter les sorties de conteneur
 
     const minX = 0 + margin;
     const minY = 0 + margin;
@@ -68,44 +68,78 @@ export class GeometryUtils {
     const maxY = containerDims.largeur - itemDims.largeur - margin;
     const maxZ = containerDims.hauteur - itemDims.hauteur - margin;
 
-    if (maxX < minX || maxY < minY || maxZ < minZ) return null;
+    // Validation stricte des dimensions pour empêcher les débordements
+    if (maxX < minX || maxY < minY || maxZ < minZ) {
+      console.warn(`❌ Item too large for container: item(${itemDims.longueur}×${itemDims.largeur}×${itemDims.hauteur}) container(${containerDims.longueur}×${containerDims.largeur}×${containerDims.hauteur})`);
+      return null;
+    }
 
     if (fragile) {
-      // Pour un objet fragile: ne pas "flotter"; poser uniquement sur le sol (z=0)
-      // ou exactement au-dessus du sommet d'un objet déjà placé (plateau de support).
+      // Pour un objet fragile: poser sur le sol ou sur une surface stable de niveau approprié
       const supportLevels = new Set<number>();
-      supportLevels.add(0);
+      supportLevels.add(0); // Sol du conteneur
+
+      // Ajouter les niveaux de support des objets gerbables uniquement
       for (const ex of existingItems) {
-        supportLevels.add(ex.position.z + ex.dimensions.hauteur);
+        if (ex.gerbable !== false && !ex.fragile) { // Seuls les objets stables peuvent supporter
+          const topZ = ex.position.z + ex.dimensions.hauteur;
+          if (topZ + itemDims.hauteur <= containerDims.hauteur - margin) { // Vérifier qu'on ne dépasse pas le toit
+            supportLevels.add(topZ);
+          }
+        }
       }
-      // Essayer du plus haut au plus bas pour garder les fragiles au sommet, mais posés
-      const zLevels = Array.from(supportLevels.values()).sort((a, b) => b - a);
+
+      // Essayer les niveaux les plus bas en premier pour stabilité
+      const zLevels = Array.from(supportLevels.values()).sort((a, b) => a - b);
 
       for (const z of zLevels) {
+        if (z + itemDims.hauteur > containerDims.hauteur - margin) continue; // Skip si trop haut
+
         for (let y = minY; y <= maxY; y += step) {
           for (let x = minX; x <= maxX; x += step) {
             const position: Position3D = { x, y, z };
-            if (!this.collides(position, itemDims, existingItems) && this.isSupported(position, itemDims, existingItems)) {
-              return position;
+
+            // Validation stricte des limites
+            if (!this.isWithinContainer(position, itemDims, containerDims)) continue;
+
+            if (!this.collides(position, itemDims, existingItems) &&
+                (z === 0 || this.isSupported(position, itemDims, existingItems))) {
+              // Validation finale avant retour
+              const finalPos = this.validateAndClampPosition(position, itemDims, containerDims);
+              console.log(`✅ Fragile item placed at (${finalPos.x}, ${finalPos.y}, ${finalPos.z})`);
+              return finalPos;
             }
           }
         }
       }
     } else {
-      // Parcours standard: de bas en haut
+      // Parcours standard: de bas en haut, en recherchant d'abord les positions supportées
       for (let z = minZ; z <= maxZ; z += step) {
+        if (z + itemDims.hauteur > containerDims.hauteur - margin) continue; // Skip si trop haut
+
         for (let y = minY; y <= maxY; y += step) {
           for (let x = minX; x <= maxX; x += step) {
             const position: Position3D = { x, y, z };
-            if (!this.collides(position, itemDims, existingItems)) {
-              return position;
+
+            // Validation stricte des limites
+            if (!this.isWithinContainer(position, itemDims, containerDims)) continue;
+
+            // Vérifier qu'on est soit au sol, soit bien supporté
+            const isOnGround = z <= margin;
+            const isWellSupported = !isOnGround && this.isSupported(position, itemDims, existingItems);
+
+            if ((isOnGround || isWellSupported) && !this.collides(position, itemDims, existingItems)) {
+              // Validation finale avant retour
+              const finalPos = this.validateAndClampPosition(position, itemDims, containerDims);
+              console.log(`✅ Regular item placed at (${finalPos.x}, ${finalPos.y}, ${finalPos.z})`);
+              return finalPos;
             }
- 
           }
         }
       }
     }
 
+    console.warn(`❌ No valid position found for item (${itemDims.longueur}×${itemDims.largeur}×${itemDims.hauteur}) in container (${containerDims.longueur}×${containerDims.largeur}×${containerDims.hauteur})`);
     return null; // Aucune position trouvée
   }
 
@@ -306,7 +340,7 @@ export class GeometryUtils {
       minX = Math.min(minX, item.position.x);
       minY = Math.min(minY, item.position.y);
       minZ = Math.min(minZ, item.position.z);
-      
+
       maxX = Math.max(maxX, item.position.x + item.dimensions.longueur);
       maxY = Math.max(maxY, item.position.y + item.dimensions.largeur);
       maxZ = Math.max(maxZ, item.position.z + item.dimensions.hauteur);
@@ -321,5 +355,74 @@ export class GeometryUtils {
         hauteur: maxZ - minZ
       }
     };
+  }
+
+  /**
+   * Vérifie qu'un objet reste complètement dans les limites du conteneur
+   */
+  static isWithinContainer(
+    position: Position3D,
+    itemDims: Dimensions3D,
+    containerDims: Dimensions3D
+  ): boolean {
+    return (
+      position.x >= 0 &&
+      position.y >= 0 &&
+      position.z >= 0 &&
+      position.x + itemDims.longueur <= containerDims.longueur &&
+      position.y + itemDims.largeur <= containerDims.largeur &&
+      position.z + itemDims.hauteur <= containerDims.hauteur
+    );
+  }
+
+  /**
+   * Valide et contraint une position pour s'assurer qu'elle reste dans le conteneur
+   */
+  static validateAndClampPosition(
+    position: Position3D,
+    itemDims: Dimensions3D,
+    containerDims: Dimensions3D
+  ): Position3D {
+    return {
+      x: Math.max(0, Math.min(position.x, containerDims.longueur - itemDims.longueur)),
+      y: Math.max(0, Math.min(position.y, containerDims.largeur - itemDims.largeur)),
+      z: Math.max(0, Math.min(position.z, containerDims.hauteur - itemDims.hauteur))
+    };
+  }
+
+  /**
+   * Recherche optimisée des espaces vides dans un conteneur
+   */
+  static findEmptySpaces(
+    containerDims: Dimensions3D,
+    existingItems: Array<{position: Position3D, dimensions: Dimensions3D}>,
+    minSpaceSize: Dimensions3D,
+    step = 5
+  ): Position3D[] {
+    const emptySpaces: Position3D[] = [];
+    const margin = 1;
+
+    for (let z = 0; z <= containerDims.hauteur - minSpaceSize.hauteur - margin; z += step) {
+      for (let y = 0; y <= containerDims.largeur - minSpaceSize.largeur - margin; y += step) {
+        for (let x = 0; x <= containerDims.longueur - minSpaceSize.longueur - margin; x += step) {
+          const testPos: Position3D = { x, y, z };
+
+          // Vérifier qu'il n'y a pas de collision avec cet espace
+          let hasCollision = false;
+          for (const item of existingItems) {
+            if (this.isOverlapping(testPos, minSpaceSize, item.position, item.dimensions)) {
+              hasCollision = true;
+              break;
+            }
+          }
+
+          if (!hasCollision && this.isWithinContainer(testPos, minSpaceSize, containerDims)) {
+            emptySpaces.push(testPos);
+          }
+        }
+      }
+    }
+
+    return emptySpaces;
   }
 }
