@@ -1,16 +1,15 @@
-/* VARIABLES */
+
 $primary: #1a3a8a;
 $secondary: #f7b500;
 $dark: #111;
 $light-bg: #f4f6fb;
 $white: #fff;
 
-/* RESET */
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Arial', sans-serif; color: $dark; line-height: 1.6; background: $white; }
 a { text-decoration: none; }
 
-/* HEADER */
 .header {
   display: flex;
   justify-content: space-between;
@@ -30,7 +29,6 @@ a { text-decoration: none; }
   }
 }
 
-/* HERO */
 .hero { display: flex; justify-content: space-between; align-items: center; padding: 60px 10%; background: $light-bg;
   .hero-text { max-width: 50%;
     h1 { font-size: 2.8rem; margin-bottom: 20px; color: $primary; .highlight { color: $secondary; } }
@@ -41,11 +39,11 @@ a { text-decoration: none; }
   .hero-image img { max-width: 450px; border-radius: 10px; }
 }
 
-/* BUTTONS */
+
 .btn-primary { background: $secondary; color: $white; padding: 12px 24px; border-radius: 6px; font-weight: bold; }
 .btn-outline { border: 2px solid $primary; color: $primary; padding: 12px 24px; border-radius: 6px; font-weight: bold; }
 
-/* SERVICES */
+
 .services { padding: 80px 10%; background: $white; h2 { color: $primary; margin-bottom: 40px; text-align: center; }
   .services-grid { display: flex; justify-content: space-between; gap: 20px;
     .service-card { background: $light-bg; padding: 20px; border-radius: 12px; text-align: center;
@@ -56,7 +54,7 @@ a { text-decoration: none; }
   }
 }
 
-/* FEATURES */
+
 .features { padding: 80px 10%; background: $light-bg; text-align: center;
   h2 { font-size: 2rem; margin-bottom: 10px; .highlight { color: $primary; } }
   p { margin-bottom: 40px; }
@@ -67,7 +65,7 @@ a { text-decoration: none; }
   }
 }
 
-/* TESTIMONIALS */
+
 .testimonials { padding: 80px 10%; background: $primary; color: $white; text-align: center;
   .rating { margin: 15px 0; }
   .testimonials-container { display: flex; justify-content: center; gap: 30px; margin-top: 40px;
@@ -78,14 +76,13 @@ a { text-decoration: none; }
   }
 }
 
-/* CTA */
 .cta { padding: 80px 10%; text-align: center; background: #f8f9fd;
   h2 { margin-bottom: 15px; }
   p { margin-bottom: 25px; }
   .cta-buttons { display: flex; justify-content: center; gap: 20px; }
 }
 
-/* FOOTER */
+
 .footer { background: $dark; color: $white; padding: 40px 10%;
   .footer-columns { display: flex; justify-content: space-between; margin-bottom: 20px;
     h3 { margin-bottom: 15px; }
@@ -93,4 +90,104 @@ a { text-decoration: none; }
   }
   .footer-bottom { text-align: center; font-size: 0.85rem; border-top: 1px solid #333; padding-top: 10px; }
 }
+
+
+
+.hero {
+  background-image: url("/assets/images/camion-rouge2.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 50vh;
+}
+
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  
+}
+
+.hero-text {
+  position: relative;
+  z-index: 1; 
+  max-width: 700px;
+}
+.carte-service {
+  position: relative;
+  width: 300px;          
+  height: 250px;         
+  border-radius: 12px;
+  overflow: hidden;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; 
+}
+
+.carte-service img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  z-index: 0;
+}
+
+.carte-service .texte {
+  position: relative;
+  z-index: 1;
+  padding: 10px;
+}
+
+
+.carte-service::before {
+  content: "";
+  position: absolute;
+  inset: 0; 
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 0;
+}
+
+
+.advantages {
+  padding: 80px 10%;
+  background: $light-bg;
+
+  h2 {
+    text-align: center;
+    color: $primary;
+    margin-bottom: 40px;
+  }
+
+  .advantages-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .carte-service {
+    flex: 1;
+    background: $white;
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+    .icon {
+      font-size: 40px;
+      color: $secondary;
+      margin-bottom: 15px;
+    }
+
+    .texte {
+      h3 { color: $primary; margin-bottom: 10px; }
+      p { font-size: 0.95rem; color: $dark; }
+    }
+  }
+}
+
+
 

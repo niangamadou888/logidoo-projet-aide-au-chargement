@@ -79,7 +79,6 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
 
-  // ✅ Route alternative pour visualiser directement sans ID
   {
     path: 'visualization',
     component: VisualizationComponent,
