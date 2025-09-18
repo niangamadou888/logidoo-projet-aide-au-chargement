@@ -252,7 +252,7 @@
         <div *ngIf="currentView === '2d'" class="debug-info">
           <p><strong>Debug Vue 2D:</strong></p>
           <p>currentView: {{ currentView }}</p>
-          <p>scene: {{ !!scene ? 'Défini (' + (scene.containers?.length || 0) + ' conteneurs)' : 'Non défini' }}</p>
+          <p>scene: {{ !!scene ? 'Défini (' + (scene.containers.length || 0) + ' conteneurs)' : 'Non défini' }}</p>
           <p>loading: {{ loading }}</p>
           <p>Condition d'affichage: {{ (currentView === '2d' && scene && !loading) ? 'VRAIE' : 'FAUSSE' }}</p>
         </div>
