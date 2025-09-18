@@ -465,7 +465,7 @@ export class ExportLogidooService {
       { label: 'Volume total:', value: `${((container.dimensions.longueur * container.dimensions.largeur * container.dimensions.hauteur) / 1000000).toFixed(2)} m³` },
       { label: 'Nombre de colis:', value: `${container.items?.length || 0}` },
       { label: 'Utilisation volume:', value: `${(container.utilization?.volume || 0).toFixed(1)}%` },
-      { label: 'Utilisation poids:', value: `${(container.utilization?.weight || 0).toFixed(1)}%` }
+      { label: 'Utilisation poids:', value: `${(container.utilization?.poids || container.utilization?.weight || 0).toFixed(1)}%` }
     ];
     
     let detailY = y;
@@ -886,19 +886,23 @@ export class ExportLogidooService {
    * Dessine la barre de performance
    */
   private drawPerformanceBar(pdf: any, colors: any, utilization: any, x: number, y: number): void {
+    // Debug : voir les valeurs d'utilisation
+    console.log('🔍 Utilization dans drawPerformanceBar:', utilization);
+    
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(colors.blue);
     pdf.text('PERFORMANCE:', x, y);
     
     const barWidth = 60;
     const barHeight = 6;
-    const volumePercent = utilization.volume / 100;
+    const volumePercent = (utilization.volume || 0) / 100;
+    const weightPercent = (utilization.poids || utilization.weight || 0) / 100;
     
-    // Background de la barre
+    // Barre de volume
     pdf.setFillColor(colors.lightGray);
     pdf.rect(x + 35, y - 3, barWidth, barHeight, 'F');
     
-    // Remplissage selon performance
+    // Remplissage selon performance volume
     if (volumePercent > 0.8) {
       pdf.setFillColor(colors.success);
     } else if (volumePercent > 0.5) {
@@ -908,16 +912,38 @@ export class ExportLogidooService {
     }
     pdf.rect(x + 35, y - 3, barWidth * volumePercent, barHeight, 'F');
     
-    // Bordure
+    // Bordure volume
     pdf.setDrawColor(colors.blue);
     pdf.setLineWidth(1);
     pdf.rect(x + 35, y - 3, barWidth, barHeight, 'D');
     
+    // Barre de poids (en dessous)
+    pdf.setFillColor(colors.lightGray);
+    pdf.rect(x + 35, y + 5, barWidth, barHeight, 'F');
+    
+    // Remplissage selon performance poids
+    if (weightPercent > 0.8) {
+      pdf.setFillColor(colors.success);
+    } else if (weightPercent > 0.5) {
+      pdf.setFillColor(colors.yellow);
+    } else {
+      pdf.setFillColor(colors.error);
+    }
+    pdf.rect(x + 35, y + 5, barWidth * weightPercent, barHeight, 'F');
+    
+    // Bordure poids
+    pdf.setDrawColor(colors.blue);
+    pdf.setLineWidth(1);
+    pdf.rect(x + 35, y + 5, barWidth, barHeight, 'D');
+    
+    // Textes d'accompagnement
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(8);
     pdf.setTextColor(colors.blue);
-    const perfText = `${utilization.volume.toFixed(1)}% vol.`;
-    pdf.text(perfText, x + 100, y + 1);
+    const volText = `Vol: ${(utilization.volume || 0).toFixed(1)}%`;
+    const weightText = `Poids: ${(utilization.poids || utilization.weight || 0).toFixed(1)}%`;
+    pdf.text(volText, x + 100, y + 1);
+    pdf.text(weightText, x + 100, y + 9);
   }
 
   /**
@@ -1060,37 +1086,51 @@ export class ExportLogidooService {
   }
 
   /**
-   * Détermine le type de colis
+   * Détermine le type de colis - utilise la référence ou l'ID pour plus de clarté
    */
   private getItemType(item: any): string {
-    if (item.type) {
+    // Priorité 1: utiliser la référence si disponible
+    if (item.reference && item.reference !== 'REF-0' && !item.reference.startsWith('REF-')) {
+      return item.reference;
+    }
+    
+    // Priorité 2: utiliser l'ID si plus informatif
+    if (item.id && !item.id.includes('item-')) {
+      return item.id;
+    }
+    
+    // Priorité 3: utiliser le type original si défini et pas générique
+    if (item.type && item.type !== 'Colis' && item.type !== 'carton' && item.type !== 'palette') {
       return item.type;
     }
     
+    // Priorité 4: générer un nom descriptif basé sur les caractéristiques
     const volume = (item.dimensions.longueur * item.dimensions.largeur * item.dimensions.hauteur) / 1000;
+    const indexMatch = item.id ? item.id.match(/item-(\d+)/) : null;
+    const itemNumber = indexMatch ? parseInt(indexMatch[1]) + 1 : 1;
     
     if (item.fragile) {
       if (volume < 10) {
-        return 'Fragile Petit';
+        return `Fragile-${itemNumber}`;
       } else if (volume < 50) {
-        return 'Fragile Moyen';
+        return `Fragile-M-${itemNumber}`;
       } else {
-        return 'Fragile Volumineux';
+        return `Fragile-XL-${itemNumber}`;
       }
     }
     
     if (item.gerbable === false) {
-      return 'Non-Empilable';
+      return `NonEmpilable-${itemNumber}`;
     }
     
     if (volume < 5) {
-      return 'Petit Colis';
+      return `Colis-S-${itemNumber}`;
     } else if (volume < 20) {
-      return 'Colis Standard';
+      return `Colis-M-${itemNumber}`;
     } else if (volume < 100) {
-      return 'Colis Volumineux';
+      return `Colis-L-${itemNumber}`;
     } else {
-      return 'Gros Colis';
+      return `Colis-XL-${itemNumber}`;
     }
   }
 
