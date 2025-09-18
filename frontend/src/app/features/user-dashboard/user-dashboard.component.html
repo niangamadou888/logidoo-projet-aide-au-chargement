@@ -1,182 +1,139 @@
 
-<div class="user-dashboard-container">
-  <mat-toolbar color="primary" class="toolbar">
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
     <div class="logo-section">
       <img src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo">
-      <span class="app-title">Logidoo</span>
     </div>
     
-    <div class="toolbar-spacer"></div>
+    <nav class="navigation">
+      <a class="nav-item active">
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">Dashboard</span>
+      </a>
+      <a class="nav-item" routerLink="/simulation">
+        <span class="nav-icon">➕</span>
+        <span class="nav-text">Nouvelle simulation</span>
+      </a>
+      <div class="nav-section-title">ADMINISTRATION</div>
+      <a class="nav-item" routerLink="/dashboard/user/profile">
+        <span class="nav-icon">👤</span>
+        <span class="nav-text">Profil</span>
+      </a>
+      <a class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-text">Paramètres</span>
+      </a>
+    </nav>
     
-    <div class="user-section" *ngIf="currentUser">
-      <span class="username">{{ currentUser.username }}</span>
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
-        <mat-icon>account_circle</mat-icon>
+    <div class="logout-section">
+      <button class="logout-btn" (click)="logout()">
+        <mat-icon class="logout-icon">power_settings_new</mat-icon>
+        <span class="logout-text">Log Out</span>
       </button>
-      <mat-menu #userMenu="matMenu">
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>exit_to_app</mat-icon>
-          <span>Logout</span>
-        </button>
-      </mat-menu>
     </div>
-  </mat-toolbar>
+  </aside>
 
-  <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #sidenav mode="side" opened class="sidenav">
-      <mat-nav-list>
-        <a mat-list-item>
-          <mat-icon matListItemIcon>dashboard</mat-icon>
-          <span matListItemTitle>Dashboard</span>
-        </a>
-        <a mat-list-item routerLink="/simulation">
-          <mat-icon matListItemIcon>add_box</mat-icon>
-          <span matListItemTitle>New Simulation</span>
-        </a>
-         
-        
-        <a mat-list-item routerLink="/history">
-          <mat-icon matListItemIcon>history</mat-icon>
-          <span matListItemTitle>History</span>
-        </a>
-        <a mat-list-item routerLink="/dashboard/user/profile" routerLinkActive="active">
-          <mat-icon matListItemIcon>person</mat-icon>
-          <span matListItemTitle>Profile</span>
-        </a>
-      </mat-nav-list>
-    </mat-sidenav>
-    
-    <mat-sidenav-content class="sidenav-content">
-      <div class="content-container">
-        <div class="dashboard-header">
-          <h1>Welcome, {{ currentUser?.username || 'User' }}</h1>
-          <p>Optimize your shipping and loading operations</p>
-        </div>
-        
-        <div class="dashboard-cards">
-          <mat-card class="dashboard-card highlight-card">
-            <mat-card-header>
-              <mat-icon mat-card-avatar>add_box</mat-icon>
-              <mat-card-title>New Simulation</mat-card-title>
-              <mat-card-subtitle>Start a new loading optimization</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <p>Create a new loading simulation to optimize your container space</p>
-              <div class="action-button-container">
-                <button mat-raised-button color="primary" class="action-button" routerLink="/simulation">
-                  <mat-icon>add</mat-icon>
-                  START NEW SIMULATION
-                </button>
-              </div>
-            </mat-card-content>
-          </mat-card>
-          
-          <mat-card class="dashboard-card">
-            <mat-card-header>
-              <mat-icon mat-card-avatar>analytics</mat-icon>
-              <mat-card-title>Your Statistics</mat-card-title>
-              <mat-card-subtitle>Performance metrics</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content class="stats-content">
-              <div class="stat-item">
-                <div class="stat-label">Total Simulations</div>
-                <div class="stat-value">{{ userStats.totalSimulations }}</div>
-              </div>
-              
-              <div class="stat-item">
-                <div class="stat-label">Average Fill Rate (Volume)</div>
-                <div class="stat-value">{{ userStats.avgFillRate.volume }}%</div>
-              </div>
-              
-              <div class="stat-item">
-                <div class="stat-label">Average Fill Rate (Weight)</div>
-                <div class="stat-value">{{ userStats.avgFillRate.weight }}%</div>
-              </div>
-              
-              <div class="stat-item">
-                <div class="stat-label">Preferred Container Type</div>
-                <div class="stat-value">{{ userStats.preferredContainer }}</div>
-              </div>
-            </mat-card-content>
-          </mat-card>
-          
-          <mat-card class="dashboard-card wide-card">
-            <mat-card-header>
-              <mat-icon mat-card-avatar>history</mat-icon>
-              <mat-card-title>Recent Simulations</mat-card-title>
-              <mat-card-subtitle>Your latest work</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <table class="simulations-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Date</th>
-                    <th>Container</th>
-                    <th>Fill Rate</th>
-                    <th>Packages</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let sim of recentSimulations">
-                    <td>{{ sim.nom || ('Simulation ' + (sim._id || sim.id)) }}</td>
-                    <td class="description-cell">{{ sim.description || '-' }}</td>
-                    <td>{{ sim.date | date:'yyyy-MM-dd HH:mm' }}</td>
-                    <td>{{ sim.resultats?.containers?.[0]?.type || '-' }}</td>
-                    <td>
-                      <div class="fill-rate-bar">
-                        <div class="fill-rate-progress" [style.width.%]="(sim.resultats?.stats?.avgVolumeUtilization || 0) * 100"></div>
-                        <span>{{ ((sim.resultats?.stats?.avgVolumeUtilization || 0) * 100) | number:'1.0-0' }}%</span>
-                      </div>
-                    </td>
-                    <td>{{ sim.colis?.length || sim.resultats?.stats?.colisCount || 0 }}</td>
-                    <td class="action-buttons">
-                      <button mat-icon-button color="primary" title="View" (click)="loadSimulation(sim)">
-                        <mat-icon>visibility</mat-icon>
-                      </button>
-                      <button mat-icon-button color="primary" title="Export PDF">
-                        <mat-icon>picture_as_pdf</mat-icon>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-button color="primary" routerLink="/history">VIEW ALL SIMULATIONS</button>
-            </mat-card-actions>
-          </mat-card>
-          
-          <mat-card class="dashboard-card">
-            <mat-card-header>
-              <mat-icon mat-card-avatar>help</mat-icon>
-              <mat-card-title>Help & Resources</mat-card-title>
-              <mat-card-subtitle>Learn how to use the system</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content class="help-resources">
-              <div class="help-resource-item">
-                <mat-icon>play_circle_filled</mat-icon>
-                <span>Getting Started Guide</span>
-              </div>
-              <div class="help-resource-item">
-                <mat-icon>menu_book</mat-icon>
-                <span>User Manual</span>
-              </div>
-              <div class="help-resource-item">
-                <mat-icon>contact_support</mat-icon>
-                <span>Contact Support</span>
-              </div>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-button color="primary">MORE RESOURCES</button>
-            </mat-card-actions>
-          </mat-card>
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="welcome-header">
+      <div class="avatar-section">
+        <div class="avatar">👤</div>
+        <span class="welcome-text">Bienvenue, {{ currentUser?.username || 'Mamadou DIENG' }}</span>
+      </div>
+      <div class="user-menu">
+        <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
+          <span class="user-avatar">👤</span>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+    </header>
+
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+      <!-- New Simulation Card -->
+      <div class="new-simulation-card">
+        <h2>Nouvelle simulation</h2>
+        <p>Créez une nouvelle simulation de chargement pour optimiser l'espace de votre conteneur</p>
+        <button class="start-btn" routerLink="/simulation">Démarrer</button>
+      </div>
+
+      <!-- Statistics Card -->
+      <div class="statistics-card">
+        <h3>Statistiques</h3>
+        <div class="stats-list">
+          <div class="stat-row">
+            <span class="stat-label">Simulations totales</span>
+            <span class="stat-value">{{ userStats.totalSimulations }}</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Taux de remplissage moyen (Volume)</span>
+            <span class="stat-value">{{ userStats.avgFillRate.volume }}%</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Taux de remplissage moyen (Poids)</span>
+            <span class="stat-value">{{ userStats.avgFillRate.weight }}%</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Type de conteneur</span>
+            <span class="stat-value">{{ userStats.preferredContainer }}</span>
+          </div>
         </div>
       </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+
+      <!-- Recent Simulations Table -->
+      <div class="recent-simulations">
+        <h3>Simulations récentes</h3>
+        <div class="table-container">
+          <table class="simulations-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>DATE</th>
+                <th>CONTENEUR</th>
+                <th>TAUX DE REMPLISSAGE</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let sim of recentSimulations">
+                <td class="sim-id">{{ sim.nom || ('SIM\n' + (sim._id || sim.id)?.toString().substr(-5)) }}</td>
+                <td class="sim-date">{{ sim.date | date:'dd/MM/yyyy' }}</td>
+                <td class="sim-container">{{ sim.resultats?.containers?.[0]?.type || 'Conteneur 20 pieds' }}</td>
+                <td class="sim-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="(sim.resultats?.stats?.avgVolumeUtilization || 0.92) * 100"></div>
+                    <span class="progress-text">{{ ((sim.resultats?.stats?.avgVolumeUtilization || 0.92) * 100) | number:'1.0-0' }}%</span>
+                  </div>
+                </td>
+                <td class="sim-actions">
+                  <button class="action-menu-btn" [matMenuTriggerFor]="actionMenu">
+                    ⋯
+                  </button>
+                  <mat-menu #actionMenu="matMenu">
+                    <button mat-menu-item (click)="loadSimulation(sim)">
+                      <mat-icon>visibility</mat-icon>
+                      <span>Voir</span>
+                    </button>
+                    <button mat-menu-item>
+                      <mat-icon>picture_as_pdf</mat-icon>
+                      <span>Exporter PDF</span>
+                    </button>
+                  </mat-menu>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>
 
 

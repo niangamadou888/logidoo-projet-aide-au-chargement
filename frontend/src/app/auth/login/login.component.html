@@ -1,49 +1,77 @@
 <div class="login-container">
-  <div class="login-card-container">
-    <mat-card class="login-card">
-      <mat-card-header>
-        <div class="logo-container">
-          <img src="assets/images/logo-logidoo.png" alt="Logidoo Logo" class="logo">
+  <div class="login-content">
+    <!-- Logo Logidoo -->
+    <div class="logo-container">
+      <a routerLink="/" class="logo-link">
+        <img src="assets/images/logo-logidoo.png" alt="Logidoo Logo" class="logo">
+      </a>
+    </div>
+    
+    <!-- Titre Se connecter -->
+    <h1 class="login-title">Se connecter</h1>
+    
+    <!-- Formulaire de connexion -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label class="form-label">Email*</label>
+        <input 
+          type="email" 
+          formControlName="email" 
+          class="form-input"
+          placeholder=""
+        >
+        <div class="error-message" *ngIf="formControls['email']?.errors?.['required'] && formControls['email']?.touched">
+          Email requis
         </div>
-      </mat-card-header>
-      
-      <mat-card-content>
-        <h2 class="login-title">Sign In</h2>
-        
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Email</mat-label>
-            <input matInput formControlName="email" type="email" placeholder="Enter your email">
-            <mat-icon matSuffix>email</mat-icon>
-            <mat-error *ngIf="formControls['email']?.errors?.['required']">Email is required</mat-error>
-            <mat-error *ngIf="formControls['email']?.errors?.['email']">Please enter a valid email address</mat-error>
-          </mat-form-field>
+        <div class="error-message" *ngIf="formControls['email']?.errors?.['email'] && formControls['email']?.touched">
+          Veuillez entrer un email valide
+        </div>
+      </div>
 
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Password</mat-label>
-            <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Enter your password">
-            <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
-              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
-            <mat-error *ngIf="formControls['password']?.errors?.['required']">Password is required</mat-error>
-            <mat-error *ngIf="formControls['password']?.errors?.['minlength']">
-              Password must be at least 6 characters
-            </mat-error>
-          </mat-form-field>
+      <div class="form-group">
+        <label class="form-label">Mot de passe*</label>
+        <div class="password-container">
+          <input 
+            [type]="hidePassword ? 'password' : 'text'" 
+            formControlName="password" 
+            class="form-input password-input"
+            placeholder=""
+          >
+          <button 
+            type="button" 
+            class="password-toggle" 
+            (click)="hidePassword = !hidePassword"
+          >
+            <i class="eye-icon" [class.hide]="hidePassword"></i>
+          </button>
+        </div>
+        <div class="error-message" *ngIf="formControls['password']?.errors?.['required'] && formControls['password']?.touched">
+          Mot de passe requis
+        </div>
+        <div class="error-message" *ngIf="formControls['password']?.errors?.['minlength'] && formControls['password']?.touched">
+          Le mot de passe doit contenir au moins 6 caractères
+        </div>
+      </div>
 
-          <div class="form-actions">
-            <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || loading" class="login-button">
-              <span *ngIf="!loading">Login</span>
-              <span *ngIf="loading">Logging in...</span>
-            </button>
-          </div>
-        </form>
-      </mat-card-content>
-      
-      <mat-card-actions class="register-link">
-        <p><a routerLink="/auth/forgot-password">Forgot your password?</a></p>
-        <p>Don't have an account? <a routerLink="/auth/register">Register here</a></p>
-      </mat-card-actions>
-    </mat-card>
+      <button 
+        type="submit" 
+        class="login-button"
+        [disabled]="loginForm.invalid || loading"
+      >
+        <span *ngIf="!loading">Se connecter</span>
+        <span *ngIf="loading">Connexion en cours...</span>
+      </button>
+    </form>
+    
+    <!-- Liens d'inscription et mot de passe oublié -->
+    <div class="bottom-links">
+      <div class="register-link">
+        <p>Vous n'avez pas de compte ?</p>
+        <a routerLink="/auth/register" class="link-text">S'inscrire ici</a>
+      </div>
+      <div class="forgot-password-link">
+        <a routerLink="/auth/forgot-password" class="link-text">Mot de passe oublié ?</a>
+      </div>
+    </div>
   </div>
 </div>

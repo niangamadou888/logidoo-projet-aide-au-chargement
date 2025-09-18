@@ -31,6 +31,8 @@ export class ResetPasswordComponent {
   form: FormGroup;
   loading = false;
   token: string | null = null;
+  hidePassword = true;
+  hideConfirmPassword = true;
 
   constructor(
     private fb: FormBuilder,

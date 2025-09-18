@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -17,16 +13,11 @@ import { SimulationService } from '../../services/simulation.service';
   standalone: true,
   imports: [
     CommonModule,
-    MatToolbarModule,
     MatButtonModule,
     MatIconModule,
-    MatSidenavModule,
-    MatListModule,
-    MatCardModule,
     MatMenuModule,
     RouterModule,
-    
-],
+  ],
   templateUrl: './user-dashboard.component.html',
   styleUrl: './user-dashboard.component.scss'
 })
@@ -81,8 +72,43 @@ export class UserDashboardComponent implements OnInit {
       this.currentUser = user;
       if (user && this.authService.isAuthenticated()) {
         this.loadRecentSimulations();
+      } else {
+        // Default data for demonstration
+        this.populateDefaultData();
       }
     });
+  }
+
+  private populateDefaultData(): void {
+    this.recentSimulations = [
+      {
+        _id: '12345',
+        nom: 'SIM\n12345',
+        date: '2025-07-15',
+        resultats: {
+          containers: [{ type: 'Conteneur 20 pieds' }],
+          stats: { avgVolumeUtilization: 0.92 }
+        }
+      },
+      {
+        _id: '12345',
+        nom: 'SIM\n12345',
+        date: '2025-07-15',
+        resultats: {
+          containers: [{ type: 'Conteneur 40 pieds' }],
+          stats: { avgVolumeUtilization: 0.86 }
+        }
+      },
+      {
+        _id: '12345',
+        nom: 'SIM\n12345',
+        date: '2025-07-15',
+        resultats: {
+          containers: [{ type: 'Conteneur 20 pieds' }],
+          stats: { avgVolumeUtilization: 0.98 }
+        }
+      }
+    ];
   }
   
   logout(): void {

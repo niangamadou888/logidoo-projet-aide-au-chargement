@@ -3,12 +3,9 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ConteneurService } from '../../services/conteneur.service';
 import { Contenant } from '../../core/models/contenant.model';
 import { AjouteConteneurComponent } from '../ajoute-conteneur/ajoute-conteneur.component';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/models/user.model';
@@ -21,12 +18,9 @@ import { PLATFORM_ID } from '@angular/core';
   imports: [
     CommonModule,
     RouterModule,
-    MatToolbarModule,
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    MatSidenavModule,
-    MatListModule,
     MatMenuModule,
     AjouteConteneurComponent
   ],

@@ -1,82 +1,145 @@
-<div class="admin-dashboard-container">
-  <mat-toolbar color="primary" class="toolbar">
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
     <div class="logo-section">
-      <img src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo" />
-      <span class="app-title">Admin - Conteneurs</span>
+      <img src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo">
     </div>
-    <div class="toolbar-spacer"></div>
-    <div class="user-section" *ngIf="currentUser">
-      <span class="username">{{ currentUser.username }}</span>
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
-        <mat-icon>account_circle</mat-icon>
+    
+    <nav class="navigation">
+      <a class="nav-item" [routerLink]="['/dashboard/admin']">
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">Dashboard Admin</span>
+      </a>
+      <a class="nav-item">
+        <span class="nav-icon">👥</span>
+        <span class="nav-text">Utilisateurs</span>
+      </a>
+      <a class="nav-item active" [routerLink]="['/dashboard/admin/conteneurs']">
+        <span class="nav-icon">📦</span>
+        <span class="nav-text">Conteneurs</span>
+      </a>
+      <div class="nav-section-title">ADMINISTRATION</div>
+      <a class="nav-item" [routerLink]="['/dashboard/admin/profile']">
+        <span class="nav-icon">👤</span>
+        <span class="nav-text">Profil</span>
+      </a>
+      <a class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-text">Paramètres</span>
+      </a>
+    </nav>
+    
+    <div class="logout-section">
+      <button class="logout-btn">
+        <mat-icon class="logout-icon">power_settings_new</mat-icon>
+        <span class="logout-text">Log Out</span>
       </button>
-      <mat-menu #userMenu="matMenu">
-        <a mat-menu-item [routerLink]="['/dashboard/admin']">
-          <mat-icon>dashboard</mat-icon>
-          <span>Dashboard</span>
-        </a>
-      </mat-menu>
     </div>
-  </mat-toolbar>
+  </aside>
 
-  <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #sidenav mode="side" opened class="sidenav">
-      <mat-nav-list>
-        <a mat-list-item [routerLink]="['/dashboard/admin']" routerLinkActive="active">
-          <mat-icon matListItemIcon>dashboard</mat-icon>
-          <span matListItemTitle>Dashboard</span>
-        </a>
-        <a mat-list-item [routerLink]="['/dashboard/admin/conteneurs']" routerLinkActive="active">
-          <mat-icon matListItemIcon>inventory_2</mat-icon>
-          <span matListItemTitle>Containers</span>
-        </a>
-      </mat-nav-list>
-    </mat-sidenav>
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="welcome-header">
+      <div class="avatar-section">
+        <div class="avatar">📦</div>
+        <span class="welcome-text">Gestion des conteneurs</span>
+      </div>
+      <div class="user-menu">
+        <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
+          <span class="user-avatar">👤</span>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <a mat-menu-item [routerLink]="['/dashboard/admin']">
+            <mat-icon>dashboard</mat-icon>
+            <span>Dashboard</span>
+          </a>
+        </mat-menu>
+      </div>
+    </header>
 
-    <mat-sidenav-content class="sidenav-content">
-      <div class="conteneurs-page">
-        <div class="page-header">
-          <h1>Gestion des contenants</h1>
-          <span class="spacer"></span>
-          <button mat-stroked-button (click)="fetchContenants()">
+    <!-- Content -->
+    <div class="page-content">
+      <div class="conteneurs-container">
+        <!-- Action Bar -->
+        <div class="action-bar">
+          <h2>Conteneurs existants</h2>
+          <button class="refresh-btn" (click)="fetchContenants()">
             <mat-icon>refresh</mat-icon>
-            Rafraîchir
+            <span>Rafraîchir</span>
           </button>
         </div>
 
-        <div class="contenants-section">
-          <h2>Contenants existants</h2>
-          <div *ngIf="loading" class="loading">Chargement...</div>
-          <div *ngIf="!loading && contenants.length === 0" class="empty">Aucun contenant pour le moment.</div>
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state">
+          <div class="loading-spinner">Chargement des conteneurs...</div>
+        </div>
 
-          <div class="contenants-grid" *ngIf="!loading && contenants.length > 0">
-            <div class="conteneur-card" *ngFor="let c of contenants">
+        <!-- Empty State -->
+        <div *ngIf="!loading && contenants.length === 0" class="empty-state">
+          <div class="empty-icon">📦</div>
+          <div class="empty-title">Aucun conteneur trouvé</div>
+          <div class="empty-description">Commencez par ajouter votre premier conteneur</div>
+        </div>
+
+        <!-- Conteneurs Grid -->
+        <div class="conteneurs-grid" *ngIf="!loading && contenants.length > 0">
+          <div class="conteneur-card" *ngFor="let c of contenants">
+            <div class="card-image">
               <img *ngIf="c.images && c.images.length > 0" [src]="'https://logidoo.onrender.com' + c.images[0]" [alt]="c.type" />
-              <div class="conteneur-header">
-                <strong>{{ c.type }}</strong>
-                <span class="badge" [class.camion]="c.categorie === 'camion'">{{ c.categorie | titlecase }}</span>
+              <div class="card-overlay">
+                <div class="card-badge" [class.camion]="c.categorie === 'camion'">{{ c.categorie | titlecase }}</div>
               </div>
-              <div class="conteneur-body">
-                <div class="dim">{{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm</div>
-                <div class="vol">Volume: {{ c.volume ?? ((c.dimensions.longueur*c.dimensions.largeur*c.dimensions.hauteur)/1000000) | number:'1.2-2' }} m³</div>
-                <div class="cap">Capacité: {{ c.capacitePoids }} kg</div>
-                <div class="status" *ngIf="c.disponible !== undefined">Statut: {{ c.disponible ? 'Disponible' : 'Indisponible' }}</div>
+            </div>
+            
+            <div class="card-content">
+              <div class="card-header">
+                <h3 class="card-title">{{ c.type }}</h3>
+                <div class="status-indicator" [class.disponible]="c.disponible" [class.indisponible]="!c.disponible">
+                  {{ c.disponible ? 'Disponible' : 'Indisponible' }}
+                </div>
               </div>
+              
+              <div class="card-details">
+                <div class="detail-row">
+                  <span class="detail-icon">📏</span>
+                  <span class="detail-text">{{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-icon">📊</span>
+                  <span class="detail-text">Volume: {{ c.volume ?? ((c.dimensions.longueur*c.dimensions.largeur*c.dimensions.hauteur)/1000000) | number:'1.2-2' }} m³</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-icon">⚖️</span>
+                  <span class="detail-text">Capacité: {{ c.capacitePoids }} kg</span>
+                </div>
+              </div>
+              
               <div class="card-actions">
-                <button mat-stroked-button color="warn" (click)="deleteContenant(c._id)">
+                <button class="action-btn edit-btn">
+                  <mat-icon>edit</mat-icon>
+                  <span>Modifier</span>
+                </button>
+                <button class="action-btn delete-btn" (click)="deleteContenant(c._id)">
                   <mat-icon>delete</mat-icon>
-                  Supprimer
+                  <span>Supprimer</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="ajout-section">
-          <h2>Ajouter un contenant</h2>
-          <app-ajoute-conteneur></app-ajoute-conteneur>
+        <!-- Add Container Section -->
+        <div class="add-container-section">
+          <div class="section-header">
+            <h2>Ajouter un nouveau conteneur</h2>
+            <p>Créez un nouveau conteneur pour vos simulations de chargement</p>
+          </div>
+          <div class="add-container-form">
+            <app-ajoute-conteneur></app-ajoute-conteneur>
+          </div>
         </div>
       </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+    </div>
+  </main>
 </div>
