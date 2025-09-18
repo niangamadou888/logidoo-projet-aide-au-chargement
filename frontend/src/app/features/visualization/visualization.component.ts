@@ -1,7 +1,8 @@
 // src/app/features/visualization/visualization.component.ts
 
-import { Component, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, ViewChild, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { PLATFORM_ID } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -19,7 +20,8 @@ import {
   ViewportSettings
 } from './models/visualization.model';
 import { SimulationData } from './models/placement.model';
-import { ExportService } from './services/export.service';
+import { ExportService } from './services/export-clean.service';
+import { ExportLogidooService } from './services/export-logidoo.service';
 
 
 @Component({
@@ -27,6 +29,7 @@ import { ExportService } from './services/export.service';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     CanvasComponent,
     SceneComponent,
     PanelComponent
@@ -48,7 +51,11 @@ export class VisualizationComponent implements OnInit, OnDestroy {
 
   // Variables pour la navigation
   currentView: '2d' | '3d' = '3d';
+  current2DView: 'top' | 'bottom' | 'side' | 'side-opposite' | 'front' | 'back' = 'top';
   sidebarCollapsed = false;
+
+  // État du menu d'export
+  showExportMenu = false;
 
   private destroy$ = new Subject<void>();
   private isInitializing = false;
@@ -62,6 +69,7 @@ export class VisualizationComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private exportService: ExportService,
+    private exportLogidooService: ExportLogidooService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
@@ -75,6 +83,19 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  /**
+   * Listener pour fermer le menu quand on clique ailleurs
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    const exportDropdown = document.querySelector('.export-dropdown');
+    
+    if (exportDropdown && !exportDropdown.contains(target)) {
+      this.showExportMenu = false;
+    }
   }
 
   /**
@@ -141,6 +162,7 @@ export class VisualizationComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.error = null;
       this.scene = null;
+      console.log('📡 Initialisation du service de visualisation avec:', this.simulationData);
       // Initialiser la visualisation avec les données (asynchrone)
       this.visualizationService.initializeVisualization(this.simulationData);
       
@@ -169,9 +191,11 @@ export class VisualizationComponent implements OnInit, OnDestroy {
     this.visualizationService.scene$
       .pipe(takeUntil(this.destroy$))
       .subscribe(scene => {
+        console.log('🎬 Scene mise à jour:', scene);
         this.scene = scene;
         // Désactiver le loader après réception d'une nouvelle scène post-init
         if (this.isInitializing) {
+          console.log('✅ Visualisation initialisée, arrêt du loading');
           this.loading = false;
           this.isInitializing = false;
         }
@@ -196,10 +220,28 @@ export class VisualizationComponent implements OnInit, OnDestroy {
    * Bascule entre les vues 2D et 3D
    */
   toggleView(): void {
+    console.log(`🔄 Changement de vue: ${this.currentView} → ${this.currentView === '2d' ? '3d' : '2d'}`);
+    console.log('État actuel - scene:', !!this.scene, 'loading:', this.loading);
     this.currentView = this.currentView === '2d' ? '3d' : '2d';
     this.visualizationService.updateScene({
       renderMode: this.currentView
     });
+    console.log('Nouvelle vue:', this.currentView);
+  }
+
+  /**
+   * Change la vue 2D (plan, dessous, côtés, etc.)
+   */
+  change2DView(newView: 'top' | 'bottom' | 'side' | 'side-opposite' | 'front' | 'back'): void {
+    if (this.current2DView !== newView) {
+      console.log(`🔄 Changement de vue 2D: ${this.current2DView} → ${newView}`);
+      this.current2DView = newView;
+      
+      // Appliquer le changement au composant canvas
+      if (this.canvasComp && this.canvasComp.changeView) {
+        this.canvasComp.changeView(newView);
+      }
+    }
   }
 
   /**
@@ -207,6 +249,20 @@ export class VisualizationComponent implements OnInit, OnDestroy {
    */
   toggleSidebar(): void {
     this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
+
+  /**
+   * Bascule l'affichage du menu d'export
+   */
+  toggleExportMenu(): void {
+    this.showExportMenu = !this.showExportMenu;
+  }
+
+  /**
+   * Cache le menu d'export
+   */
+  hideExportMenu(): void {
+    this.showExportMenu = false;
   }
 
   /**
@@ -233,35 +289,62 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Exportation de la visualisation (future implémentation)
+   * Exportation de la visualisation avec toutes les vues
    */
-  /**
- * Exportation de la visualisation
- */
   exportVisualization(): void {
     if (!this.scene) {
       alert('Aucune donnée à exporter');
       return;
     }
 
-    const exportType = prompt('Type d\'export:\n1 - PNG\n2 - PDF\n3 - JSON\nEntrez le numéro:', '1');
+    const exportType = prompt(
+      'Type d\'export:\n' +
+      '1 - PNG (vue actuelle)\n' +
+      '2 - PNG (toutes les vues 3D/2D)\n' +
+      '3 - PNG (toutes les vues 2D uniquement)\n' +
+      '4 - PDF (vue actuelle)\n' +
+      '5 - PDF (toutes les vues 3D/2D)\n' +
+      '6 - PDF (toutes les vues 2D uniquement)\n' +
+      '7 - JSON (données)\n' +
+      '8 - Package complet (ZIP)\n' +
+      'Entrez le numéro:', 
+      '6'
+    );
 
     switch (exportType) {
       case '1':
-        this.exportAsPNG();
+        this.exportCurrentViewAsPNG();
         break;
       case '2':
-        this.exportAsPDF();
+        this.exportAllViewsAsPNG();
         break;
       case '3':
+        this.exportAll2DViewsAsPNG();
+        break;
+      case '4':
+        this.exportCurrentViewAsPDF();
+        break;
+      case '5':
+        this.exportAllViewsAsPDF();
+        break;
+      case '6':
+        this.exportAll2DViewsAsPDF();
+        break;
+      case '7':
         this.exportAsJSON();
+        break;
+      case '8':
+        this.exportCompletePackage();
         break;
       default:
         console.log('Export annulé');
     }
   }
 
-  private exportAsPNG(): void {
+  /**
+   * Export PNG de la vue actuelle
+   */
+  exportCurrentViewAsPNG(): void {
     if (this.currentView === '2d') {
       const canvasElement = document.querySelector('app-canvas canvas') as HTMLCanvasElement;
       if (canvasElement) {
@@ -270,49 +353,160 @@ export class VisualizationComponent implements OnInit, OnDestroy {
         alert('❌ Canvas 2D non trouvé');
       }
     } else {
-      // Pour la 3D, attendre et forcer le rendu
       this.export3DCanvas();
     }
   }
 
+  /**
+   * Export PNG de toutes les vues
+   */
+  async exportAllViewsAsPNG(): Promise<void> {
+    try {
+      console.log('📸 Export de toutes les vues...');
+      await this.exportService.exportAllViewsToPNG(`simulation-${this.getSimulationTitle()}`);
+      
+      // Afficher une notification de succès
+      this.showNotification('✅ Export PNG réussi pour toutes les vues', 'success');
+    } catch (error) {
+      console.error('❌ Erreur export PNG toutes vues:', error);
+      this.showNotification('❌ Erreur lors de l\'export PNG', 'error');
+    }
+  }
+
+  /**
+   * Export PDF de la vue actuelle
+   */
+  async exportCurrentViewAsPDF(): Promise<void> {
+    try {
+      let canvasDataUrl: string | undefined;
+
+      if (this.currentView === '2d') {
+        const canvasElement = document.querySelector('app-canvas canvas') as HTMLCanvasElement;
+        canvasDataUrl = canvasElement?.toDataURL('image/png');
+      } else {
+        const threeCanvas = this.findThreeJSCanvas();
+        canvasDataUrl = threeCanvas?.toDataURL('image/png');
+      }
+
+      await this.exportService.exportToPDF(this.scene!, { 
+        includeAllViews: false,
+        view2D: this.currentView === '2d' ? canvasDataUrl : undefined,
+        view3D: this.currentView === '3d' ? canvasDataUrl : undefined
+      });
+      
+      this.showNotification('✅ Export PDF réussi', 'success');
+    } catch (error) {
+      console.error('❌ Erreur export PDF:', error);
+      this.showNotification('❌ Erreur lors de l\'export PDF', 'error');
+    }
+  }
+
+  /**
+   * Export PDF avec toutes les vues
+   */
+  async exportAllViewsAsPDF(): Promise<void> {
+    try {
+      console.log('📄 Export PDF avec toutes les vues 2D...');
+      
+      this.showNotification('📄 Génération du rapport avec toutes les vues 2D...', 'info');
+      
+      // Utiliser la nouvelle méthode qui capture toutes les vues 2D
+      await this.exportService.exportToPDFWithAll2DViews(this.scene!);
+      
+      this.showNotification('✅ Rapport PDF multi-vues 2D généré avec succès', 'success');
+    } catch (error) {
+      console.error('❌ Erreur export PDF:', error);
+      this.showNotification('❌ Erreur lors de la génération du rapport', 'error');
+    }
+  }
+
+  /**
+   * Export package complet avec ZIP
+   */
+  async exportCompletePackage(): Promise<void> {
+    try {
+      console.log('📦 Création du package complet...');
+      
+      this.showNotification('📦 Création du package complet...', 'info');
+      
+      await this.exportService.exportCompletePackage(this.scene!, `simulation-${this.getSimulationTitle()}`);
+      
+      this.showNotification('✅ Package complet créé avec succès !', 'success');
+    } catch (error) {
+      console.error('❌ Erreur package complet:', error);
+      this.showNotification('❌ Erreur lors de la création du package', 'error');
+    }
+  }
+
+  /**
+   * Export JSON (existant, légèrement modifié)
+   */
+  public exportAsJSON(): void {
+    this.exportService.exportDataToJSON(this.scene!, `simulation-data-${this.getSimulationTitle()}`);
+  }
+
+  /**
+   * Export PNG de toutes les vues 2D (plan, dessous, côtés, etc.)
+   */
+  public async exportAll2DViewsAsPNG(): Promise<void> {
+    try {
+      console.log('📸 Export de toutes les vues 2D...');
+      this.showNotification('📸 Export de toutes les vues 2D...', 'info');
+      
+      await this.exportService.exportAll2DViewsToPNG(`simulation-2d-vues-${this.getSimulationTitle()}`);
+      
+      this.showNotification('✅ Export PNG de toutes les vues 2D réussi', 'success');
+    } catch (error) {
+      console.error('❌ Erreur export PNG toutes vues 2D:', error);
+      this.showNotification('❌ Erreur lors de l\'export PNG des vues 2D', 'error');
+    }
+  }
+
+  /**
+   * Export PDF de toutes les vues 2D (plan, dessous, côtés, etc.)
+   */
+  public async exportAll2DViewsAsPDF(): Promise<void> {
+    try {
+      console.log('📄 Export PDF de toutes les vues 2D...');
+      this.showNotification('📄 Export PDF de toutes les vues 2D...', 'info');
+      
+      await this.exportService.exportToPDFWithAll2DViews(this.scene!);
+      
+      this.showNotification('✅ Export PDF de toutes les vues 2D réussi', 'success');
+    } catch (error) {
+      console.error('❌ Erreur export PDF toutes vues 2D:', error);
+      this.showNotification('❌ Erreur lors de l\'export PDF des vues 2D', 'error');
+    }
+  }
+
+  /**
+   * Export PDF avec design professionnel Logidoo
+   */
+  public async exportLogidooPDF(): Promise<void> {
+    try {
+      console.log('🎨 Export PDF Logidoo professionnel...');
+      this.showNotification('🎨 Export PDF avec design Logidoo...', 'info');
+      
+      await this.exportLogidooService.exportToPDFWithAll2DViews(this.scene!);
+      
+      this.showNotification('✅ Export PDF Logidoo réussi', 'success');
+    } catch (error) {
+      console.error('❌ Erreur export PDF Logidoo:', error);
+      this.showNotification('❌ Erreur lors de l\'export PDF Logidoo', 'error');
+    }
+  }
+
+  /**
+   * Export 3D Canvas (méthode existante améliorée)
+   */
   private export3DCanvas(): void {
-    // Attendre que Three.js termine son rendu
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        // Double requestAnimationFrame pour être sûr
-
-        // Chercher le canvas 3D de plusieurs façons
-        let canvas3D: HTMLCanvasElement | null = null;
-
-        // Méthode 1: Sélecteur direct
-        canvas3D = document.querySelector('app-scene canvas');
-
-        // Méthode 2: Chercher dans le container de scène
-        if (!canvas3D) {
-          const sceneContainer = document.querySelector('.scene-container');
-          if (sceneContainer) {
-            canvas3D = sceneContainer.querySelector('canvas');
-          }
-        }
-
-        // Méthode 3: Prendre le canvas le plus récent (Three.js crée souvent le dernier)
-        if (!canvas3D) {
-          const allCanvas = document.querySelectorAll('canvas');
-          if (allCanvas.length > 1) {
-            canvas3D = allCanvas[allCanvas.length - 1] as HTMLCanvasElement;
-          }
-        }
-
-        // Méthode 4: Chercher un canvas avec des dimensions importantes
-        if (!canvas3D) {
-          const allCanvas = Array.from(document.querySelectorAll('canvas'));
-          canvas3D = allCanvas.find(c => c.width > 100 && c.height > 100) || null;
-        }
+        const canvas3D = this.findThreeJSCanvas();
 
         if (canvas3D) {
           console.log('✅ Canvas 3D trouvé:', canvas3D.width + 'x' + canvas3D.height);
 
-          // Vérifier que le canvas n'est pas vide
           if (canvas3D.width > 0 && canvas3D.height > 0) {
             this.exportService.exportCanvasToPNG(canvas3D, `simulation-3d-${this.getSimulationTitle()}`);
           } else {
@@ -326,22 +520,111 @@ export class VisualizationComponent implements OnInit, OnDestroy {
     });
   }
 
-  private async exportAsPDF(): Promise<void> {
-    let canvasDataUrl: string | undefined;
+  /**
+   * Méthode utilitaire pour trouver le canvas Three.js
+   */
+  private findThreeJSCanvas(): HTMLCanvasElement | null {
+    // Méthode 1: Sélecteur direct
+    let canvas3D: HTMLCanvasElement | null = document.querySelector('app-scene canvas');
+    if (canvas3D) return canvas3D;
 
-    if (this.currentView === '2d') {
-      const canvasElement = document.querySelector('app-canvas canvas') as HTMLCanvasElement;
-      canvasDataUrl = canvasElement?.toDataURL('image/png');
-    } else {
-      const threeCanvas = document.querySelector('app-scene canvas') as HTMLCanvasElement;
-      canvasDataUrl = threeCanvas?.toDataURL('image/png');
+    // Méthode 2: Chercher dans le container de scène
+    const sceneContainer = document.querySelector('.scene-container');
+    if (sceneContainer) {
+      canvas3D = sceneContainer.querySelector('canvas');
+      if (canvas3D) return canvas3D;
     }
 
-    await this.exportService.exportToPDF(this.scene!, canvasDataUrl);
+    // Méthode 3: Prendre le canvas le plus récent
+    const allCanvas = document.querySelectorAll('canvas');
+    if (allCanvas.length > 1) {
+      return allCanvas[allCanvas.length - 1] as HTMLCanvasElement;
+    }
+
+    // Méthode 4: Chercher un canvas avec des dimensions importantes
+    const canvasArray = Array.from(allCanvas);
+    return canvasArray.find(c => c.width > 100 && c.height > 100) as HTMLCanvasElement || null;
   }
 
-  private exportAsJSON(): void {
-    this.exportService.exportDataToJSON(this.scene!, `simulation-data-${this.getSimulationTitle()}`);
+  /**
+   * Méthode pour forcer le rendu avant export (utile pour Three.js)
+   */
+  private async forceRenderAndCapture(): Promise<{ view2D: string | null, view3D: string | null }> {
+    // Forcer le rendu des composants
+    if (this.sceneComp) {
+      // Si le composant 3D a une méthode pour forcer le rendu
+      // this.sceneComp.forceRender?.();
+    }
+
+    if (this.canvasComp) {
+      // Si le composant 2D a une méthode pour forcer le rendu
+      // this.canvasComp.forceRender?.();
+    }
+
+    // Attendre que les rendus se terminent
+    await new Promise(resolve => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(resolve);
+      });
+    });
+
+    // Capturer les vues
+    const allViews = await this.exportService.captureAll2DViews();
+    return {
+      view2D: allViews['top'] || allViews['side'] || null, // Prendre la première vue disponible comme 2D
+      view3D: null // Pas de vue 3D dans le nouveau service
+    };
+  }
+
+  /**
+   * Affiche une notification temporaire
+   */
+  private showNotification(message: string, type: 'success' | 'error' | 'info'): void {
+    // Créer l'élément de notification
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    
+    // Styles inline pour la notification
+    Object.assign(notification.style, {
+      position: 'fixed',
+      top: '20px',
+      right: '20px',
+      zIndex: '9999',
+      padding: '12px 16px',
+      borderRadius: '6px',
+      color: 'white',
+      fontSize: '14px',
+      fontWeight: '500',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      transform: 'translateX(100%)',
+      transition: 'transform 0.3s ease-out',
+      maxWidth: '300px'
+    });
+
+    // Couleurs selon le type
+    const colors = {
+      success: '#10b981',
+      error: '#ef4444',
+      info: '#3b82f6'
+    };
+    notification.style.backgroundColor = colors[type];
+
+    // Ajouter au DOM et animer
+    document.body.appendChild(notification);
+    
+    // Animation d'entrée
+    requestAnimationFrame(() => {
+      notification.style.transform = 'translateX(0)';
+    });
+
+    // Supprimer après 4 secondes
+    setTimeout(() => {
+      notification.style.transform = 'translateX(100%)';
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 4000);
   }
 
   /**
@@ -399,4 +682,8 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   hasMultipleContainers(): boolean {
     return (this.scene?.containers?.length || 0) > 1;
   }
+
+
+  
 }
+

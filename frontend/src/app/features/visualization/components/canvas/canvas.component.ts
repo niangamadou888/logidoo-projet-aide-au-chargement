@@ -59,12 +59,19 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit(): void {
     this.initializeCanvas();
     this.setupEventListeners();
-    this.setupResizeObserver();
+    // Temporairement désactivé pour debugger les dimensions
+    // this.setupResizeObserver();
+    
     // Initialize container dimensions from DOM to avoid first draw with 0x0
     if (this.containerRef?.nativeElement) {
       const rect = this.containerRef.nativeElement.getBoundingClientRect();
+      console.log('🔍 Dimensions initiales du container:', rect);
       this.containerDimensions = { width: rect.width, height: rect.height };
     }
+    
+    // Exposer la méthode changeView pour l'export
+    this.exposeChangeViewMethod();
+    
     this.render();
   }
 
@@ -96,6 +103,39 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Change la vue 2D (utilisé pour l'export de toutes les vues)
+   */
+  public changeView(newViewMode: 'top' | 'bottom' | 'side' | 'side-opposite' | 'front' | 'back'): void {
+    if (newViewMode !== this.viewMode) {
+      console.log(`🔄 Changement de vue: ${this.viewMode} → ${newViewMode}`);
+      this.viewMode = newViewMode;
+      this.staticDirty = true; // Marquer pour reconstruction
+      this.render(); // Re-render avec la nouvelle vue
+    }
+  }
+
+  /**
+   * Récupère la vue actuelle
+   */
+  public getCurrentView(): 'top' | 'bottom' | 'side' | 'side-opposite' | 'front' | 'back' {
+    return this.viewMode;
+  }
+
+  /**
+   * Expose la méthode changeView pour l'export programmatique
+   */
+  private exposeChangeViewMethod(): void {
+    // Exposer la méthode changeView sur l'élément DOM pour accès externe
+    const element = this.containerRef.nativeElement.closest('app-canvas');
+    if (element) {
+      (element as any).changeView = (viewMode: string) => {
+        this.changeView(viewMode as any);
+      };
+      console.log('🔗 Méthode changeView exposée sur app-canvas');
+    }
+  }
+
   private initializeCanvas(): void {
     const canvas = this.canvasRef.nativeElement;
     this.ctx = canvas.getContext('2d');
@@ -109,17 +149,36 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     const devicePixelRatio = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
     
-    canvas.width = rect.width * devicePixelRatio;
-    canvas.height = rect.height * devicePixelRatio;
+    console.log('🏗️ Initialisation canvas avec rect:', rect);
+    
+    // Validation des dimensions
+    if (rect.width <= 0 || rect.height <= 0 || rect.height > 10000) {
+      console.warn('⚠️ Dimensions d\'initialisation anormales, utilisation de valeurs par défaut');
+      // Utiliser des dimensions par défaut raisonnables
+      canvas.width = 800 * devicePixelRatio;
+      canvas.height = 600 * devicePixelRatio;
+      canvas.style.width = '800px';
+      canvas.style.height = '600px';
+      this.containerDimensions = { width: 800, height: 600 };
+    } else {
+      canvas.width = rect.width * devicePixelRatio;
+      canvas.height = rect.height * devicePixelRatio;
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      this.containerDimensions = { width: rect.width, height: rect.height };
+    }
     
     this.ctx.scale(devicePixelRatio, devicePixelRatio);
-    canvas.style.width = rect.width + 'px';
-    canvas.style.height = rect.height + 'px';
   }
 
   private setupResizeObserver(): void {
     this.resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
+        console.log('🔍 ResizeObserver détecte un changement:', {
+          contentRect: entry.contentRect,
+          target: entry.target.tagName,
+          className: entry.target.className
+        });
         this.handleResize(entry.contentRect);
       }
     });
@@ -128,6 +187,14 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private handleResize(rect: DOMRectReadOnly): void {
+    console.log('📐 HandleResize appelé avec rect:', rect);
+    
+    // Validation des dimensions pour éviter les valeurs aberrantes
+    if (rect.width <= 0 || rect.height <= 0 || rect.height > 10000) {
+      console.warn('⚠️ Dimensions anormales détectées, ignorées:', rect);
+      return;
+    }
+    
     const canvas = this.canvasRef.nativeElement;
     const devicePixelRatio = window.devicePixelRatio || 1;
     
@@ -156,6 +223,20 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
 
     // Empêcher le menu contextuel
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    // Écouter les événements de changement de vue pour l'export
+    const container = this.containerRef.nativeElement.closest('app-canvas');
+    if (container) {
+      container.addEventListener('changeView', (event: any) => {
+        const newViewMode = event.detail?.viewMode;
+        if (newViewMode && newViewMode !== this.viewMode) {
+          console.log(`🔄 Changement de vue: ${this.viewMode} → ${newViewMode}`);
+          this.viewMode = newViewMode;
+          this.staticDirty = true; // Marquer pour reconstruction
+          this.render(); // Re-render avec la nouvelle vue
+        }
+      });
+    }
   }
 
   private onMouseDown(event: MouseEvent): void {
@@ -234,7 +315,17 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private render(): void {
-    if (!this.ctx || !this.scene) return;
+    console.log('🎨 Canvas render() appelé - Contexte:', {
+      ctx: !!this.ctx,
+      scene: !!this.scene,
+      containerDimensions: this.containerDimensions,
+      viewMode: this.viewMode
+    });
+    
+    if (!this.ctx || !this.scene) {
+      console.log('⚠️ Arrêt du rendu - contexte ou scène manquant');
+      return;
+    }
 
     // Annuler l'animation précédente
     if (this.animationFrameId) {
@@ -242,22 +333,33 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     this.animationFrameId = requestAnimationFrame(() => {
+      console.log('🖼️ Animation frame - début du draw()');
       this.draw();
     });
   }
 
   private draw(): void {
-    if (!this.ctx || !this.scene) return;
+    console.log('🖌️ Draw() appelé');
+    
+    if (!this.ctx || !this.scene) {
+      console.log('⚠️ Draw arrêté - contexte ou scène manquant');
+      return;
+    }
 
     const canvas = this.canvasRef.nativeElement;
     const { width, height } = this.containerDimensions;
+    
+    console.log('📏 Dimensions canvas:', { width, height, canvasWidth: canvas.width, canvasHeight: canvas.height });
 
-    // Effacer le canvas
-    this.ctx.clearRect(0, 0, width, height);
+    // Effacer le canvas avec un arrière-plan blanc pour les exports
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.fillRect(0, 0, width, height);
+    console.log('🧹 Canvas effacé avec fond blanc');
 
     // Dessiner le conteneur actuel via un calque offscreen mis en cache
     const currentContainer = this.scene.containers[this.scene.currentContainerIndex];
     if (currentContainer) {
+      console.log('📦 Conteneur actuel:', currentContainer.id, this.scene.currentContainerIndex);
       this.buildOffscreenIfNeeded(currentContainer);
 
       // Calculer l'échelle d'affichage pour ajuster le calque offscreen au viewport

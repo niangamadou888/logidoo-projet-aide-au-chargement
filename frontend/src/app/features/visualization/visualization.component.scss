@@ -203,11 +203,123 @@
   flex: 1;
   position: relative;
   background: #f8fafc;
+  min-height: 500px; /* Hauteur minimum pour éviter les problèmes de dimensionnement */
+  max-height: calc(100vh - 100px); /* Limite la hauteur pour éviter les débordements */
 
   .viewer-container {
     width: 100%;
     height: 100%;
     position: relative;
+    min-height: 500px; /* Assurer une hauteur minimum pour le canvas */
+
+    .loading-2d {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #6b7280;
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #e5e7eb;
+        border-top: 3px solid #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+      }
+
+      p {
+        font-size: 1rem;
+        font-weight: 500;
+        margin: 0 0 0.5rem;
+      }
+
+      small {
+        font-size: 0.875rem;
+        color: #9ca3af;
+      }
+    }
+
+    .debug-info {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      z-index: 1000;
+
+      p {
+        margin: 0.25rem 0;
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// ===== CONTRÔLES DE VUE 2D =====
+.view-controls-2d {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  .view-selector {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .view-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+      white-space: nowrap;
+    }
+
+    .view-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+
+      .view-btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid #d1d5db;
+        background: white;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &:hover {
+          background: #f9fafb;
+          border-color: #9ca3af;
+        }
+
+        &.active {
+          background: #3b82f6;
+          border-color: #3b82f6;
+          color: white;
+        }
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+      }
+    }
   }
 }
 
@@ -373,4 +485,117 @@
       }
     }
   }
+}
+
+// ===== EXPORT STYLES =====
+.export-dropdown {
+  position: relative;
+  display: inline-block;
+
+  .export-btn {
+    background: #f97316;
+    color: white;
+    border: 1px solid #f97316;
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #ea580c;
+      border-color: #ea580c;
+    }
+
+    &.dropdown-open {
+      background: #ea580c;
+      border-color: #ea580c;
+    }
+  }
+
+  .export-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    min-width: 280px;
+    z-index: 1000;
+    overflow: hidden;
+  }
+
+  .export-section {
+    border-bottom: 1px solid #f1f5f9;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .export-section-title {
+      padding: 0.75rem 1rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: #f8fafc;
+    }
+
+    .export-option {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border: none;
+      background: white;
+      color: #374151;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+
+      &:hover {
+        background: #f8fafc;
+        color: #1f2937;
+      }
+
+      svg {
+        flex-shrink: 0;
+        width: 16px;
+        height: 16px;
+      }
+
+      // Style spécial pour le bouton Logidoo
+      &.export-logidoo {
+        background: linear-gradient(135deg, #ff6b35 0%, #0066cc 100%);
+        color: white;
+        font-weight: 600;
+        border: 2px solid transparent;
+        margin: 0.5rem;
+        border-radius: 8px;
+
+        &:hover {
+          background: linear-gradient(135deg, #ea580c 0%, #0052a3 100%);
+          color: white;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .logidoo-text {
+          background: linear-gradient(45deg, #fff, #f0f8ff);
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          font-weight: 700;
+        }
+
+        svg {
+          filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+        }
+      }
+    }
+  }
+  
 }
