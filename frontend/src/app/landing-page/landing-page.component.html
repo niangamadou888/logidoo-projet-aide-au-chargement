@@ -1,41 +1,259 @@
 <div class="landing-container">
-  <header>
-    <img src="../../assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo">
-    <nav>
+
+  <!--------------------->
+<!-- HEADER -->
+ <!--------------------->
+
+<header class="header">
+  <img src="assets/images/logo-logidoo.png" alt="Logidoo Logo" class="logo">
+  <nav class="nav">
+    <ul>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#features">Fonctionnalités</a></li>
+      <li><a href="#testimonials">Témoignages</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+  <div class="header-buttons">
+    <a [routerLink]="['/auth/login']" class="btn-secondary">Se connecter</a>
+    <a [routerLink]="['/auth/register']" class="btn-outline">S'inscrire</a>
+  </div>
+</header>
+
+
+<!--------------------->
+<!-- HERO -->
+ <!--------------------->
+
+<!-- <section class="hero">
+  <div class="hero-text">
+    <h1>
+      Optimisez vos <span class="highlight">chargements</span><br />
+      en toute simplicité
+    </h1>
+    <p>
+      Maximisez l'espace et la rentabilité de vos expéditions avec notre module d'aide au chargement intelligent. Réduisez les coûts et évitez les erreurs.
+    </p>
+    <div class="hero-buttons">
+      <a href="#cta" class="btn-primary">Démarrer</a>
+      <a href="#demo" class="btn-outline">Voir la démo</a>
+    </div>
+    <div class="hero-stats">
+      <div><strong>85%</strong><br />Taux de remplissage</div>
+      <div><strong>-30%</strong><br />Coûts logistiques</div>
+      <div><strong>21+</strong><br />Experts dédiés</div>
+    </div>
+  </div>
+  <div class="hero-image">
+    <img src="assets/images/landing-page1.png" alt="Logistique">
+  </div>
+</section> -->
+
+<section class="hero">
+<div class="hero-text">
+  <h1>
+    Optimisez vos <span class="highlight">chargements</span><br />
+    en toute simplicité
+  </h1>
+  <p class="text-white">
+    Maximisez l'espace et la rentabilité de vos expéditions avec notre module d'aide au chargement intelligent. Réduisez les coûts et évitez les erreurs.
+  </p>
+  <div class="hero-buttons">
+    <a href="#cta" class="btn-primary">Démarrer</a>
+    <a href="#demo" class="btn-outline">Voir la démo</a>
+  </div>
+  <div class="hero-stats text-white">
+    <div><strong>85%</strong><br />Taux de remplissage</div>
+    <div><strong>-30%</strong><br />Coûts logistiques</div>
+    <div><strong>21+</strong><br />Experts dédiés</div>
+  </div>
+</div>
+</section>
+
+ <!--------------------->
+<!-- SERVICES -->
+ <!--------------------->
+
+<section id="services" class="services">
+<h2>Services à valeur ajoutée</h2>
+<div class="services-grid">
+
+  <div class="service-card ">
+    <img src="assets/images/avion.png" alt="Aérien" class="img-fluid w-100 h-100 object-fit-cover">
+    <h3>Aérien</h3>
+    <p>Hubs de consolidation, flexibilité et options de fret, service express innovant.</p>
+  </div>
+
+  <div class="service-card">
+    <img src="assets/images/bateau.png" alt="Maritime" class="img-fluid w-100 h-100 object-fit-cover">
+    <h3>Maritime</h3>
+    <p>Transport complet, expertise et infrastructure, transport en groupage maritime.</p>
+  </div>
+
+  <div class="service-card">
+    <img src="assets/images/routier.png" alt="Routier" class="img-fluid w-100 h-100 object-fit-cover">
+    <h3>Routier</h3>
+    <p>Affrètement camion, équipements spéciaux, groupage routier intra-africain.</p>
+  </div>
+
+</div>
+</section>
+
+
+
+
+<!--------------------->
+<!-- NOS AVANTAGES -->
+<!--------------------->
+<section id="advantages" class="advantages">
+<h2>Nos avantages</h2>
+<div class="advantages-grid">
+  
+  <div class="carte-service">
+    <div class="icon">
+      <i class="fas fa-clock"></i>
+    </div>
+    <div class="texte">
+      <h3>Gain de temps immédiat</h3>
+      <p>Fini les démarches complexes. Organisez vos envois en quelques clics et concentrez-vous sur ce qui compte vraiment : vos clients.</p>
+    </div>
+  </div>
+
+  <div class="carte-service">
+    <div class="icon">
+      <i class="fas fa-cogs"></i>
+    </div>
+    <div class="texte">
+      <h3>Optimisation intelligente</h3>
+      <p>Remplissez vos camions et conteneurs de manière optimale. Moins d’espaces perdus, plus d’efficacité, et des coûts réduits à chaque trajet.</p>
+    </div>
+  </div>
+
+  <div class="carte-service">
+    <div class="icon">
+      <i class="fas fa-robot"></i>
+    </div>
+    <div class="texte">
+      <h3>Algorithmes intelligents</h3>
+      <p>Bénéficiez de la puissance de l’IA pour prévoir, analyser et optimiser vos opérations logistiques sans effort supplémentaire.</p>
+    </div>
+  </div>
+
+</div>
+</section>
+ <!--------------------->
+<!-- FEATURES -->
+ <!--------------------->
+<section id="features" class="features">
+  <h2>Fonctionnalités puissantes pour <span class="highlight">optimiser vos chargements</span></h2>
+  <p>Notre module d'aide au chargement vous offre tous les outils nécessaires pour une logistique efficace et rentable.</p>
+  <div class="features-grid">
+    <div class="feature-card"><button class="feature-btn bg-primary rounded "style="width:60px; height:60px;">📐</button>
+      <h3>Calcul automatique</h3>
+      <p>Volume, poids et plans de chargement calculés avec précision.</p>
+    </div>
+    <div class="feature-card"><button class="feature-btn bg-primary rounded" style="width:60px; height:60px;">📊</button>
+      <h3>Visualisation 3D</h3>
+      <p>Schémas 3D clairs et interactifs pour visualiser vos chargements.</p>
+    </div>
+    <div class="feature-card"><button class="feature-btn bg-primary rounded "style="width:60px; height:60px;">⬇️</button>
+      <h3>Import/Export Excel</h3>
+      <p>Importez vos données et exportez vos résultats en quelques clics.</p>
+    </div>
+    <div class="feature-card"><button class="feature-btn bg-primary rounded "style="width:60px; height:60px;">🚚</button>
+      <h3>Suggestion véhicules</h3>
+      <p>Recommandation automatique des moyens de transport adaptés.</p>
+    </div>
+    <div class="feature-card"><button class="feature-btn bg-primary rounded "style="width:60px; height:60px;">🧠</button>
+      <h3>Optimisation avancée</h3>
+      <p>Algorithmes puissants pour maximiser l’espace.</p>
+    </div>
+    <div class="feature-card"> <button class="feature-btn bg-primary rounded "style="width:60px; height:60px;">🔒</button>
+      <h3>Contrôle sécurisé</h3>
+      <p>Vérification des poids maximaux et prévention des surcharges.</p>
+    </div>
+    <div class="feature-card">
+      <button class="feature-btn bg-primary rounded "style="width:60px; height:60px;">📈</button>
+      <h3>Analyse prédictive</h3>
+      <p>Machine learning pour anticiper vos futurs besoins logistiques.</p>
+    </div>
+    <div class="feature-card"> <button class="feature-btn bg-primary rounded " style="width:60px; height:60px;">🔗</button>
+      <h3>Intégration native</h3>
+      <p>Connexion simple avec vos systèmes existants.</p>
+    </div>
+  </div>
+</section>
+
+
+  <!--------------------->
+<!-- TESTIMONIALS -->
+ <!--------------------->
+
+<section id="testimonials" class="testimonials">
+  <h2>Ce que disent nos clients</h2>
+  <div class="rating">⭐⭐⭐⭐⭐ <span>9,5/10 (124 avis)</span></div>
+  <div class="testimonials-container">
+    <div class="testimonial-card">
+      <p>"Logidoo a révolutionné notre approche du chargement. Nous économisons 30% sur nos coûts de transport grâce à leur optimisation intelligente."</p>
+      <span>Marie Dubois<br/>TransLog Solutions</span>
+    </div>
+    <div class="testimonial-card">
+      <p>"Grâce à cette solution, nos coûts logistiques ont chuté de 30% et nous avons gagné un temps précieux."</p>
+      <span>Pierre Martin<br/>Express Cargo</span>
+    </div>
+  </div>
+</section>
+
+
+
+ <!--------------------->
+ <!-- CTA -->
+ <!--------------------->
+<section id="cta" class="cta">
+  <h2>Prêt à optimiser votre logistique ?</h2>
+  <p>Rejoignez plus de 100 entreprises qui font confiance à Logidoo.</p>
+  <div class="cta-buttons">
+    <a href="#contact" class="btn-primary">Commencer maintenant</a>
+    <a href="#demo" class="btn-outline">Planifier une démo</a>
+  </div>
+</section>
+
+
+ <!--------------------->
+ <!-- FOOTER -->
+ <!--------------------->
+
+<footer class="footer" id="contact">
+  <div class="footer-columns">
+    <div>
+      <h3>Logidoo</h3>
+      <p>Optimisez vos opérations logistiques avec nos solutions depuis 2019.</p>
+    </div>
+    <div>
+      <h3>Solutions</h3>
       <ul>
-        <li><a routerLink="/auth/login">Login</a></li>
-        <li><a routerLink="/auth/register">Register</a></li>
+        <li>Module Aide au Chargement</li>
+        <li>OMS AirHub</li>
+        <li>Dashboard</li>
       </ul>
-    </nav>
-  </header>
-
-  <main>
-    <section class="hero">
-      <h1>Welcome to Logidoo</h1>
-      <p>Logistics loading assistance platform</p>
-      <div class="cta-buttons">
-        <a routerLink="/auth/login" class="cta-button primary">Log In</a>
-        <a routerLink="/auth/register" class="cta-button secondary">Register</a>
-      </div>
-    </section>
-
-    <section class="features">
-      <div class="feature">
-        <h2>Optimize Loading</h2>
-        <p>Streamline your logistics operations with our advanced loading assistance tools.</p>
-      </div>
-      <div class="feature">
-        <h2>Track Shipments</h2>
-        <p>Real-time tracking and monitoring of all your shipments.</p>
-      </div>
-      <div class="feature">
-        <h2>Data Analytics</h2>
-        <p>Make informed decisions with comprehensive logistics data analytics.</p>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <p>© 2023 Logidoo. All rights reserved.</p>
-  </footer>
+    </div>
+    <div>
+      <h3>Support</h3>
+      <ul>
+        <li>Documentation</li>
+        <li>FAQ</li>
+        <li>Support Technique</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Contact</h3>
+      <ul>
+        <li>contact&#64;logidoo.com</li>
+        <li>+221 78 862 97 79</li>
+        <li>Sicap Liberté 6, Dakar</li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-bottom">© 2025 Logidoo. Tous droits réservés.</p>
+</footer>
 </div>
