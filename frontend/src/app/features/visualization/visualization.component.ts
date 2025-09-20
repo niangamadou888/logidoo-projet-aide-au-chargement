@@ -46,6 +46,8 @@ export class VisualizationComponent implements OnInit, OnDestroy {
 
   // États de l'interface
   loading = true;
+  loadingProgress = 0;
+  loadingMessage = 'Initialisation...';
   error: string | null = null;
   simulationData: SimulationData | null = null;
 
@@ -129,15 +131,22 @@ export class VisualizationComponent implements OnInit, OnDestroy {
    * Charge les données depuis différentes sources de manière optimisée
    */
   private loadDataFromSources(): void {
+    this.loadingProgress = 10;
+    this.loadingMessage = 'Recherche des données...';
+
     // Vérifier sessionStorage immédiatement
     try {
       const sessionData = sessionStorage.getItem('simulationData');
       console.log('💾 SessionStorage data:', sessionData ? 'TROUVÉ' : 'VIDE');
 
       if (sessionData) {
+        this.loadingProgress = 30;
+        this.loadingMessage = 'Lecture des données...';
         try {
           this.simulationData = JSON.parse(sessionData);
           console.log('✅ Données récupérées:', this.simulationData);
+          this.loadingProgress = 50;
+          this.loadingMessage = 'Initialisation de la visualisation...';
           this.loadVisualizationAsync();
           return;
         } catch (error) {
@@ -150,12 +159,18 @@ export class VisualizationComponent implements OnInit, OnDestroy {
 
     // Si pas de sessionStorage, essayer les autres méthodes
     try {
+      this.loadingProgress = 20;
+      this.loadingMessage = 'Vérification des sources alternatives...';
       console.log('🔍 Vérification history.state...');
       const historyState = window.history?.state;
 
       if (historyState?.simulationData) {
         console.log('✅ Trouvé dans history.state');
+        this.loadingProgress = 40;
+        this.loadingMessage = 'Traitement des données...';
         this.simulationData = historyState.simulationData;
+        this.loadingProgress = 60;
+        this.loadingMessage = 'Initialisation de la visualisation...';
         this.loadVisualizationAsync();
         return;
       }
@@ -166,6 +181,7 @@ export class VisualizationComponent implements OnInit, OnDestroy {
     console.log('❌ Aucune donnée trouvée');
     this.error = 'Aucune donnée de simulation disponible';
     this.loading = false;
+    this.loadingProgress = 0;
   }
 
   /**
@@ -175,6 +191,7 @@ export class VisualizationComponent implements OnInit, OnDestroy {
     if (!this.simulationData) {
       this.error = 'Données de simulation manquantes';
       this.loading = false;
+      this.loadingProgress = 0;
       return;
     }
 
@@ -184,11 +201,15 @@ export class VisualizationComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.error = null;
       this.scene = null;
+      this.loadingProgress = 70;
+      this.loadingMessage = 'Préparation de la visualisation...';
 
       console.log('📡 Initialisation du service de visualisation avec:', this.simulationData);
 
       // Différer l'initialisation pour permettre au loader de s'afficher
       setTimeout(() => {
+        this.loadingProgress = 85;
+        this.loadingMessage = 'Calcul des positions...';
         this.visualizationService.initializeVisualization(this.simulationData!);
       }, 100);
 
@@ -196,6 +217,7 @@ export class VisualizationComponent implements OnInit, OnDestroy {
       console.error('Erreur lors de l\'initialisation de la visualisation:', error);
       this.error = 'Erreur lors du chargement de la visualisation';
       this.loading = false;
+      this.loadingProgress = 0;
     }
   }
 
@@ -237,8 +259,13 @@ export class VisualizationComponent implements OnInit, OnDestroy {
           // Désactiver le loader après réception d'une nouvelle scène post-init
           if (this.isInitializing) {
             console.log('✅ Visualisation initialisée, arrêt du loading');
-            this.loading = false;
-            this.isInitializing = false;
+            this.loadingProgress = 100;
+            this.loadingMessage = 'Finalisation...';
+            setTimeout(() => {
+              this.loading = false;
+              this.loadingProgress = 0;
+              this.isInitializing = false;
+            }, 200);
           }
         });
       });
