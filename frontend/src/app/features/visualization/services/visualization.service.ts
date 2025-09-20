@@ -22,9 +22,6 @@ import { GeometryUtils } from '../../../shared/utils/geometry-utils';
 })
 export class VisualizationService {
 
-  // Compteur global pour les IDs des colis
-  private globalItemCounter = 0;
-
   // Observables pour l'état de la visualisation
   private sceneSubject = new BehaviorSubject<VisualizationScene>(this.getDefaultScene());
   private configSubject = new BehaviorSubject<VisualizationConfig>(this.getDefaultConfig());
@@ -91,9 +88,6 @@ export class VisualizationService {
    * Convertit les données de simulation en containers visualisables
    */
   private convertSimulationToContainers(simulationData: SimulationData): VisualizationContainer[] {
-    // Réinitialiser le compteur global pour chaque nouvelle simulation
-    this.globalItemCounter = 0;
-    
     if (!simulationData.resultats?.containers) {
       return [];
     }
@@ -103,8 +97,6 @@ export class VisualizationService {
 
       // Essayer de récupérer les dimensions exactes depuis le cache par ref (ObjectId)
       const fromCache = container?.ref ? this.containersCache[container.ref] : undefined;
-      console.log('🗂️ Container depuis cache:', fromCache);
-      console.log('📷 Images du conteneur:', fromCache?.images);
 
       let chosenDims: Dimensions3D = {
         longueur: container.dimensions?.longueur
@@ -159,9 +151,7 @@ export class VisualizationService {
           poids: weightUtilPercent
         },
         color: this.getContainerColor(container.categorie),
-        position: { x: index * 800, y: 0, z: 0 },
-        // Ajouter les images depuis le cache pour synchroniser avec l'interface de sélection
-        images: fromCache?.images || []
+        position: { x: index * 800, y: 0, z: 0 }
       };
 
       console.log('📏 Dimensions utilisées:', visualizationContainer.dimensions);
@@ -223,39 +213,30 @@ export class VisualizationService {
   }
 
   /**
-   * Convertit les items de simulation en items visualisables avec IDs uniformes
+   * Convertit les items de simulation en items visualisables
    */
   private convertItemsToVisualization(items: any[], containerId: string): VisualizationItem[] {
-    console.log('🔍 Items reçus du backend:', items);
+    console.log('🔍 Items reçus du backend:', items); // ← Ajoutez cette ligne
 
-    return items.map((item, index) => {
-      // Générer un ID uniforme et unique pour chaque colis
-      this.globalItemCounter++;
-      const uniformId = `COLIS-${this.globalItemCounter.toString().padStart(3, '0')}`;
-      
-      const result = {
-        id: uniformId,
-        reference: item.reference || uniformId,
-        type: item.type || 'Colis',
-        dimensions: {
-          longueur: item.longueur || 30,
-          largeur: item.largeur || 25,
-          hauteur: item.hauteur || 20
-        },
-        position: { x: 0, y: 0, z: 0 }, // Sera calculé plus tard
-        color: item.couleur || ColorUtils.getColorByType(item.type || 'default'),
-        poids: item.poids || 0,
-        quantite: item.quantite || 1,
-        fragile: item.fragile || false,
-        gerbable: item.gerbable !== false, // true par défaut
-        nomDestinataire: item.nomDestinataire,
-        adresse: item.adresse,
-        telephone: item.telephone
-      };
-      
-      console.log('🔍 Item créé:', { original: item, converted: result });
-      return result;
-    });
+    return items.map((item, index) => ({
+      id: `${containerId}-item-${index}`,
+      reference: item.reference || `REF-${index}`,
+      type: item.type || 'Colis',
+      dimensions: {
+        longueur: item.longueur || 30,
+        largeur: item.largeur || 25,
+        hauteur: item.hauteur || 20
+      },
+      position: { x: 0, y: 0, z: 0 }, // Sera calculé plus tard
+      color: item.couleur || ColorUtils.getColorByType(item.type || 'default'),
+      poids: item.poids || 0,
+      quantite: item.quantite || 1,
+      fragile: item.fragile || false,
+      gerbable: item.gerbable !== false, // true par défaut
+      nomDestinataire: item.nomDestinataire,
+      adresse: item.adresse,
+      telephone: item.telephone
+    }));
   }
 
   /**
@@ -340,22 +321,9 @@ export class VisualizationService {
       }
 
       if (!placedOK) {
-        // Fallback: placement forcé avec recherche d'espaces vides
-        console.warn(`⚠️ Fallback placement for item: ${item.reference}`);
-        const fallbackPos = this.findFallbackPosition(containerDims, item.dimensions, placed.map(p => ({ position: p.position, dimensions: p.dimensions })));
-
-        if (fallbackPos) {
-          // Placement trouvé avec fallback
-          item.position = fallbackPos;
-          item.dimensions = item.dimensions; // Garder dimensions originales
-          item.opacity = 0.7; // Légèrement transparent pour indiquer placement suboptimal
-          placed.push({ position: fallbackPos, dimensions: item.dimensions, ref: item.id, gerbable: item.gerbable, fragile: item.fragile });
-        } else {
-          // Vraiment aucun espace: placer dans un coin avec transparence
-          item.opacity = 0.3;
-          item.position = { x: 0, y: 0, z: containerDims.hauteur - item.dimensions.hauteur }; // En haut à gauche
-          console.warn(`❌ No space found for item: ${item.reference}, placed with transparency`);
-        }
+        // Marquer comme non placé visuellement (semi-transparent), mais éviter chevauchement
+        item.opacity = 0.3;
+        item.position = { x: 0, y: 0, z: 0 };
         continue;
       }
 
@@ -389,50 +357,6 @@ export class VisualizationService {
       }
     }
 
-  }
-
-  /**
-   * Recherche une position de fallback pour un item qui ne peut pas être placé normalement
-   */
-  private findFallbackPosition(
-    containerDims: Dimensions3D,
-    itemDims: Dimensions3D,
-    existingItems: Array<{position: Position3D, dimensions: Dimensions3D}>
-  ): Position3D | null {
-    // Essayer avec une grille plus grossière et sans contraintes de support
-    const step = 10;
-    const margin = 2;
-
-    for (let z = 0; z <= containerDims.hauteur - itemDims.hauteur - margin; z += step) {
-      for (let y = 0; y <= containerDims.largeur - itemDims.largeur - margin; y += step) {
-        for (let x = 0; x <= containerDims.longueur - itemDims.longueur - margin; x += step) {
-          const position: Position3D = { x, y, z };
-
-          // Seulement vérifier les collisions volumiques strictes
-          let hasCollision = false;
-          for (const existing of existingItems) {
-            if (GeometryUtils.isOverlapping(position, itemDims, existing.position, existing.dimensions)) {
-              hasCollision = true;
-              break;
-            }
-          }
-
-          // Vérifier que l'item reste dans le conteneur
-          if (!hasCollision && GeometryUtils.isWithinContainer(position, itemDims, containerDims)) {
-            return GeometryUtils.validateAndClampPosition(position, itemDims, containerDims);
-          }
-        }
-      }
-    }
-
-    // Dernier recours: utiliser les espaces vides connus
-    const emptySpaces = GeometryUtils.findEmptySpaces(containerDims, existingItems, itemDims, 15);
-    if (emptySpaces.length > 0) {
-      // Prendre le premier espace vide
-      return GeometryUtils.validateAndClampPosition(emptySpaces[0], itemDims, containerDims);
-    }
-
-    return null;
   }
 
   /**
