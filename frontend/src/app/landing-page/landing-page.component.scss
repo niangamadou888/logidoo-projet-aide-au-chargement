@@ -111,12 +111,14 @@ a { text-decoration: none; }
 
 // ---------- TESTIMONIALS ----------
 .testimonials {
-  padding: 80px 10%; background: $primary; color: $white; text-align: center;
-  h2 { margin-bottom: 15px; }
+  padding: 80px 10%; background: $primary; color: black; text-align: center;object-fit: cover;;
+  h2 { margin-bottom: 15px;color: white; }
+  .nsfd{color: white;}
   .rating { margin-bottom: 30px; font-size: 1.2rem; }
   .testimonial-card {
     display: flex; justify-content: space-between; align-items: center; background: #23408e; padding: 30px; border-radius: 12px;
-    .testimonial-text { flex: 1; text-align: left;
+    .testimonial-text { flex: 1; text-align: left; padding-left: 60px;padding-top: 100px; font-size: 30px;
+      background-color: white;width: 1500px;height: 450px;
       p { font-style: italic; margin-bottom: 15px; }
       span { font-weight: bold; }
     }
