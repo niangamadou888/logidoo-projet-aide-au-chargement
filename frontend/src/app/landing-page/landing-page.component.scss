@@ -90,8 +90,9 @@ a { text-decoration: none; }
   .advantages-grid { display: flex; gap: 20px; justify-content: center;
     .adv-card {
       flex: 1; background: $white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      .icon { font-size: 40px; color: $secondary; margin-bottom: 15px; }
+      .img { font-size: 40px; color: $secondary; margin-bottom: 15px; text-align: left;}
       h3 { margin-bottom: 10px; color: $primary; }
+     
     }
   }
 }
