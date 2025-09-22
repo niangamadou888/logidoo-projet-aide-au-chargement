@@ -1,0 +1,33 @@
+<div class="testimonial-card" [class.active]="isActive">
+  <div class="testimonial-content">
+    <div class="quote-marks">
+      <div class="quote-mark quote-mark-left">"</div>
+      <div class="quote-mark quote-mark-right">"</div>
+    </div>
+
+    <div class="testimonial-main">
+      <div class="profile-section">
+        <div class="profile-image-container">
+          <img [src]="testimonial.avatar" [alt]="testimonial.name" class="profile-image">
+        </div>
+      </div>
+
+      <div class="testimonial-text">
+        <p class="testimonial-quote">{{ testimonial.content }}</p>
+        <div class="author-info">
+          <h4 class="author-name">{{ testimonial.name }}</h4>
+          <p class="author-position" *ngIf="testimonial.position">{{ testimonial.position }}</p>
+          <p class="author-company" *ngIf="testimonial.company">{{ testimonial.company }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="navigation-dots" *ngIf="showNavigation">
+      <div class="dots-container">
+        <span class="dot" *ngFor="let i of [1,2,3]; let index = index"
+              [class.active]="index === 0"
+              (click)="onDotClick(index)"></span>
+      </div>
+    </div>
+  </div>
+</div>
