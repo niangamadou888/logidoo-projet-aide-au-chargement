@@ -419,11 +419,31 @@ export class ThreeDRendererService {
 
     // Position (conversion des coordonnées) basée sur les dimensions du conteneur courant
     const cont = this.currentContainerDims || { longueur: 1200, largeur: 240, hauteur: 260 };
+
+    // Validation et correction des positions pour rester dans les limites du conteneur
+    const validatedPosition = this.validateItemPosition(
+      item.position,
+      { longueur, largeur, hauteur },
+      cont
+    );
+
+    // Logging pour debug si nécessaire
+    if (validatedPosition.x !== item.position.x ||
+        validatedPosition.y !== item.position.y ||
+        validatedPosition.z !== item.position.z) {
+      console.warn(`🚨 Item hors limites détecté - Correction appliquée:`, {
+        originalPosition: item.position,
+        itemDimensions: { longueur, largeur, hauteur },
+        containerDimensions: cont,
+        correctedPosition: validatedPosition
+      });
+    }
+
     mesh.position.set(
-      // Conserver le centre basé sur les dimensions d'origine
-      this.cmToUnits(item.position.x + longueur / 2) - this.cmToUnits(cont.longueur) / 2,
-      this.cmToUnits(item.position.z + hauteur / 2),
-      this.cmToUnits(item.position.y + largeur / 2) - this.cmToUnits(cont.largeur) / 2
+      // Utiliser les coordonnées validées et corrigées
+      this.cmToUnits(validatedPosition.x + longueur / 2) - this.cmToUnits(cont.longueur) / 2,
+      this.cmToUnits(validatedPosition.z + hauteur / 2),
+      this.cmToUnits(validatedPosition.y + largeur / 2) - this.cmToUnits(cont.largeur) / 2
     );
 
     // Ombres
@@ -820,6 +840,21 @@ export class ThreeDRendererService {
    */
   private cmToUnits(cm: number): number {
     return cm / 2; // 1 unité = 2cm
+  }
+
+  /**
+   * Valide et corrige la position d'un item pour qu'il reste dans les limites du conteneur
+   */
+  private validateItemPosition(
+    position: { x: number; y: number; z: number },
+    dimensions: { longueur: number; largeur: number; hauteur: number },
+    containerDims: { longueur: number; largeur: number; hauteur: number }
+  ): { x: number; y: number; z: number } {
+    return {
+      x: Math.max(0, Math.min(position.x, containerDims.longueur - dimensions.longueur)),
+      y: Math.max(0, Math.min(position.y, containerDims.largeur - dimensions.largeur)),
+      z: Math.max(0, Math.min(position.z, containerDims.hauteur - dimensions.hauteur))
+    };
   }
 
   /**

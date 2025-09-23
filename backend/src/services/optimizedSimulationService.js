@@ -179,42 +179,79 @@ class SpaceNode {
     this.item = null;
   }
 
-  canFit(itemDims) {
-    return !this.occupied &&
-           itemDims.longueur <= this.width &&
-           itemDims.largeur <= this.height &&
-           itemDims.hauteur <= this.depth;
+  canFit(itemDims, containerDims = null) {
+    // Vérifier que l'espace n'est pas occupé et que l'item peut physiquement rentrer
+    const basicFit = !this.occupied &&
+                     itemDims.longueur <= this.width &&
+                     itemDims.largeur <= this.height &&
+                     itemDims.hauteur <= this.depth;
+
+    if (!basicFit) {
+      return false;
+    }
+
+    // Si les dimensions du conteneur sont fournies, vérifier les limites absolues
+    if (containerDims) {
+      const finalX = this.x + itemDims.longueur;
+      const finalY = this.y + itemDims.largeur;
+      const finalZ = this.z + itemDims.hauteur;
+
+      return finalX <= containerDims.longueur &&
+             finalY <= containerDims.largeur &&
+             finalZ <= containerDims.hauteur;
+    }
+
+    return true;
   }
 
-  place(item, dims) {
+  place(item, dims, containerDims = null) {
     this.occupied = true;
     this.item = item;
-    return this.split(dims);
+    return this.split(dims, containerDims);
   }
 
-  split(itemDims) {
+  split(itemDims, containerDims = null) {
     const newSpaces = [];
 
     // Créer des espaces résiduels autour de l'item placé
     if (itemDims.longueur < this.width) {
-      newSpaces.push(new SpaceNode(
+      const newSpace = new SpaceNode(
         this.x + itemDims.longueur, this.y, this.z,
         this.width - itemDims.longueur, this.height, this.depth
-      ));
+      );
+      // Valider que l'espace créé ne dépasse pas les limites du conteneur
+      if (!containerDims ||
+          (newSpace.x + newSpace.width <= containerDims.longueur &&
+           newSpace.y + newSpace.height <= containerDims.largeur &&
+           newSpace.z + newSpace.depth <= containerDims.hauteur)) {
+        newSpaces.push(newSpace);
+      }
     }
 
     if (itemDims.largeur < this.height) {
-      newSpaces.push(new SpaceNode(
+      const newSpace = new SpaceNode(
         this.x, this.y + itemDims.largeur, this.z,
         itemDims.longueur, this.height - itemDims.largeur, this.depth
-      ));
+      );
+      if (!containerDims ||
+          (newSpace.x + newSpace.width <= containerDims.longueur &&
+           newSpace.y + newSpace.height <= containerDims.largeur &&
+           newSpace.z + newSpace.depth <= containerDims.hauteur)) {
+        newSpaces.push(newSpace);
+      }
     }
 
     if (itemDims.hauteur < this.depth) {
-      newSpaces.push(new SpaceNode(
+      const newSpace = new SpaceNode(
         this.x, this.y, this.z + itemDims.hauteur,
         itemDims.longueur, itemDims.largeur, this.depth - itemDims.hauteur
-      ));
+      );
+      if (!containerDims ||
+          (newSpace.x + newSpace.width <= containerDims.longueur &&
+           newSpace.y + newSpace.height <= containerDims.largeur &&
+           newSpace.z + newSpace.depth <= containerDims.hauteur)) {
+        newSpaces.push(newSpace);
+      }
     }
 
     return newSpaces;
@@ -265,7 +302,7 @@ function canPlaceInOpenContainer(item, open) {
 
   // Chercher un espace disponible pour cette orientation
   const fitsInSpace = open.availableSpaces.some(space =>
-    space.canFit(bestOrientation.dimensions)
+    space.canFit(bestOrientation.dimensions, open.dimensions)
   );
 
   if (!fitsInSpace) {
@@ -310,7 +347,7 @@ function placeItemInContainer(item, open) {
   let bestScore = -1;
 
   open.availableSpaces.forEach((space, index) => {
-    if (space.canFit(bestOrientation.dimensions)) {
+    if (space.canFit(bestOrientation.dimensions, open.dimensions)) {
       // Score basé sur l'efficacité de l'utilisation de l'espace
       const efficiency = (bestOrientation.dimensions.longueur * bestOrientation.dimensions.largeur * bestOrientation.dimensions.hauteur) /
                         (space.width * space.height * space.depth);
@@ -331,7 +368,20 @@ function placeItemInContainer(item, open) {
 
   // Placer l'item et créer de nouveaux espaces
   const selectedSpace = open.availableSpaces[bestSpaceIndex];
-  const newSpaces = selectedSpace.place(item, bestOrientation.dimensions);
+
+  // Validation finale : vérifier que l'item ne dépasse pas les limites du conteneur
+  const finalX = selectedSpace.x + bestOrientation.dimensions.longueur;
+  const finalY = selectedSpace.y + bestOrientation.dimensions.largeur;
+  const finalZ = selectedSpace.z + bestOrientation.dimensions.hauteur;
+
+  if (finalX > open.dimensions.longueur ||
+      finalY > open.dimensions.largeur ||
+      finalZ > open.dimensions.hauteur) {
+    console.warn(`Tentative de placement hors limites: position(${selectedSpace.x},${selectedSpace.y},${selectedSpace.z}) + dimensions(${bestOrientation.dimensions.longueur},${bestOrientation.dimensions.largeur},${bestOrientation.dimensions.hauteur}) dépasse conteneur(${open.dimensions.longueur},${open.dimensions.largeur},${open.dimensions.hauteur})`);
+    return false;
+  }
+
+  const newSpaces = selectedSpace.place(item, bestOrientation.dimensions, open.dimensions);
 
   // Mettre à jour la liste des espaces disponibles
   open.availableSpaces.splice(bestSpaceIndex, 1);

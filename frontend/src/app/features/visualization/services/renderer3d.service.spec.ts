@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Renderer3dService } from './renderer3d.service';
+import { ThreeDRendererService } from './renderer3d.service';
 
-describe('Renderer3dService', () => {
-  let service: Renderer3dService;
+describe('ThreeDRendererService', () => {
+  let service: ThreeDRendererService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(Renderer3dService);
+    service = TestBed.inject(ThreeDRendererService);
   });
 
   it('should be created', () => {
