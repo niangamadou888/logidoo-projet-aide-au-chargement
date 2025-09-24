@@ -15,6 +15,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   currentTestimonial = 0;
   testimonialDots = [0, 1, 2];
   isMobileMenuOpen = false;
+  activeFaq: number | null = null;
   private intervalId: any;
   private isBrowser: boolean;
 
@@ -142,5 +143,9 @@ export class LandingPageComponent implements OnInit, OnDestroy {
         });
       }
     }
+  }
+
+  toggleFaq(index: number) {
+    this.activeFaq = this.activeFaq === index ? null : index;
   }
 }

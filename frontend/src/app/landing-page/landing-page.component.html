@@ -11,7 +11,8 @@
       <ul>
         <li><a href="#services" (click)="scrollToSection('services')">Services</a></li>
         <li><a href="#features" (click)="scrollToSection('features')">Fonctionnalités</a></li>
-        <li><a href="#testimonials" (click)="scrollToSection('testimonials')">Témoignages</a></li>
+        <li><a href="#steps" (click)="scrollToSection('steps')">Comment ça marche</a></li>
+        <li><a href="#faq" (click)="scrollToSection('faq')">FAQ</a></li>
         <li><a href="#contact" (click)="scrollToSection('contact')">Contact</a></li>
       </ul>
     </nav>
@@ -40,7 +41,8 @@
       <ul class="mobile-nav-menu" role="menu">
         <li role="none"><a href="#services" role="menuitem" (click)="scrollToSection('services'); closeMobileMenu()">Services</a></li>
         <li role="none"><a href="#features" role="menuitem" (click)="scrollToSection('features'); closeMobileMenu()">Fonctionnalités</a></li>
-        <li role="none"><a href="#testimonials" role="menuitem" (click)="scrollToSection('testimonials'); closeMobileMenu()">Témoignages</a></li>
+        <li role="none"><a href="#steps" role="menuitem" (click)="scrollToSection('steps'); closeMobileMenu()">Comment ça marche</a></li>
+        <li role="none"><a href="#faq" role="menuitem" (click)="scrollToSection('faq'); closeMobileMenu()">FAQ</a></li>
         <li role="none"><a href="#contact" role="menuitem" (click)="scrollToSection('contact'); closeMobileMenu()">Contact</a></li>
       </ul>
       <div class="mobile-nav-buttons">
@@ -242,6 +244,162 @@
         <strong>24/7</strong>
         <span>Support technique</span>
       </div>
+    </div>
+  </section>
+
+  <!--------------------->
+  <!-- STEPS -->
+  <!--------------------->
+  <section id="steps" class="steps" data-section="steps">
+    <div class="steps-header">
+      <h2>Comment ça marche en <span class="highlight">3 étapes simples</span></h2>
+      <p>Optimisez vos chargements en quelques clics grâce à notre processus intuitif et intelligent.</p>
+    </div>
+
+    <div class="steps-container">
+      <div class="steps-background-line"></div>
+
+      <div class="step-item" data-step="1">
+        <div class="step-circle">
+          <div class="step-number">1</div>
+        </div>
+        <div class="step-card">
+          <div class="step-icon-wrapper">
+            <div class="step-icon">
+              <img src="assets/images/FileMinus-r (1).png" alt="Import">
+            </div>
+          </div>
+          <div class="step-content">
+            <h3>Importez vos données</h3>
+            <p>Téléchargez votre liste de colis via Excel ou saisissez-les manuellement. Notre système s'adapte à tous vos formats.</p>
+            <div class="step-details">
+              <span class="detail-item">📊 Excel, CSV</span>
+              <span class="detail-item">⚡ Import instantané</span>
+              <span class="detail-item">🔧 Formats personnalisés</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item" data-step="2">
+        <div class="step-circle">
+          <div class="step-number">2</div>
+        </div>
+        <div class="step-card">
+          <div class="step-icon-wrapper">
+            <div class="step-icon">
+              <img src="assets/images/Calculator-r (1).png" alt="Calculate">
+            </div>
+          </div>
+          <div class="step-content">
+            <h3>Optimisation automatique</h3>
+            <p>Notre IA analyse vos contraintes et calcule automatiquement le chargement optimal pour maximiser l'espace et respecter les poids.</p>
+            <div class="step-details">
+              <span class="detail-item">🤖 Intelligence artificielle</span>
+              <span class="detail-item">⚖️ Respect des poids</span>
+              <span class="detail-item">📐 Optimisation 3D</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item" data-step="3">
+        <div class="step-circle">
+          <div class="step-number">3</div>
+        </div>
+        <div class="step-card">
+          <div class="step-icon-wrapper">
+            <div class="step-icon">
+              <img src="assets/images/ChartLine-r.png" alt="Visualize">
+            </div>
+          </div>
+          <div class="step-content">
+            <h3>Visualisez et exportez</h3>
+            <p>Consultez le plan de chargement en 3D, validez la configuration et exportez les résultats pour vos équipes terrain.</p>
+            <div class="step-details">
+              <span class="detail-item">🎯 Vue 3D interactive</span>
+              <span class="detail-item">📄 Export PDF/Excel</span>
+              <span class="detail-item">👥 Partage équipes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps-cta">
+      <p>Prêt à essayer ? <strong>Commencez dès maintenant !</strong></p>
+      <a href="/auth/login" class="btn-primary">Tester gratuitement</a>
+    </div>
+  </section>
+
+  <!--------------------->
+  <!-- FAQ -->
+  <!--------------------->
+  <section id="faq" class="faq" data-section="faq">
+    <h2>Questions fréquemment posées</h2>
+    <p>Trouvez rapidement les réponses à vos questions sur notre solution d'aide au chargement.</p>
+    <div class="faq-container">
+
+      <div class="faq-item" [class.active]="activeFaq === 0" (click)="toggleFaq(0)">
+        <div class="faq-question">
+          <h3>Comment fonctionne l'optimisation des chargements ?</h3>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <p>Notre algorithme d'intelligence artificielle analyse les dimensions, poids et contraintes de chaque colis pour calculer automatiquement la meilleure disposition dans votre véhicule. Il prend en compte les règles de sécurité, la répartition des charges et maximise l'utilisation de l'espace disponible.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" [class.active]="activeFaq === 1" (click)="toggleFaq(1)">
+        <div class="faq-question">
+          <h3>Quels formats de fichiers puis-je importer ?</h3>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <p>Logidoo accepte les formats Excel (.xlsx, .xls), CSV et permet également la saisie manuelle. Nos modèles pré-configurés facilitent l'import de vos données existantes depuis vos systèmes ERP ou WMS.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" [class.active]="activeFaq === 2" (click)="toggleFaq(2)">
+        <div class="faq-question">
+          <h3>Puis-je visualiser le chargement avant l'exécution ?</h3>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <p>Absolument ! Notre module offre une visualisation 3D interactive de votre chargement. Vous pouvez voir exactement où placer chaque colis, valider la configuration et même simuler différents scénarios avant la mise en œuvre.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" [class.active]="activeFaq === 3" (click)="toggleFaq(3)">
+        <div class="faq-question">
+          <h3>Le système prend-il en compte les contraintes de poids ?</h3>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <p>Oui, Logidoo intègre automatiquement toutes les contraintes réglementaires : poids total autorisé, répartition des charges par essieu, centre de gravité et règles de sécurité. Vous ne risquez jamais de dépasser les limites légales.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" [class.active]="activeFaq === 4" (click)="toggleFaq(4)">
+        <div class="faq-question">
+          <h3>Combien de temps faut-il pour optimiser un chargement ?</h3>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <p>L'optimisation est quasi-instantanée ! Pour un chargement standard de 50 colis, le calcul prend moins de 30 secondes. Même pour des chargements complexes de plusieurs centaines de colis, le résultat est disponible en moins de 2 minutes.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" [class.active]="activeFaq === 5" (click)="toggleFaq(5)">
+        <div class="faq-question">
+          <h3>Puis-je utiliser Logidoo pour différents types de véhicules ?</h3>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <p>Bien sûr ! Logidoo supporte tous types de véhicules : camions, semi-remorques, conteneurs maritimes, véhicules légers. La base de données inclut les dimensions et spécifications de centaines de modèles, ou vous pouvez créer vos propres configurations personnalisées.</p>
+        </div>
+      </div>
+
     </div>
   </section>
 
