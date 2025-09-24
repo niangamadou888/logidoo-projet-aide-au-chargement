@@ -1542,9 +1542,16 @@ a {
         }
 
         .faq-answer {
-          max-height: 200px;
+          max-height: none;
           padding: 25px 30px;
           opacity: 1;
+          width: 100%;
+          box-sizing: border-box;
+
+          p {
+            text-align: justify;
+            width: 100%;
+          }
         }
       }
 
@@ -1599,12 +1606,16 @@ a {
         overflow: hidden;
         transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         background: rgba(248, 250, 252, 0.5);
+        width: 100%;
+        box-sizing: border-box;
 
         p {
           margin: 0;
           color: #64748b;
           line-height: 1.7;
           font-size: 1rem;
+          text-align: justify;
+          width: 100%;
         }
       }
     }
@@ -1903,16 +1914,40 @@ a {
         flex-direction: column !important;
         text-align: center;
         margin-bottom: 60px;
+        align-items: center;
 
         .step-circle {
+          flex: 0 0 80px !important;
+          height: 80px !important;
+          width: 80px !important;
+          background: linear-gradient(135deg, $primary, #2563eb) !important;
+          border-radius: 50% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          position: relative !important;
+          z-index: 5 !important;
+          transition: all 0.3s ease;
+          box-shadow: 0 10px 25px rgba(26, 58, 138, 0.3) !important;
+          border: 5px solid $white !important;
           margin-bottom: 30px;
-          flex: none;
+          margin-top: 0;
+          align-self: center;
+
+          .step-number {
+            font-size: 1.8rem !important;
+            font-weight: 800 !important;
+            color: $white !important;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+          }
         }
 
         .step-card {
           margin: 0;
           padding: 40px 30px;
           transform: none !important;
+          width: 100%;
+          max-width: 500px;
 
           &::before {
             display: none;
@@ -1985,10 +2020,12 @@ a {
 
       h2 {
         font-size: 2rem;
+        line-height: 1.2;
       }
 
       p {
         font-size: 1.1rem;
+        line-height: 1.5;
       }
     }
 
@@ -1997,45 +2034,76 @@ a {
 
       .step-item {
         margin-bottom: 50px;
+        align-items: center;
 
         .step-circle {
-          flex: 0 0 80px;
-          height: 80px;
+          flex: 0 0 65px !important;
+          height: 65px !important;
+          width: 65px !important;
+          background: linear-gradient(135deg, $primary, #2563eb) !important;
+          border-radius: 50% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          position: relative !important;
+          z-index: 5 !important;
+          transition: all 0.3s ease;
+          box-shadow: 0 8px 20px rgba(26, 58, 138, 0.3) !important;
+          border: 4px solid $white !important;
           margin-bottom: 20px;
+          margin-top: 0;
+          align-self: center;
 
           .step-number {
-            font-size: 1.8rem;
+            font-size: 1.5rem !important;
+            font-weight: 800 !important;
+            color: $white !important;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
           }
         }
 
         .step-card {
-          padding: 25px 15px;
+          padding: 30px 20px;
+          border-radius: 18px;
 
-          .step-icon-wrapper .step-icon {
-            width: 60px;
-            height: 60px;
+          .step-icon-wrapper {
+            margin-bottom: 25px;
 
-            img {
-              width: 30px;
-              height: 30px;
+            .step-icon {
+              width: 60px;
+              height: 60px;
+              border-radius: 18px;
+
+              img {
+                width: 30px;
+                height: 30px;
+              }
             }
           }
 
           .step-content {
             h3 {
-              font-size: 1.2rem;
+              font-size: 1.25rem;
+              margin-bottom: 15px;
+              line-height: 1.3;
             }
 
             p {
-              font-size: 0.9rem;
+              font-size: 0.95rem;
+              line-height: 1.5;
+              margin-bottom: 20px;
             }
 
             .step-details {
               gap: 8px;
+              flex-wrap: wrap;
+              justify-content: center;
 
               .detail-item {
                 font-size: 0.75rem;
-                padding: 5px 10px;
+                padding: 6px 12px;
+                border-radius: 14px;
+                white-space: nowrap;
               }
             }
           }
@@ -2049,6 +2117,7 @@ a {
 
       p {
         font-size: 1.2rem;
+        margin-bottom: 25px;
       }
 
       .btn-primary {
@@ -2197,9 +2266,242 @@ a {
   h2 {
     font-size: 2rem !important;
   }
+
+  // FAQ mobile styles
+  .faq {
+    padding: 70px 5% !important;
+
+    h2 {
+      font-size: 1.8rem !important;
+      margin-bottom: 25px;
+    }
+
+    p {
+      font-size: 1rem !important;
+      margin-bottom: 45px;
+      padding: 0 5px;
+    }
+
+    .faq-container {
+      padding: 0 5px;
+
+      .faq-item {
+        margin-bottom: 18px;
+        border-radius: 12px;
+
+        .faq-question {
+          padding: 22px 24px;
+          flex-wrap: nowrap;
+
+          h3 {
+            font-size: 1rem;
+            padding-right: 15px;
+            line-height: 1.3;
+            word-wrap: break-word;
+            hyphens: auto;
+          }
+
+          .faq-toggle {
+            width: 32px;
+            height: 32px;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+          }
+        }
+
+        &.active .faq-answer {
+          padding: 22px 24px;
+          max-height: none !important;
+        }
+
+        .faq-answer {
+          padding: 0 24px;
+
+          p {
+            font-size: 0.9rem !important;
+            line-height: 1.5;
+            margin: 0 !important;
+            padding: 0 !important;
+            word-wrap: break-word;
+            hyphens: auto;
+          }
+        }
+      }
+    }
+  }
 }
 
 @media (max-width: 480px) {
+  .steps {
+    padding: 40px 0;
+
+    .steps-header {
+      margin-bottom: 40px;
+      padding: 0 15px;
+
+      h2 {
+        font-size: 1.8rem;
+        line-height: 1.2;
+        margin-bottom: 15px;
+      }
+
+      p {
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+    }
+
+    .steps-container {
+      padding: 0 15px;
+
+      .step-item {
+        margin-bottom: 40px;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+
+        .step-circle {
+          flex: 0 0 55px !important;
+          height: 55px !important;
+          width: 55px !important;
+          background: linear-gradient(135deg, $primary, #2563eb) !important;
+          border-radius: 50% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          position: relative !important;
+          z-index: 5 !important;
+          transition: all 0.3s ease;
+          box-shadow: 0 6px 15px rgba(26, 58, 138, 0.3) !important;
+          border: 3px solid $white !important;
+          margin-bottom: 15px;
+          margin-top: 0;
+          align-self: center;
+
+          .step-number {
+            font-size: 1.3rem !important;
+            font-weight: 800 !important;
+            color: $white !important;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+          }
+        }
+
+        .step-card {
+          padding: 20px 15px;
+          border-radius: 15px;
+          width: 100%;
+          max-width: 400px;
+
+          .step-icon-wrapper .step-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+
+            img {
+              width: 25px;
+              height: 25px;
+            }
+          }
+
+          .step-content {
+            h3 {
+              font-size: 1.1rem;
+              margin-bottom: 12px;
+            }
+
+            p {
+              font-size: 0.85rem;
+              line-height: 1.4;
+              margin-bottom: 15px;
+            }
+
+            .step-details {
+              gap: 6px;
+              justify-content: center;
+
+              .detail-item {
+                font-size: 0.7rem;
+                padding: 4px 8px;
+                border-radius: 12px;
+                white-space: nowrap;
+                min-width: fit-content;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .steps-cta {
+      margin-top: 30px;
+      padding: 0 15px;
+
+      p {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+      }
+
+      .btn-primary {
+        padding: 14px 25px;
+        font-size: 0.9rem;
+        letter-spacing: 0.3px;
+      }
+    }
+  }
+
+  // FAQ small mobile styles
+  .faq {
+    padding: 60px 5% !important;
+
+    h2 {
+      font-size: 1.6rem !important;
+    }
+
+    p {
+      font-size: 0.95rem !important;
+      margin-bottom: 40px;
+      padding: 0 5px;
+    }
+
+    .faq-container {
+      padding: 0 5px;
+
+      .faq-item {
+        margin-bottom: 16px;
+        border-radius: 10px;
+
+        .faq-question {
+          padding: 18px 20px;
+
+          h3 {
+            font-size: 0.95rem;
+            line-height: 1.2;
+            padding-right: 12px;
+          }
+
+          .faq-toggle {
+            width: 28px;
+            height: 28px;
+            font-size: 1.1rem;
+          }
+        }
+
+        &.active .faq-answer {
+          padding: 18px 20px;
+        }
+
+        .faq-answer {
+          padding: 0 20px;
+
+          p {
+            font-size: 0.85rem !important;
+            line-height: 1.4;
+          }
+        }
+      }
+    }
+  }
+
   .hero.mobile-hero {
     padding: 100px 5% 100px !important;
 
@@ -2274,4 +2576,278 @@ a {
     }
   }
 
+}
+
+@media (max-width: 375px) {
+  .steps {
+    padding: 35px 0;
+
+    .steps-header {
+      margin-bottom: 35px;
+      padding: 0 10px;
+
+      h2 {
+        font-size: 1.6rem;
+        line-height: 1.1;
+      }
+
+      p {
+        font-size: 0.95rem;
+      }
+    }
+
+    .steps-container {
+      padding: 0 10px;
+
+      .step-item {
+        margin-bottom: 35px;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+
+        .step-circle {
+          flex: 0 0 50px !important;
+          height: 50px !important;
+          width: 50px !important;
+          background: linear-gradient(135deg, $primary, #2563eb) !important;
+          border-radius: 50% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          position: relative !important;
+          z-index: 5 !important;
+          transition: all 0.3s ease;
+          box-shadow: 0 5px 12px rgba(26, 58, 138, 0.3) !important;
+          border: 3px solid $white !important;
+          align-self: center;
+
+          .step-number {
+            font-size: 1.1rem !important;
+            font-weight: 800 !important;
+            color: $white !important;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+          }
+        }
+
+        .step-card {
+          padding: 18px 12px;
+          border-radius: 12px;
+          width: 100%;
+          max-width: 350px;
+
+          .step-icon-wrapper .step-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+
+            img {
+              width: 22px;
+              height: 22px;
+            }
+          }
+
+          .step-content {
+            h3 {
+              font-size: 1rem;
+              margin-bottom: 10px;
+            }
+
+            p {
+              font-size: 0.8rem;
+              line-height: 1.3;
+              margin-bottom: 12px;
+            }
+
+            .step-details {
+              gap: 4px;
+
+              .detail-item {
+                font-size: 0.65rem;
+                padding: 3px 6px;
+                border-radius: 10px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .steps-cta {
+      margin-top: 25px;
+      padding: 0 10px;
+
+      p {
+        font-size: 1rem;
+        margin-bottom: 18px;
+      }
+
+      .btn-primary {
+        padding: 12px 20px;
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  // Specific override for step circles on extra small screens
+  .steps .steps-container .step-item .step-circle {
+    flex: 0 0 50px !important;
+    height: 50px !important;
+    width: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
+    max-width: 50px !important;
+    max-height: 50px !important;
+    background: linear-gradient(135deg, $primary, #2563eb) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 480px) {
+  // Specific override for step circles on small mobile
+  .steps .steps-container .step-item .step-circle {
+    flex: 0 0 55px !important;
+    height: 55px !important;
+    width: 55px !important;
+    min-width: 55px !important;
+    min-height: 55px !important;
+    max-width: 55px !important;
+    max-height: 55px !important;
+    background: linear-gradient(135deg, $primary, #2563eb) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 768px) {
+  // Specific override for step circles on tablets
+  .steps .steps-container .step-item .step-circle {
+    flex: 0 0 65px !important;
+    height: 65px !important;
+    width: 65px !important;
+    min-width: 65px !important;
+    min-height: 65px !important;
+    max-width: 65px !important;
+    max-height: 65px !important;
+    background: linear-gradient(135deg, $primary, #2563eb) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 992px) {
+  // Specific override for step circles on medium tablets
+  .steps .steps-container .step-item .step-circle {
+    flex: 0 0 70px !important;
+    height: 70px !important;
+    width: 70px !important;
+    min-width: 70px !important;
+    min-height: 70px !important;
+    max-width: 70px !important;
+    max-height: 70px !important;
+    background: linear-gradient(135deg, $primary, #2563eb) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  // FAQ responsive styles for tablets
+  .faq {
+    padding: 80px 5%;
+
+    .faq-container {
+      max-width: 100%;
+
+      .faq-item {
+        .faq-question {
+          padding: 20px 25px;
+
+          h3 {
+            font-size: 1.1rem;
+            padding-right: 15px;
+          }
+
+          .faq-toggle {
+            width: 35px;
+            height: 35px;
+            font-size: 1.3rem;
+          }
+        }
+
+        &.active .faq-answer {
+          padding: 20px 25px;
+        }
+
+        .faq-answer {
+          padding: 0 25px;
+
+          p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+          }
+        }
+      }
+    }
+  }
+
+  // FAQ extra small mobile styles
+  .faq {
+    padding: 50px 4% !important;
+
+    h2 {
+      font-size: 1.5rem !important;
+    }
+
+    p {
+      font-size: 0.9rem !important;
+      margin-bottom: 35px;
+      padding: 0 5px;
+    }
+
+    .faq-container {
+      padding: 0 5px;
+
+      .faq-item {
+        margin-bottom: 14px;
+        border-radius: 8px;
+
+        .faq-question {
+          padding: 16px 18px;
+
+          h3 {
+            font-size: 0.9rem;
+            line-height: 1.1;
+            padding-right: 10px;
+          }
+
+          .faq-toggle {
+            width: 26px;
+            height: 26px;
+            font-size: 1rem;
+          }
+        }
+
+        &.active .faq-answer {
+          padding: 16px 18px;
+          max-height: none !important;
+        }
+
+        .faq-answer {
+          padding: 0 18px;
+
+          p {
+            font-size: 0.8rem !important;
+            line-height: 1.3;
+          }
+        }
+      }
+    }
+  }
 }
