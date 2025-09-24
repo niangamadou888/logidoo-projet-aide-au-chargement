@@ -1,8 +1,7 @@
 // src/app/features/visualization/services/export.service.ts
 
 import { Injectable } from '@angular/core';
-import { VisualizationScene, VisualizationContainer } from '../models/visualization.model';
-import jsPDF from 'jspdf';
+import { VisualizationScene } from '../models/visualization.model';
 
 declare const JSZip: any;
 

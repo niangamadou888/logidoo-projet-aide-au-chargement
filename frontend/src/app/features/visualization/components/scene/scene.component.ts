@@ -39,7 +39,14 @@ export class SceneComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     if (this.isInitialized) {
       if (changes['scene'] && this.scene) {
+        console.log('🎬 Scene component - changement de scène détecté:', {
+          currentIndex: this.scene.currentContainerIndex,
+          totalContainers: this.scene.containers.length,
+          hasContainers: this.scene.containers.length > 0
+        });
+
         this.updateScene();
+
         // Si un item est sélectionné, centrer/mettre en évidence
         const selected = this.scene.selectedItem;
         if (selected) {
@@ -78,12 +85,22 @@ export class SceneComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private updateScene(): void {
-    if (!this.isInitialized || !this.scene) return;
-    
-    this.threeDRenderer.updateScene(
-      this.scene.containers,
-      this.scene.currentContainerIndex
-    );
+    if (!this.isInitialized || !this.scene) {
+      console.warn('❌ updateScene: Scène non initialisée ou pas de données');
+      return;
+    }
+
+    console.log('🔄 updateScene: Mise à jour avec conteneur index', this.scene.currentContainerIndex);
+
+    try {
+      this.threeDRenderer.updateScene(
+        this.scene.containers,
+        this.scene.currentContainerIndex
+      );
+      console.log('✅ updateScene: Mise à jour réussie');
+    } catch (error) {
+      console.error('❌ updateScene: Erreur lors de la mise à jour:', error);
+    }
   }
 
   private cleanup(): void {

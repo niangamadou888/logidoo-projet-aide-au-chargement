@@ -129,7 +129,8 @@ export class SimulationComponent implements OnInit {
 
   updateColisCouleur(index: number, couleur: string) {
     if (!this.listeColis[index]) return;
-    this.listeColis[index].couleur = couleur || this.getDistinctRandomColor();
+    const normalizedColor = couleur ? ColorUtils.validateAndNormalizeHex(couleur) : null;
+    this.listeColis[index].couleur = normalizedColor || this.getDistinctRandomColor();
   }
 
   toggleFragile(index: number) {
@@ -182,6 +183,11 @@ export class SimulationComponent implements OnInit {
     // Si c'est le même conteneur déjà sélectionné, ne rien faire
     if (this.selectedContainerId === id) return;
 
+    console.log('🔄 Changement de conteneur:', {
+      ancien: this.selectedContainerId,
+      nouveau: id
+    });
+
     this.selectedContainerId = id;
     this.selectionAutoOptimal = false; // Désactive la sélection automatique
     this.colisForm.patchValue({ container: id });
@@ -190,6 +196,9 @@ export class SimulationComponent implements OnInit {
     this.simulationResultats = null;
     this.previewTime = null;
     this.simulationEnCours = false;
+
+    // Nettoyer les données de visualisation obsolètes
+    this.clearVisualizationData();
 
     // Évaluer le conteneur sélectionné pour montrer ses statistiques
     this.evaluateSelectedContainer();
@@ -265,7 +274,7 @@ export class SimulationComponent implements OnInit {
           telephone: formValues.telephone || undefined,
           fragile: Boolean(formValues.fragile),
           gerbable: Boolean(formValues.gerbable),
-          couleur: formValues.couleur || this.getDistinctRandomColor(),
+          couleur: formValues.couleur ? (ColorUtils.validateAndNormalizeHex(formValues.couleur) || this.getDistinctRandomColor()) : this.getDistinctRandomColor(),
           statut: 'actif',
           dateAjout: new Date()
         };
@@ -365,6 +374,22 @@ export class SimulationComponent implements OnInit {
     this.selectedContainerStats = null;
     this.previewTime = null;
     this.simulationEnCours = false;
+    // Nettoyer également les données de visualisation
+    this.clearVisualizationData();
+  }
+
+  /**
+   * Nettoie les données de visualisation obsolètes
+   */
+  private clearVisualizationData(): void {
+    if (this.isBrowser && typeof sessionStorage !== 'undefined') {
+      try {
+        sessionStorage.removeItem('simulationData');
+        console.log('🧹 Données de visualisation nettoyées');
+      } catch (error) {
+        console.warn('Impossible de nettoyer sessionStorage:', error);
+      }
+    }
   }
 
 
@@ -557,18 +582,7 @@ export class SimulationComponent implements OnInit {
             console.log('Navigation vers visualisation avec:', simulationData);
 
             // ✅ Navigation vers la visualisation avec les données
-            this.router.navigate(['/visualization'], {
-              state: {
-                simulationData: simulationData
-              }
-            }).then(success => {
-              if (success) {
-                console.log('Navigation réussie');
-              } else {
-                console.error('Erreur de navigation');
-                this.snackBar.open('Erreur lors de la navigation', 'OK', { duration: 3000 });
-              }
-            });
+            this.navigateToVisualization(simulationData);
           } else {
             // Nouvelle simulation
             this.nouvelleSimulation();
@@ -639,6 +653,59 @@ export class SimulationComponent implements OnInit {
     });
   }
 
+  /**
+   * Navigue vers la visualisation avec les données fournies
+   */
+  private navigateToVisualization(simulationData: any): void {
+    console.log('🚀 Navigation vers visualisation avec:', simulationData);
+
+    // Sauvegarder dans sessionStorage de manière robuste
+    this.saveToSessionStorage(simulationData);
+
+    // Navigation avec state
+    this.router.navigate(['/visualization'], {
+      state: { simulationData: simulationData }
+    }).then(success => {
+      if (success) {
+        console.log('✅ Navigation réussie');
+        // Force l'état dans l'historique pour plus de robustesse
+        if (this.isBrowser && typeof window !== 'undefined') {
+          setTimeout(() => {
+            try {
+              window.history.replaceState({ simulationData: simulationData }, '', '/visualization');
+            } catch (error) {
+              console.warn('Impossible de forcer l\'état dans l\'historique:', error);
+            }
+          }, 100);
+        }
+      } else {
+        console.error('❌ Erreur de navigation');
+        this.snackBar.open('Erreur lors de la navigation', 'OK', { duration: 3000 });
+      }
+    }).catch(error => {
+      console.error('❌ Erreur navigation:', error);
+      // Fallback: essayer de naviguer sans state
+      this.router.navigate(['/visualization']);
+    });
+  }
+
+  /**
+   * Sauvegarde les données dans sessionStorage de manière sécurisée
+   */
+  private saveToSessionStorage(data: any): void {
+    if (!this.isBrowser || typeof sessionStorage === 'undefined') {
+      return;
+    }
+
+    try {
+      const jsonData = JSON.stringify(data);
+      sessionStorage.setItem('simulationData', jsonData);
+      console.log('💾 Données sauvegardées dans sessionStorage');
+    } catch (error) {
+      console.warn('❌ Impossible de sauvegarder dans sessionStorage:', error);
+    }
+  }
+
   testVisualization() {
     console.log('=== TEST DIRECT VISUALISATION ===');
     console.log('Liste colis:', this.listeColis);
@@ -654,25 +721,8 @@ export class SimulationComponent implements OnInit {
 
     console.log('Données test:', testData);
 
-    // Méthode robuste : sessionStorage + state + replaceState (browser only)
-    if (typeof sessionStorage !== 'undefined') {
-      try { sessionStorage.setItem('simulationData', JSON.stringify(testData)); } catch {}
-    }
-
-    this.router.navigate(['/visualization'], {
-      state: { simulationData: testData }
-    }).then(success => {
-      console.log('Navigation résultat:', success);
-      if (success && typeof window !== 'undefined') {
-        // Force l'état dans l'historique
-        setTimeout(() => {
-          try { window.history.replaceState({ simulationData: testData }, '', '/visualization'); } catch {}
-        }, 100);
-      }
-    }).catch(error => {
-      console.error('Erreur navigation:', error);
-      this.router.navigate(['/visualization']);
-    });
+    // Utiliser la nouvelle méthode centralisée
+    this.navigateToVisualization(testData);
   }
 
   // === PAGINATION ===

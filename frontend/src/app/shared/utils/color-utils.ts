@@ -192,6 +192,32 @@ export class ColorUtils {
   }
 
   /**
+   * Valide et normalise une couleur hexadécimale
+   */
+  static validateAndNormalizeHex(color: string): string | null {
+    if (!color || typeof color !== 'string') return null;
+
+    // Remove any whitespace
+    const cleaned = color.trim();
+
+    // Check if it's a valid hex color (with or without #)
+    const hexRegex = /^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+
+    if (!hexRegex.test(cleaned)) return null;
+
+    // Ensure it starts with # and is uppercase
+    const withHash = cleaned.startsWith('#') ? cleaned : `#${cleaned}`;
+
+    // Expand 3-digit hex to 6-digit
+    if (withHash.length === 4) {
+      const [, r, g, b] = withHash;
+      return `#${r}${r}${g}${g}${b}${b}`.toUpperCase();
+    }
+
+    return withHash.toUpperCase();
+  }
+
+  /**
    * Vérifie le contraste entre deux couleurs
    */
   static getContrastRatio(hex1: string, hex2: string): number {

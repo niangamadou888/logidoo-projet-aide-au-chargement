@@ -9,29 +9,6 @@
   
   <!-- Overlays d'information -->
   <div class="canvas-overlays">
-    <!-- Contrôle de la vue 2D -->
-    <div class="view-controls">
-      <button class="view-btn" [class.active]="viewMode === 'top'" (click)="setViewMode('top')" title="Vue de dessus">Plan</button>
-      <button class="view-btn" [class.active]="viewMode === 'bottom'" (click)="setViewMode('bottom')" title="Vue de dessous">Dessous</button>
-      <button class="view-btn" [class.active]="viewMode === 'side'" (click)="setViewMode('side')" title="Vue de côté">Côté</button>
-      <button class="view-btn" [class.active]="viewMode === 'side-opposite'" (click)="setViewMode('side-opposite')" title="Vue de côté opposé">Côté opposé</button>
-      <button class="view-btn" [class.active]="viewMode === 'front'" (click)="setViewMode('front')" title="Vue avant">Avant</button>
-      <button class="view-btn" [class.active]="viewMode === 'back'" (click)="setViewMode('back')" title="Vue arrière">Arrière</button>
-    </div>
-    
-    <!-- Légende -->
-    <div class="legend" *ngIf="config?.showFragileItems || config?.highlightNonGerbable">
-      <h4>Légende</h4>
-      <div class="legend-item" *ngIf="config?.showFragileItems">
-        <div class="legend-marker fragile"></div>
-        <span>Fragile</span>
-      </div>
-      <div class="legend-item" *ngIf="config?.highlightNonGerbable">
-        <div class="legend-marker non-stackable"></div>
-        <span>Non empilable</span>
-      </div>
-    </div>
-    
     <!-- Contrôles de zoom -->
     <div class="zoom-controls">
       <button class="zoom-btn" (click)="zoomIn()" title="Zoom avant">
@@ -41,6 +18,7 @@
           <line x1="11" y1="8" x2="11" y2="14"/>
           <line x1="8" y1="11" x2="14" y2="11"/>
         </svg>
+        <span class="zoom-text">+</span>
       </button>
       <button class="zoom-btn" (click)="zoomOut()" title="Zoom arrière">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -48,6 +26,7 @@
           <path d="M21 21l-4.35-4.35"/>
           <line x1="8" y1="11" x2="14" y2="11"/>
         </svg>
+        <span class="zoom-text">−</span>
       </button>
       <button class="zoom-btn" (click)="resetZoom()" title="Réinitialiser">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -55,6 +34,7 @@
           <path d="M23 20v-6h-6"/>
           <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
         </svg>
+        <span class="zoom-text">⌂</span>
       </button>
     </div>
     

@@ -5,6 +5,7 @@ import { userRoleGuard } from '../core/guards/user-role.guard';
 import { ConteneursPageComponent } from './conteneurs/conteneurs-page.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AdminProfileComponent } from './admin-profile/admin-profile.component';
+import { HistoryComponent } from './history/history.component';
 
 export const DASHBOARD_ROUTES: Routes = [
   {
@@ -34,6 +35,12 @@ export const DASHBOARD_ROUTES: Routes = [
   {
     path: 'user/profile',
     component: UserProfileComponent,
+    canActivate: [userRoleGuard],
+    data: { requiredRole: 'user' }
+  },
+  {
+    path: 'user/history',
+    component: HistoryComponent,
     canActivate: [userRoleGuard],
     data: { requiredRole: 'user' }
   },

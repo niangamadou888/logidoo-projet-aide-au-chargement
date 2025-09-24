@@ -447,13 +447,18 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     container: VisualizationContainer,
     unitScale: number
   ): void {
-    // Contour du conteneur
+    // Contour du conteneur avec meilleure visibilité
     const base = this.getProjectedContainerSize(container);
     const baseW = base.width;
     const baseH = base.height;
 
-    ctx.strokeStyle = container.color || '#666666';
-    ctx.lineWidth = 3;
+    // Fond léger du conteneur pour meilleure visibilité
+    ctx.fillStyle = 'rgba(240, 240, 240, 0.3)';
+    ctx.fillRect(-baseW * unitScale / 2, -baseH * unitScale / 2, baseW * unitScale, baseH * unitScale);
+
+    // Contour du conteneur plus visible
+    ctx.strokeStyle = container.color || '#333333';
+    ctx.lineWidth = 4;
     ctx.setLineDash([]);
     ctx.strokeRect(-baseW * unitScale / 2, -baseH * unitScale / 2, baseW * unitScale, baseH * unitScale);
 
@@ -499,12 +504,14 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
       this.drawNonStackableMarkerToCtx(ctx, x, y, width, height);
     }
 
-    // Texte (si assez de place)
+    // Texte (si assez de place) - Afficher la référence au lieu du type
     if (width > 40 && height > 20) {
       ctx.fillStyle = '#ffffff';
       ctx.font = '10px Arial';
       ctx.textAlign = 'center';
-      ctx.fillText(item.type, x + width / 2, y + height / 2);
+      // Priorité : référence > ID > type
+      const displayText = item.reference || item.id || item.type;
+      ctx.fillText(displayText, x + width / 2, y + height / 2);
     }
   }
 

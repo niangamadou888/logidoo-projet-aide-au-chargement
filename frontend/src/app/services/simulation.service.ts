@@ -23,9 +23,44 @@ export interface SimulationResult {
     placedCount: number;
     unplacedCount: number;
   };
-  containers: any[];
+  containers: ContainerResult[];
   placements: any[];
   unplacedItems: any[];
+}
+
+export interface ContainerResult {
+  id: string;
+  ref: string;
+  type: string;
+  categorie: string;
+  capacity: { volume: number; poids: number };
+  used: { volume: number; poids: number };
+  utilization: {
+    volume: number;
+    poids: number;
+  };
+  items: ItemWithPosition[];
+}
+
+export interface ItemWithPosition {
+  reference?: string;
+  type: string;
+  longueur: number;
+  largeur: number;
+  hauteur: number;
+  poids: number;
+  quantite: number;
+  couleur?: string;
+  fragile?: boolean;
+  gerbable?: boolean;
+  nomDestinataire?: string;
+  adresse?: string;
+  telephone?: string;
+  statut?: string;
+  dateAjout?: Date;
+  position?: { x: number; y: number; z: number };
+  orientation?: number[];
+  finalDimensions?: { longueur: number; largeur: number; hauteur: number };
 }
 
 export interface OptimalContainerResult {
@@ -45,6 +80,8 @@ export interface OptimalContainerResult {
   weightUtilization: number;
   placementScore: number;
   optimalityScore: number;
+  realVolumeUtilization?: number;
+  spaceEfficiency?: number;
   simulation: any;
 }
 
