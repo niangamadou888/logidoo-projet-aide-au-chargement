@@ -1,10 +1,8 @@
-import { inject } from '@angular/core';
-import { Routes, Router } from '@angular/router';
+import { Routes } from '@angular/router';
 import { AUTH_ROUTES } from './auth/auth.routes';
 import { DASHBOARD_ROUTES } from './features/dashboard.routes';
 import { authGuard } from './core/guards/auth.guard';
 import { SimulationComponent } from './features/simulation/simulation.component';
-import { AuthService } from './core/services/auth.service';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { TestLoggerComponent } from './test-logger.component';
@@ -26,20 +24,8 @@ export const routes: Routes = [
       {
         path: '',
         canActivate: [authGuard],
-        resolve: {
-          redirectToDashboard: () => {
-            const authService = inject(AuthService);
-            const router = inject(Router);
-
-            if (authService.isAdmin()) {
-              router.navigate(['/dashboard/admin']);
-            } else {
-              router.navigate(['/dashboard/user']);
-            }
-            return true;
-          }
-        },
-        component: LandingPageComponent
+        redirectTo: '/dashboard/user',
+        pathMatch: 'full'
       }
     ]
   },

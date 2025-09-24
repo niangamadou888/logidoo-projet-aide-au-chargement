@@ -1,0 +1,27 @@
+{
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "statistics": "Statistics",
+    "recent_activity": "Recent Activity"
+  },
+  "user": {
+    "profile": "Profile",
+    "greeting": "Hello {{name}}"
+  },
+  "forms": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "messages": {
+    "success": "Operation successful",
+    "error": "An error occurred",
+    "loading": "Loading..."
+  }
+}

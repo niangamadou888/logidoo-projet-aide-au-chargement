@@ -1,0 +1,27 @@
+{
+  "navigation": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "statistics": "Statistiques",
+    "recent_activity": "Activité récente"
+  },
+  "user": {
+    "profile": "Profil",
+    "greeting": "Bonjour {{name}}"
+  },
+  "forms": {
+    "submit": "Soumettre",
+    "cancel": "Annuler",
+    "save": "Enregistrer"
+  },
+  "messages": {
+    "success": "Opération réussie",
+    "error": "Une erreur s'est produite",
+    "loading": "Chargement en cours..."
+  }
+}
