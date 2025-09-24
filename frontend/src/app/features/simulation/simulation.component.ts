@@ -48,6 +48,12 @@ export class SimulationComponent implements OnInit {
   previewTime: number | null = null;
   selectionAutoOptimal = true; // Par défaut, la sélection automatique est activée
   evaluatingContainer = false; // Pour afficher un indicateur de chargement lors de l'évaluation d'un conteneur
+  
+  // Variables pour la gestion des steppers
+  currentStep = 1;
+  totalSteps = 3;
+  showDestinataireForm = false;
+  
   private isBrowser = true;
 
   constructor(
@@ -596,6 +602,33 @@ export class SimulationComponent implements OnInit {
 
   calculerNombreColisTotal(): number {
     return this.simulationService.calculerNombreColis(this.listeColis);
+  }
+
+  // Méthodes de navigation pour les steppers
+  nextStep() {
+    if (this.currentStep < this.totalSteps) {
+      this.currentStep++;
+    }
+  }
+
+  prevStep() {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+    }
+  }
+
+  goToStep(step: number) {
+    if (step >= 1 && step <= this.totalSteps) {
+      this.currentStep = step;
+    }
+  }
+
+  canProceedFromStep1(): boolean {
+    return this.simulationForm.valid;
+  }
+
+  canProceedFromStep2(): boolean {
+    return this.listeColis.length > 0;
   }
 
   ngOnInit() {

@@ -1,3 +1,654 @@
+// Variables CSS pour le thème Logidoo
+:host {
+  --logidoo-blue: #092B8B;
+  --logidoo-yellow: #F8CB0E;
+  --logidoo-gray-50: #f9fafb;
+  --logidoo-gray-100: #f3f4f6;
+  --logidoo-gray-200: #e5e7eb;
+  --logidoo-gray-300: #d1d5db;
+  --logidoo-gray-400: #9ca3af;
+  --logidoo-gray-600: #4b5563;
+  --logidoo-gray-700: #374151;
+  --logidoo-gray-800: #1f2937;
+  --logidoo-success: #10b981;
+}
+
+// Styles modernes pour le stepper
+.stepper-container {
+  margin: 3rem auto 4rem;
+  max-width: 800px;
+  padding: 0 2rem;
+}
+
+.stepper-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  margin: 0;
+  
+  // Ligne de progression moderne
+  &::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 15%;
+    right: 15%;
+    height: 4px;
+    background: var(--logidoo-gray-200);
+    border-radius: 2px;
+    z-index: 1;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 15%;
+    width: 0%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--logidoo-blue), var(--logidoo-yellow));
+    border-radius: 2px;
+    z-index: 2;
+    transition: width 0.5s ease-in-out;
+  }
+  
+  // Animation de progression
+  &.step-1::after { width: 0%; }
+  &.step-2::after { width: 35%; }
+  &.step-3::after { width: 70%; }
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  z-index: 3;
+  flex: 1;
+  max-width: 200px;
+  padding: 0 1rem;
+  transition: all 0.3s ease;
+  
+  &:hover:not(.disabled) {
+    transform: translateY(-2px);
+    
+    .step-circle {
+      box-shadow: 0 4px 12px rgba(9, 43, 139, 0.15);
+    }
+  }
+  
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+    
+    .step-circle {
+      background: var(--logidoo-gray-100);
+      border-color: var(--logidoo-gray-200);
+      color: var(--logidoo-gray-400);
+    }
+    
+    .step-label {
+      color: var(--logidoo-gray-400);
+    }
+  }
+  
+  &.active {
+    .step-circle {
+      background: var(--logidoo-blue);
+      color: white;
+      border-color: var(--logidoo-blue);
+      box-shadow: 0 0 0 6px rgba(9, 43, 139, 0.1);
+      transform: scale(1.1);
+    }
+    
+    .step-label {
+      color: var(--logidoo-blue);
+      font-weight: 700;
+    }
+    
+    // Pulsation subtile
+    .step-circle {
+      animation: pulse 2s infinite;
+    }
+  }
+  
+  &.completed {
+    .step-circle {
+      background: var(--logidoo-success);
+      color: white;
+      border-color: var(--logidoo-success);
+      transform: scale(1.05);
+      
+      // Icône de validation
+      &::before {
+        content: '✓';
+        font-weight: bold;
+        font-size: 18px;
+      }
+    }
+    
+    .step-label {
+      color: var(--logidoo-success);
+      font-weight: 600;
+    }
+  }
+}
+
+.step-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid var(--logidoo-gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 1rem;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  
+  // Gradient subtil pour les étapes actives
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, var(--logidoo-blue), var(--logidoo-yellow));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+}
+
+.step-label {
+  font-size: 0.95rem;
+  color: var(--logidoo-gray-600);
+  text-align: center;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: all 0.3s ease;
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+}
+
+// Animation de pulsation
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 6px rgba(9, 43, 139, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(9, 43, 139, 0.05);
+  }
+}
+
+// Responsive design pour les steppers
+@media (max-width: 768px) {
+  .stepper-container {
+    padding: 0 1rem;
+    margin: 2rem auto 3rem;
+  }
+  
+  .stepper-steps {
+    flex-direction: column;
+    gap: 2rem;
+    
+    &::before, &::after {
+      display: none;
+    }
+  }
+  
+  .step {
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+    max-width: none;
+    width: 100%;
+    padding: 1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 2px solid var(--logidoo-gray-100);
+    
+    &.active {
+      border-color: var(--logidoo-blue);
+      background: linear-gradient(135deg, rgba(9, 43, 139, 0.02), rgba(248, 203, 14, 0.02));
+    }
+    
+    &.completed {
+      border-color: var(--logidoo-success);
+      background: rgba(16, 185, 129, 0.02);
+    }
+  }
+  
+  .step-circle {
+    width: 50px;
+    height: 50px;
+    margin-right: 1rem;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  
+  .step-label {
+    text-align: left;
+    font-size: 1rem;
+    min-height: auto;
+  }
+}
+
+// Styles pour le contenu des steps
+.step-content {
+  min-height: 400px;
+  animation: fadeIn 0.3s ease-in;
+  padding: 1rem 0;
+}
+
+// Layout compact pour le step 2
+.compact-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.colis-form-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--logidoo-gray-100);
+  overflow: hidden;
+}
+
+.form-header {
+  background: linear-gradient(135deg, var(--logidoo-blue), #1e40af);
+  color: white;
+  padding: 1.5rem;
+  
+  h2 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    
+    .icon {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+.compact-form {
+  padding: 2rem;
+  
+  .form-row-compact {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    
+    .form-group {
+      flex: 1;
+      
+      &.flex-2 { flex: 2; }
+      &.flex-1 { flex: 1; }
+    }
+  }
+  
+  .form-group {
+    label {
+      display: block;
+      font-weight: 600;
+      color: var(--logidoo-gray-700);
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--logidoo-gray-200);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      
+      &:focus {
+        outline: none;
+        border-color: var(--logidoo-blue);
+        box-shadow: 0 0 0 3px rgba(9, 43, 139, 0.1);
+      }
+      
+      &::placeholder {
+        color: var(--logidoo-gray-400);
+      }
+    }
+    
+    small {
+      display: block;
+      color: var(--logidoo-gray-600);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      text-align: center;
+    }
+  }
+}
+
+.dimensions-group {
+  margin-bottom: 1.5rem;
+  
+  .group-label {
+    display: block;
+    font-weight: 600;
+    color: var(--logidoo-gray-700);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+.options-group {
+  margin-bottom: 1.5rem;
+  
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: var(--logidoo-gray-700);
+    cursor: pointer;
+    
+    input[type="checkbox"] {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--logidoo-gray-300);
+      border-radius: 4px;
+      position: relative;
+      cursor: pointer;
+      
+      &:checked {
+        background: var(--logidoo-blue);
+        border-color: var(--logidoo-blue);
+        
+        &::after {
+          content: '✓';
+          position: absolute;
+          top: -2px;
+          left: 2px;
+          color: white;
+          font-size: 12px;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+  
+  .color-picker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    
+    label {
+      font-weight: 500;
+      color: var(--logidoo-gray-700);
+      font-size: 0.9rem;
+    }
+    
+    .color-input {
+      width: 50px;
+      height: 35px;
+      border: 2px solid var(--logidoo-gray-200);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  }
+}
+
+.collapsible-section {
+  margin-bottom: 1.5rem;
+  
+  .toggle-btn {
+    width: 100%;
+    background: var(--logidoo-gray-50);
+    border: 1px solid var(--logidoo-gray-200);
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    color: var(--logidoo-gray-700);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: var(--logidoo-gray-100);
+    }
+    
+    span {
+      font-size: 0.8rem;
+      transition: transform 0.3s ease;
+      
+      &.rotated {
+        transform: rotate(90deg);
+      }
+    }
+  }
+  
+  .collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    
+    &.expanded {
+      max-height: 200px;
+      padding-top: 1rem;
+    }
+  }
+}
+
+.btn-add-colis {
+  width: 100%;
+  background: linear-gradient(135deg, var(--logidoo-blue), #1e40af);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(9, 43, 139, 0.3);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .btn-icon {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+}
+
+.import-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--logidoo-gray-100);
+  padding: 1.5rem;
+  height: fit-content;
+  
+  .import-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    
+    .icon {
+      font-size: 1.5rem;
+    }
+    
+    span:last-child {
+      font-weight: 600;
+      color: var(--logidoo-gray-700);
+      font-size: 1.1rem;
+    }
+  }
+  
+  .file-input {
+    display: none;
+  }
+  
+  .btn-import, .btn-template {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 0.75rem;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .btn-import {
+    background: var(--logidoo-yellow);
+    color: var(--logidoo-gray-800);
+    border: 2px solid var(--logidoo-yellow);
+    
+    &:hover {
+      background: #e6b800;
+      border-color: #e6b800;
+    }
+  }
+  
+  .btn-template {
+    background: white;
+    color: var(--logidoo-blue);
+    border: 2px solid var(--logidoo-blue);
+    
+    &:hover {
+      background: var(--logidoo-blue);
+      color: white;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// Actions des steps
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  
+  .btn-primary, .btn-secondary {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+  
+  .btn-primary {
+    background: var(--logidoo-blue);
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background: #082169;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(9, 43, 139, 0.3);
+    }
+  }
+  
+  .btn-secondary {
+    background: var(--logidoo-gray-100);
+    color: var(--logidoo-gray-700);
+    border: 1px solid #d1d5db;
+    
+    &:hover:not(:disabled) {
+      background: #e5e7eb;
+    }
+  }
+}
+
+// Responsive design pour les steppers
+@media (max-width: 768px) {
+  .stepper-steps {
+    flex-direction: column;
+    gap: 1rem;
+    
+    &::before {
+      display: none;
+    }
+  }
+  
+  .step {
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+    
+    .step-circle {
+      margin-right: 1rem;
+      margin-bottom: 0;
+    }
+    
+    .step-label {
+      text-align: left;
+    }
+  }
+  
+  .step-actions {
+    flex-direction: column;
+    gap: 1rem;
+    
+    .btn-primary, .btn-secondary {
+      width: 100%;
+    }
+  }
+}
+
 .colis-summary {
   display: flex;
   justify-content: space-around;
