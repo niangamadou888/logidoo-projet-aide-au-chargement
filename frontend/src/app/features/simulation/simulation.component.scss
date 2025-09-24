@@ -1451,55 +1451,445 @@
   }
 }
 
+// Design moderne pour la liste des colis
 .colis-list {
+  margin-top: 2rem;
+  
   h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--logidoo-gray-800);
     margin-bottom: 1.5rem;
-  }
-  
-  .colis-items {
-    margin-bottom: 1.5rem;
-  }
-  
-  .colis-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    background: #f9fafb;
-    border-radius: 0.5rem;
-    margin-bottom: 0.75rem;
     
-    .colis-info {
+    &::before {
+      content: '📦';
+      margin-right: 0.5rem;
+    }
+  }
+  
+  .colis-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--logidoo-gray-50), white);
+    border-radius: 12px;
+    border: 1px solid var(--logidoo-gray-100);
+    
+    .stat-item {
+      text-align: center;
       flex: 1;
       
-      .colis-type {
-        font-weight: 600;
-        margin-right: 0.5rem;
+      .stat-number {
+        display: block;
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--logidoo-blue);
       }
       
-      .colis-dimensions {
-        color: #6b7280;
-        margin-right: 0.5rem;
-      }
-      
-      .colis-quantity {
+      .stat-label {
         font-size: 0.875rem;
-        background: #dbeafe;
-        color: #1e40af;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-      }
-      
-      .colis-destinataire {
-        font-size: 0.875rem;
-        color: #6b7280;
+        color: var(--logidoo-gray-600);
         margin-top: 0.25rem;
       }
     }
   }
 }
+
+.colis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.colis-item {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--logidoo-gray-100);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--logidoo-blue);
+  }
+}
+
+.colis-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, var(--logidoo-gray-50), white);
+  border-bottom: 1px solid var(--logidoo-gray-100);
+  
+  .colis-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+  }
+  
+  .colis-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+  }
+  
+  .colis-type {
+    font-weight: 600;
+    color: var(--logidoo-gray-800);
+    font-size: 0.95rem;
+  }
+  
+  .colis-quantity {
+    background: var(--logidoo-yellow);
+    color: var(--logidoo-gray-800);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: auto;
+    margin-right: 0.5rem;
+  }
+  
+  .delete-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: #fee2e2;
+    color: #dc2626;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: #fecaca;
+      transform: scale(1.1);
+    }
+  }
+}
+
+.colis-details {
+  padding: 1.25rem;
+}
+
+.dimension-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.dimension-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--logidoo-gray-50);
+  border-radius: 8px;
+  
+  .label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--logidoo-gray-600);
+    min-width: 35px;
+  }
+  
+  .value {
+    font-weight: 600;
+    color: var(--logidoo-gray-800);
+    font-size: 0.875rem;
+  }
+}
+
+.colis-properties {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.property-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  
+  &.fragile {
+    background: #fef3c7;
+    color: #92400e;
+    
+    &::before {
+      content: '⚠️ ';
+    }
+  }
+  
+  &.gerbable {
+    background: #dcfce7;
+    color: #166534;
+    
+    &::before {
+      content: '📚 ';
+    }
+  }
+  
+  &.non-gerbable {
+    background: #fee2e2;
+    color: #991b1b;
+    
+    &::before {
+      content: '🚫 ';
+    }
+  }
+}
+
+.colis-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--logidoo-gray-100);
+  
+  .color-input {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--logidoo-gray-600);
+    
+    input[type="color"] {
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      
+      &::-webkit-color-swatch-wrapper {
+        padding: 0;
+      }
+      
+      &::-webkit-color-swatch {
+        border: 1px solid var(--logidoo-gray-200);
+        border-radius: 4px;
+      }
+    }
+  }
+  
+  .checkbox-input {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--logidoo-gray-600);
+    cursor: pointer;
+    
+    input[type="checkbox"] {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--logidoo-gray-300);
+      border-radius: 3px;
+      position: relative;
+      cursor: pointer;
+      
+      &:checked {
+        background: var(--logidoo-blue);
+        border-color: var(--logidoo-blue);
+        
+        &::after {
+          content: '✓';
+          position: absolute;
+          top: -2px;
+          left: 2px;
+          color: white;
+          font-size: 10px;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
+
+// Design moderne pour la section d'import Excel
+.import-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--logidoo-gray-100);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  height: fit-content;
+  
+  .import-header {
+    background: linear-gradient(135deg, var(--logidoo-yellow), #f59e0b);
+    color: var(--logidoo-gray-800);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    
+    .import-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    
+    .import-title {
+      h3 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+      
+      p {
+        margin: 0;
+        font-size: 0.875rem;
+        opacity: 0.8;
+      }
+    }
+  }
+  
+  .import-content {
+    padding: 1.5rem;
+  }
+  
+  .drag-drop-zone {
+    border: 2px dashed var(--logidoo-gray-300);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    background: var(--logidoo-gray-50);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 1.5rem;
+    
+    &:hover, &.drag-over {
+      border-color: var(--logidoo-blue);
+      background: rgba(9, 43, 139, 0.05);
+      transform: translateY(-2px);
+    }
+    
+    .drag-drop-content {
+      pointer-events: none;
+      
+      .upload-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+      
+      h4 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--logidoo-gray-800);
+      }
+      
+      p {
+        margin: 0;
+        color: var(--logidoo-gray-600);
+        font-size: 0.875rem;
+      }
+    }
+    
+    .file-input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+  }
+  
+  .import-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    
+    .btn-import, .btn-template {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      
+      .btn-icon {
+        font-size: 1rem;
+      }
+    }
+    
+    .btn-import {
+      background: var(--logidoo-blue);
+      color: white;
+      
+      &:hover {
+        background: #082169;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(9, 43, 139, 0.3);
+      }
+    }
+    
+    .btn-template {
+      background: var(--logidoo-gray-100);
+      color: var(--logidoo-gray-700);
+      border: 1px solid var(--logidoo-gray-200);
+      
+      &:hover {
+        background: var(--logidoo-gray-200);
+        transform: translateY(-1px);
+      }
+    }
+  }
+  
+  .import-help {
+    h5 {
+      margin: 0 0 0.75rem 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--logidoo-gray-700);
+    }
+    
+    .columns-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      
+      .column-tag {
+        background: var(--logidoo-blue);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -1536,5 +1926,495 @@
   color: white;
   border-color: #f97316;
   font-weight: 600;
+}
+
+// === STYLES POUR LA PAGINATION AMÉLIORÉE ===
+
+.colis-header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  
+  h3 {
+    margin: 0;
+    color: var(--logidoo-gray-800);
+    font-weight: 600;
+  }
+}
+
+.pagination-controls-top,
+.pagination-controls-bottom {
+  margin-top: 1.5rem;
+}
+
+.page-size-selector {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--logidoo-gray-300);
+  border-radius: 8px;
+  background: white;
+  color: var(--logidoo-gray-700);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: var(--logidoo-blue);
+    box-shadow: 0 0 0 3px rgba(9, 43, 139, 0.1);
+  }
+}
+
+.pagination-controls-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--logidoo-gray-200);
+  margin-top: 2rem;
+}
+
+.pagination-info {
+  color: var(--logidoo-gray-600);
+  font-size: 0.875rem;
+}
+
+.pagination-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--logidoo-gray-300);
+  background: white;
+  color: var(--logidoo-gray-600);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background: var(--logidoo-gray-50);
+    border-color: var(--logidoo-blue);
+    color: var(--logidoo-blue);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--logidoo-gray-100);
+  }
+}
+
+.pagination-numbers {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0 0.5rem;
+}
+
+.btn-page-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--logidoo-gray-300);
+  background: white;
+  color: var(--logidoo-gray-600);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: var(--logidoo-gray-50);
+    border-color: var(--logidoo-blue);
+    color: var(--logidoo-blue);
+  }
+  
+  &.active {
+    background: var(--logidoo-blue);
+    border-color: var(--logidoo-blue);
+    color: white;
+    font-weight: 600;
+  }
+}
+
+// === STYLES POUR LES NOUVELLES ÉTAPES ===
+
+// Étape 4: Calcul & Simulation
+.simulation-launch {
+  text-align: center;
+  padding: 2rem;
+  
+  p {
+    font-size: 1.1rem;
+    color: var(--logidoo-gray-700);
+    margin-bottom: 2rem;
+  }
+}
+
+.simulation-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--logidoo-gray-50);
+  border-radius: 12px;
+}
+
+.preview-item {
+  text-align: left;
+  
+  strong {
+    color: var(--logidoo-blue);
+    font-weight: 600;
+  }
+}
+
+.btn-large {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  min-width: 200px;
+}
+
+.simulation-progress {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.progress-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--logidoo-gray-200);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--logidoo-blue), var(--logidoo-yellow));
+  border-radius: 4px;
+  animation: progressAnimation 2s ease-in-out infinite;
+}
+
+@keyframes progressAnimation {
+  0% { width: 10%; }
+  50% { width: 90%; }
+  100% { width: 10%; }
+}
+
+.simulation-results {
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  
+  .result-card {
+    background: white;
+    border: 1px solid var(--logidoo-gray-200);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    h5 {
+      margin: 0 0 1rem;
+      color: var(--logidoo-gray-600);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .result-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--logidoo-blue);
+      margin: 0;
+    }
+  }
+}
+
+// Étape 5: Visualisation 3D
+.visualization-container {
+  .visualization-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    
+    h4 {
+      margin: 0;
+      color: var(--logidoo-gray-800);
+    }
+  }
+  
+  .visualization-controls {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--logidoo-gray-300);
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: var(--logidoo-gray-50);
+      border-color: var(--logidoo-blue);
+    }
+  }
+}
+
+.visualization-3d {
+  background: var(--logidoo-gray-100);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem 0;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container-3d {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  background: #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transform: perspective(1000px) rotateX(15deg) rotateY(-15deg);
+}
+
+.container-walls {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  
+  .wall {
+    position: absolute;
+    background: rgba(148, 163, 184, 0.3);
+    border: 1px solid #94a3b8;
+    
+    &.front {
+      width: 100%;
+      height: 100%;
+      transform: translateZ(50px);
+    }
+    
+    &.back {
+      width: 100%;
+      height: 100%;
+      transform: translateZ(-50px);
+    }
+    
+    &.left {
+      width: 100px;
+      height: 100%;
+      transform: rotateY(90deg) translateZ(50px);
+    }
+    
+    &.right {
+      width: 100px;
+      height: 100%;
+      transform: rotateY(-90deg) translateZ(250px);
+    }
+    
+    &.bottom {
+      width: 100%;
+      height: 100px;
+      transform: rotateX(90deg) translateZ(150px);
+    }
+  }
+}
+
+.colis-3d {
+  position: absolute;
+  
+  .colis-box {
+    background: var(--logidoo-blue);
+    border: 1px solid var(--logidoo-yellow);
+    border-radius: 4px;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+    
+    &:hover {
+      opacity: 1;
+      box-shadow: 0 4px 12px rgba(9, 43, 139, 0.3);
+    }
+  }
+}
+
+.visualization-info {
+  .info-panel {
+    background: white;
+    border: 1px solid var(--logidoo-gray-200);
+    border-radius: 12px;
+    padding: 1.5rem;
+    
+    h5 {
+      margin: 0 0 1rem;
+      color: var(--logidoo-gray-800);
+      font-weight: 600;
+    }
+    
+    .placement-stats {
+      display: grid;
+      gap: 0.75rem;
+    }
+    
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .stat-label {
+        color: var(--logidoo-gray-600);
+      }
+      
+      .stat-value {
+        font-weight: 600;
+        color: var(--logidoo-blue);
+      }
+    }
+  }
+}
+
+// Étape 6: Export
+.export-options {
+  .export-section {
+    margin-bottom: 2.5rem;
+    
+    h4 {
+      margin: 0 0 1.5rem;
+      color: var(--logidoo-gray-800);
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+  }
+  
+  .export-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .export-card {
+    background: white;
+    border: 1px solid var(--logidoo-gray-200);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .export-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    h5 {
+      margin: 0 0 0.5rem;
+      color: var(--logidoo-gray-800);
+      font-weight: 600;
+    }
+    
+    p {
+      color: var(--logidoo-gray-600);
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+  }
+  
+  .share-options,
+  .save-options {
+    background: var(--logidoo-gray-50);
+    border-radius: 12px;
+    padding: 1.5rem;
+    
+    .form-group {
+      margin-bottom: 1rem;
+      
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--logidoo-gray-700);
+        font-weight: 500;
+      }
+      
+      .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--logidoo-gray-300);
+        border-radius: 8px;
+        font-size: 0.875rem;
+        transition: border-color 0.2s ease;
+        
+        &:focus {
+          outline: none;
+          border-color: var(--logidoo-blue);
+          box-shadow: 0 0 0 3px rgba(9, 43, 139, 0.1);
+        }
+      }
+    }
+    
+    .email-input {
+      display: flex;
+      gap: 0.5rem;
+      
+      input {
+        flex: 1;
+      }
+    }
+  }
+}
+
+// Animations pour les nouvelles étapes
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.step-content {
+  animation: fadeInUp 0.5s ease-out;
 }
 

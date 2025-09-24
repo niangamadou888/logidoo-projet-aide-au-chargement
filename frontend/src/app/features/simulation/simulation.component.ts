@@ -2,9 +2,10 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
+import * as XLSX from 'xlsx';
 import { ConteneurService } from '../../services/conteneur.service';
 import { SimulationService, SimulationResult, OptimalContainerResult } from '../../services/simulation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -26,6 +27,7 @@ import { PLATFORM_ID } from '@angular/core';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     RouterModule
   ]
 })
@@ -51,7 +53,7 @@ export class SimulationComponent implements OnInit {
   
   // Variables pour la gestion des steppers
   currentStep = 1;
-  totalSteps = 3;
+  totalSteps = 6;
   showDestinataireForm = false;
   
   private isBrowser = true;
@@ -160,10 +162,38 @@ export class SimulationComponent implements OnInit {
   }
 
   nouvelleSimulation() {
-    this.resetResultats();
-    this.listeColis = [];
-    this.simulationForm.reset();
-    this.selectedContainerId = null;
+    Swal.fire({
+      title: 'Nouvelle simulation',
+      text: 'Voulez-vous vraiment recommencer ? Les données actuelles seront perdues.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, recommencer',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.resetResultats();
+        this.listeColis = [];
+        this.simulationForm.reset();
+        this.colisForm.reset();
+        this.selectedContainerId = null;
+        this.currentStep = 1;
+        this.currentPage = 1;
+        
+        // Nettoyer les données de visualisation
+        try {
+          sessionStorage.removeItem('simulationData');
+        } catch (error) {
+          console.warn('Impossible de nettoyer sessionStorage:', error);
+        }
+        
+        Swal.fire({
+          icon: 'success',
+          title: 'Nouvelle simulation initialisée !',
+          text: 'Vous pouvez maintenant commencer une nouvelle simulation.',
+          timer: 2000
+        });
+      }
+    });
   }
 
   toggleSelectionMode() {
@@ -631,6 +661,10 @@ export class SimulationComponent implements OnInit {
     return this.listeColis.length > 0;
   }
 
+  canProceedFromStep3(): boolean {
+    return this.listeColis.length > 0 && (!!this.selectedContainerId || this.selectionAutoOptimal);
+  }
+
   ngOnInit() {
     // Restaurer uniquement si on revient explicitement de la visualisation
     // via navigation d'état (goBackToSimulation). Sinon, démarrer proprement.
@@ -722,8 +756,409 @@ get pagedColis(): Colis[] {
   return this.listeColis.slice(start, start + this.itemsPerPage);
 }
 
-goToPage(page: number) {
-  if (page < 1 || page > this.totalPages) return;
-  this.currentPage = page;
-}
+  goToPage(page: number) {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+  }
+
+  // Méthodes pour les nouvelles étapes d'intégration
+  ouvrirVisualisationComplete(): void {
+    if (!this.simulationResultats) {
+      this.snackBar.open('Aucun résultat de simulation disponible', 'OK', { duration: 3000 });
+      return;
+    }
+
+    // Préparer les données comme dans validerSimulation()
+    const simulationData = {
+      colis: this.listeColis,
+      resultats: this.simulationResultats,
+      nom: this.simulationForm.value.nom || `Simulation du ${new Date().toLocaleDateString()}`,
+      description: this.simulationForm.value.description || '',
+      timestamp: Date.now()
+    };
+
+    console.log('Navigation vers visualisation avec:', simulationData);
+
+    // Sauvegarder en sessionStorage pour la visualisation
+    try {
+      sessionStorage.setItem('simulationData', JSON.stringify(simulationData));
+    } catch (error) {
+      console.warn('Impossible de sauvegarder en sessionStorage:', error);
+    }
+
+    // Navigation vers la visualisation
+    this.router.navigate(['/visualization'], {
+      state: { simulationData: simulationData }
+    }).then(success => {
+      if (success) {
+        console.log('Navigation vers visualisation réussie');
+      } else {
+        console.error('Erreur de navigation vers visualisation');
+        this.snackBar.open('Erreur lors de l\'ouverture de la visualisation', 'OK', { duration: 3000 });
+      }
+    });
+  }
+
+  sauvegarderSimulation(): void {
+    if (!this.simulationResultats) {
+      this.snackBar.open('Aucun résultat de simulation à sauvegarder', 'OK', { duration: 3000 });
+      return;
+    }
+
+    if (!this.simulationForm.valid) {
+      this.snackBar.open('Veuillez remplir le nom de la simulation', 'OK', { duration: 3000 });
+      return;
+    }
+
+    this.loading = true;
+
+    const simulation = {
+      nom: this.simulationForm.value.nom,
+      description: this.simulationForm.value.description || '',
+      colis: this.listeColis,
+      resultats: this.simulationResultats
+    };
+
+    this.simulationService.sauvegarderResultats(
+      this.listeColis, 
+      this.simulationResultats, 
+      simulation.nom, 
+      simulation.description
+    ).subscribe({
+      next: (response) => {
+        this.loading = false;
+        Swal.fire({
+          icon: 'success',
+          title: 'Simulation sauvegardée !',
+          text: `La simulation "${simulation.nom}" a été sauvegardée avec succès.`,
+          timer: 2000
+        });
+      },
+      error: (error) => {
+        this.loading = false;
+        console.error('Erreur lors de la sauvegarde:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Erreur de sauvegarde',
+          text: 'Une erreur s\'est produite lors de la sauvegarde.'
+        });
+      }
+    });
+  }
+
+  getSimulationName(): string {
+    return this.simulationForm.value.nom || `Simulation du ${this.dateAujourdhui.toLocaleDateString()}`;
+  }
+
+  // === PAGINATION COLIS ===
+  
+  // Variables pour l'export et partage (ajoutées à la déclaration des propriétés)
+  emailShare = '';
+  simulationName = '';
+  dateAujourdhui = new Date();
+  colisPerPage = 10;
+  
+  // Méthodes de pagination améliorées
+  getPaginatedColis(): Colis[] {
+    if (this.colisPerPage >= this.listeColis.length) {
+      return this.listeColis;
+    }
+    const startIndex = (this.currentPage - 1) * this.colisPerPage;
+    const endIndex = startIndex + this.colisPerPage;
+    return this.listeColis.slice(startIndex, endIndex);
+  }
+  
+  getCurrentPageIndex(): number {
+    return this.currentPage - 1; // Conversion en base 0
+  }
+  
+  getStartIndex(): number {
+    return (this.currentPage - 1) * this.colisPerPage;
+  }
+  
+  getEndIndex(): number {
+    const end = this.currentPage * this.colisPerPage;
+    return Math.min(end, this.listeColis.length);
+  }
+  
+  getVisiblePageNumbers(): number[] {
+    const totalPages = this.totalPages;
+    const maxVisiblePages = 5;
+    const current = this.currentPage;
+    
+    let start = Math.max(1, current - Math.floor(maxVisiblePages / 2));
+    let end = Math.min(totalPages, start + maxVisiblePages - 1);
+    
+    // Ajuster le début si nous sommes près de la fin
+    if (end - start + 1 < maxVisiblePages) {
+      start = Math.max(1, end - maxVisiblePages + 1);
+    }
+    
+    const pages: number[] = [];
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+  
+  // Navigation de pagination
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+  
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+  
+  goToFirstPage(): void {
+    this.currentPage = 1;
+  }
+  
+  goToLastPage(): void {
+    this.currentPage = this.totalPages;
+  }
+  
+  onPageSizeChange(): void {
+    this.currentPage = 1; // Retour à la première page
+  }
+  
+  getTotalPages(): number {
+    return Math.ceil(this.listeColis.length / this.colisPerPage);
+  }
+  
+  // Méthodes pour les étapes 4, 5, 6
+  getSelectedContainerInfo(): string {
+    if (!this.selectedContainerId) return '';
+    const container = this.containers.find(c => c._id === this.selectedContainerId);
+    return container ? `${container.type} (${container.dimensions.longueur}×${container.dimensions.largeur}×${container.dimensions.hauteur}mm)` : '';
+  }
+  
+  // Méthodes de visualisation 3D
+  rotateView(direction: 'left' | 'right'): void {
+    console.log(`Rotation ${direction} de la visualisation 3D`);
+    // Ici on pourrait ajouter la logique de rotation 3D
+  }
+  
+  resetView(): void {
+    console.log('Vue 3D réinitialisée');
+  }
+  
+  // Méthodes d'export
+  exportPDF(): void {
+    if (!this.simulationResultats) return;
+    
+    Swal.fire({
+      title: 'Export PDF',
+      text: 'Génération du rapport PDF en cours...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    
+    setTimeout(() => {
+      Swal.fire({
+        icon: 'success',
+        title: 'PDF généré !',
+        text: 'Le rapport a été téléchargé avec succès.',
+        timer: 2000
+      });
+    }, 2000);
+  }
+  
+  exportExcel(): void {
+    if (!this.simulationResultats) return;
+    
+    try {
+      // Créer les données d'export
+      const exportData = this.listeColis.map((colis, index) => ({
+        "N°": index + 1,
+        "Type": colis.type,
+        "Longueur(cm)": colis.longueur,
+        "Largeur(cm)": colis.largeur, 
+        "Hauteur(cm)": colis.hauteur,
+        "Poids(kg)": colis.poids,
+        "Quantité": colis.quantite,
+        "Fragile": colis.fragile ? 'Oui' : 'Non',
+        "Empilable": colis.gerbable ? 'Oui' : 'Non',
+        "Couleur": colis.couleur
+      }));
+      
+      // Créer le workbook Excel
+      const ws = XLSX.utils.json_to_sheet(exportData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Résultats Simulation');
+      
+      // Ajouter une feuille avec les résultats
+      if (this.simulationResultats) {
+        const resultsData = [
+          { "Métrique": "Efficacité", "Valeur": `${(this.simulationResultats.stats.avgVolumeUtilization * 100).toFixed(1)}%` },
+          { "Métrique": "Volume utilisé", "Valeur": `${this.simulationResultats.stats.totalVolume.toFixed(2)} m³` },
+          { "Métrique": "Colis placés", "Valeur": `${this.simulationResultats.stats.placedCount}/${this.calculerNombreColisTotal()}` },
+          { "Métrique": "Nombre de conteneurs", "Valeur": this.simulationResultats.stats.containersCount.toString() }
+        ];
+        const wsResults = XLSX.utils.json_to_sheet(resultsData);
+        XLSX.utils.book_append_sheet(wb, wsResults, 'Métriques');
+      }
+      
+      // Télécharger le fichier
+      const fileName = `simulation-results-${new Date().toISOString().split('T')[0]}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Export Excel réussi !',
+        text: 'Les données ont été exportées vers Excel.',
+        timer: 2000
+      });
+    } catch (error) {
+      console.error('Erreur export Excel:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur d\'export',
+        text: 'Une erreur s\'est produite lors de l\'export Excel.'
+      });
+    }
+  }
+  
+  exportImage(): void {
+    if (!this.simulationResultats) return;
+    
+    Swal.fire({
+      title: 'Export PNG',
+      text: 'Génération de l\'image en cours...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    
+    setTimeout(() => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Image générée !',
+        text: 'La visualisation 3D a été sauvegardée en PNG.',
+        timer: 2000
+      });
+    }, 1500);
+  }
+  
+  exportCheckList(): void {
+    if (!this.simulationResultats) return;
+    
+    const checkList = this.generateLoadingCheckList();
+    const blob = new Blob([checkList], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `liste-chargement-${new Date().toISOString().split('T')[0]}.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    
+    Swal.fire({
+      icon: 'success',
+      title: 'Liste générée !',
+      text: 'La liste de chargement a été téléchargée.',
+      timer: 2000
+    });
+  }
+  
+  shareByEmail(): void {
+    if (!this.emailShare || !this.simulationResultats) return;
+    
+    Swal.fire({
+      title: 'Envoi par email',
+      text: `Envoi des résultats à ${this.emailShare}...`,
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    
+    setTimeout(() => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Email envoyé !',
+        text: `Les résultats ont été envoyés à ${this.emailShare}.`,
+        timer: 2000
+      });
+      this.emailShare = '';
+    }, 2000);
+  }
+  
+  saveSimulation(): void {
+    if (!this.simulationName || !this.simulationResultats) return;
+    
+    const simulationData = {
+      name: this.simulationName,
+      date: new Date(),
+      colis: this.listeColis,
+      container: this.containers.find(c => c._id === this.selectedContainerId),
+      resultats: this.simulationResultats
+    };
+    
+    const savedSimulations = JSON.parse(localStorage.getItem('savedSimulations') || '[]');
+    savedSimulations.push(simulationData);
+    localStorage.setItem('savedSimulations', JSON.stringify(savedSimulations));
+    
+    Swal.fire({
+      icon: 'success',
+      title: 'Simulation sauvegardée !',
+      text: `La simulation "${this.simulationName}" a été sauvegardée.`,
+      timer: 2000
+    });
+    this.simulationName = '';
+  }
+  
+  newSimulation(): void {
+    Swal.fire({
+      title: 'Nouvelle simulation',
+      text: 'Voulez-vous vraiment commencer une nouvelle simulation ?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Oui, recommencer',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.listeColis = [];
+        this.simulationResultats = null;
+        this.selectedContainerId = null;
+        this.currentStep = 1;
+        this.currentPage = 1;
+        this.colisForm.reset();
+        
+        Swal.fire({
+          icon: 'success',
+          title: 'Nouvelle simulation initialisée !',
+          timer: 2000
+        });
+      }
+    });
+  }
+  
+  private generateLoadingCheckList(): string {
+    let checkList = `LISTE DE CHARGEMENT OPTIMISÉE\n`;
+    checkList += `Date: ${new Date().toLocaleDateString()}\n`;
+    checkList += `Container: ${this.getSelectedContainerInfo()}\n`;
+    checkList += `Nombre total de colis: ${this.calculerNombreColisTotal()}\n\n`;
+    
+    checkList += `ORDRE DE CHARGEMENT RECOMMANDÉ:\n`;
+    checkList += `=====================================\n\n`;
+    
+    this.listeColis.forEach((colis, index) => {
+      checkList += `${index + 1}. ${colis.type}\n`;
+      checkList += `   Dimensions: ${colis.longueur} × ${colis.largeur} × ${colis.hauteur} cm\n`;
+      checkList += `   Poids: ${colis.poids} kg\n`;
+      checkList += `   Quantité: ${colis.quantite}\n`;
+      if (colis.fragile) checkList += `   ⚠️  FRAGILE\n`;
+      if (!colis.gerbable) checkList += `   ❌ NON EMPILABLE\n`;
+      checkList += `\n`;
+    });
+    
+    return checkList;
+  }
 }

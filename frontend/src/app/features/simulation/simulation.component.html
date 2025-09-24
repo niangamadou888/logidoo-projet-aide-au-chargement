@@ -38,11 +38,32 @@
         <span class="step-label">Ajout de Colis</span>
       </div>
       
-      <div class="step" [class.active]="currentStep === 3" 
+      <div class="step" [class.active]="currentStep === 3" [class.completed]="currentStep > 3"
            (click)="currentStep > 2 || (canProceedFromStep1() && canProceedFromStep2()) ? goToStep(3) : null"
            [class.disabled]="currentStep < 3 && (!canProceedFromStep1() || !canProceedFromStep2())">
         <div class="step-circle">3</div>
         <span class="step-label">Choix de Contenant</span>
+      </div>
+
+      <div class="step" [class.active]="currentStep === 4" [class.completed]="currentStep > 4"
+           (click)="currentStep > 3 || canProceedFromStep3() ? goToStep(4) : null"
+           [class.disabled]="currentStep < 4 && !canProceedFromStep3()">
+        <div class="step-circle">4</div>
+        <span class="step-label">Calcul & Simulation</span>
+      </div>
+
+      <div class="step" [class.active]="currentStep === 5" [class.completed]="currentStep > 5"
+           (click)="currentStep > 4 || simulationResultats ? goToStep(5) : null"
+           [class.disabled]="!simulationResultats">
+        <div class="step-circle">5</div>
+        <span class="step-label">Visualisation</span>
+      </div>
+
+      <div class="step" [class.active]="currentStep === 6"
+           (click)="currentStep > 4 || simulationResultats ? goToStep(6) : null"
+           [class.disabled]="!simulationResultats">
+        <div class="step-circle">6</div>
+        <span class="step-label">Export</span>
       </div>
     </div>
   </div>
@@ -188,14 +209,25 @@
 
     <!-- Liste des colis ajoutés -->
     <div class="colis-list" *ngIf="listeColis.length > 0">
-      <h3>Colis ajoutés ({{ calculerNombreColisTotal() }})</h3>
+      <div class="colis-header-section">
+        <h3>Colis ajoutés ({{ calculerNombreColisTotal() }})</h3>
+        <div class="pagination-controls-top" *ngIf="listeColis.length > 5">
+          <select [(ngModel)]="colisPerPage" (change)="onPageSizeChange()" class="page-size-selector">
+            <option value="5">5 par page</option>
+            <option value="10">10 par page</option>
+            <option value="20">20 par page</option>
+            <option value="50">Tout afficher</option>
+          </select>
+        </div>
+      </div>
+      
       <div class="colis-grid">
-        <div *ngFor="let colis of listeColis; let i = index" class="colis-item">
+        <div *ngFor="let colis of getPaginatedColis(); let i = index" class="colis-item">
           <div class="colis-header">
             <div class="colis-color" [style.background-color]="colis.couleur"></div>
             <span class="colis-type">{{ colis.type }}</span>
             <span class="colis-quantity">x{{ colis.quantite }}</span>
-            <button class="delete-btn" (click)="supprimerColis(i)">×</button>
+            <button class="delete-btn" (click)="supprimerColis(getCurrentPageIndex() * colisPerPage + i)">×</button>
           </div>
           
           <div class="colis-details">
@@ -228,16 +260,48 @@
               <label class="color-input">
                 Couleur:
                 <input type="color" [value]="colis.couleur" 
-                       (change)="updateColisCouleur(i, $any($event.target).value)">
+                       (change)="updateColisCouleur(getCurrentPageIndex() * colisPerPage + i, $any($event.target).value)">
               </label>
               <label class="checkbox-input">
-                <input type="checkbox" [checked]="colis.fragile" (change)="toggleFragile(i)"> Fragile
+                <input type="checkbox" [checked]="colis.fragile" (change)="toggleFragile(getCurrentPageIndex() * colisPerPage + i)"> Fragile
               </label>
               <label class="checkbox-input">
-                <input type="checkbox" [checked]="colis.gerbable" (change)="toggleGerbable(i)"> Empilable
+                <input type="checkbox" [checked]="colis.gerbable" (change)="toggleGerbable(getCurrentPageIndex() * colisPerPage + i)"> Empilable
               </label>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Contrôles de pagination en bas -->
+      <div class="pagination-controls-bottom" *ngIf="getTotalPages() > 1">
+        <div class="pagination-info">
+          Affichage {{ getStartIndex() + 1 }} - {{ getEndIndex() }} sur {{ listeColis.length }} colis
+        </div>
+        <div class="pagination-buttons">
+          <button class="btn-pagination" [disabled]="currentPage === 0" (click)="goToFirstPage()" title="Première page">
+            ⏮️
+          </button>
+          <button class="btn-pagination" [disabled]="currentPage === 0" (click)="prevPage()" title="Page précédente">
+            ◀️
+          </button>
+          
+          <div class="pagination-numbers">
+            <button 
+              *ngFor="let page of getVisiblePageNumbers(); let i = index" 
+              class="btn-page-number"
+              [class.active]="page - 1 === currentPage"
+              (click)="goToPage(page - 1)">
+              {{ page }}
+            </button>
+          </div>
+          
+          <button class="btn-pagination" [disabled]="currentPage >= getTotalPages() - 1" (click)="nextPage()" title="Page suivante">
+            ▶️
+          </button>
+          <button class="btn-pagination" [disabled]="currentPage >= getTotalPages() - 1" (click)="goToLastPage()" title="Dernière page">
+            ⏭️
+          </button>
         </div>
       </div>
     </div>
@@ -417,15 +481,223 @@
 
     <div class="step-actions">
       <button class="btn-secondary" (click)="prevStep()">Précédent</button>
-      <button (click)="lancerSimulation()" class="btn-primary"
-        *ngIf="(!simulationResultats && !simulationEnCours) && listeColis.length > 0 && (selectedContainerId || selectionAutoOptimal)"
+      <button (click)="goToStep(4)" class="btn-primary"
+        *ngIf="listeColis.length > 0 && (selectedContainerId || selectionAutoOptimal)"
         [disabled]="findingOptimal">
-        {{ findingOptimal
-          ? 'Recherche du conteneur optimal...'
-          : (selectionAutoOptimal
-              ? 'Lancer la simulation (sélection auto)'
-              : 'Lancer la simulation')
-        }}
+        Continuer vers le calcul
+      </button>
+    </div>
+  </div>
+
+  <!-- Étape 4: Calcul & Simulation -->
+  <div [hidden]="currentStep !== 4" class="step-content">
+    <div class="card">
+      <h3>Calcul et Simulation</h3>
+      <div *ngIf="!simulationResultats && !simulationEnCours" class="simulation-launch">
+        <p>Prêt à calculer la répartition optimale de vos {{ calculerNombreColisTotal() }} colis :</p>
+        <div class="simulation-preview">
+          <div class="preview-item">
+            <strong>Volume total :</strong> {{ calculerVolumeTotal() | number:'1.2-2' }} m³
+          </div>
+          <div class="preview-item">
+            <strong>Poids total :</strong> {{ calculerPoidsTotal() | number:'1.2-2' }} kg
+          </div>
+          <div class="preview-item" *ngIf="selectedContainerId">
+            <strong>Conteneur sélectionné :</strong> {{ getSelectedContainerInfo() }}
+          </div>
+        </div>
+        <button (click)="lancerSimulation()" class="btn-primary btn-large" [disabled]="findingOptimal">
+          <span *ngIf="!findingOptimal">🚀 Lancer le calcul</span>
+          <span *ngIf="findingOptimal">⏳ Calcul en cours...</span>
+        </button>
+      </div>
+
+      <div *ngIf="simulationEnCours" class="simulation-progress">
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+          <p>Calcul de la répartition optimale en cours...</p>
+        </div>
+      </div>
+
+      <div *ngIf="simulationResultats" class="simulation-results">
+        <h4>✅ Résultats du calcul</h4>
+        <div class="results-grid">
+          <div class="result-card">
+            <h5>Efficacité</h5>
+            <div class="result-value">{{ (simulationResultats.stats.avgVolumeUtilization * 100) | number:'1.1-1' }}%</div>
+          </div>
+          <div class="result-card">
+            <h5>Volume total</h5>
+            <div class="result-value">{{ simulationResultats.stats.totalVolume | number:'1.2-2' }} m³</div>
+          </div>
+          <div class="result-card">
+            <h5>Colis placés</h5>
+            <div class="result-value">{{ simulationResultats.stats.placedCount }}/{{ calculerNombreColisTotal() }}</div>
+          </div>
+          <div class="result-card">
+            <h5>Conteneurs utilisés</h5>
+            <div class="result-value">{{ simulationResultats.stats.containersCount }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-actions">
+      <button class="btn-secondary" (click)="prevStep()">Précédent</button>
+      <button (click)="goToStep(5)" class="btn-primary" 
+        *ngIf="simulationResultats" [disabled]="!simulationResultats">
+        Voir la visualisation
+      </button>
+    </div>
+  </div>
+
+  <!-- Étape 5: Visualisation -->
+  <div [hidden]="currentStep !== 5" class="step-content">
+    <div class="card">
+      <h3>Visualisation 3D</h3>
+      <div *ngIf="simulationResultats" class="visualization-container">
+        <div class="visualization-header">
+          <h4>Résultats de la simulation</h4>
+          <p>Votre simulation a été calculée avec succès. Vous pouvez maintenant visualiser le placement des colis.</p>
+        </div>
+
+        <div class="simulation-summary-before-viz">
+          <div class="summary-grid">
+            <div class="summary-item">
+              <div class="summary-icon">📊</div>
+              <div class="summary-content">
+                <h5>Efficacité</h5>
+                <span class="summary-value">{{ (simulationResultats.stats.avgVolumeUtilization * 100) | number:'1.1-1' }}%</span>
+              </div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-icon">📦</div>
+              <div class="summary-content">
+                <h5>Colis placés</h5>
+                <span class="summary-value">{{ simulationResultats.stats.placedCount }}/{{ calculerNombreColisTotal() }}</span>
+              </div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-icon">🚛</div>
+              <div class="summary-content">
+                <h5>Conteneurs</h5>
+                <span class="summary-value">{{ simulationResultats.stats.containersCount }}</span>
+              </div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-icon">📐</div>
+              <div class="summary-content">
+                <h5>Volume total</h5>
+                <span class="summary-value">{{ simulationResultats.stats.totalVolume | number:'1.2-2' }} m³</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="visualization-actions">
+          <button class="btn-primary btn-large" (click)="ouvrirVisualisationComplete()">
+            🎯 Ouvrir la visualisation 3D complète
+          </button>
+          <p class="visualization-description">
+            La visualisation complète vous donnera accès à tous les outils d'analyse 3D/2D,
+            d'export et de manipulation des vues.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-actions">
+      <button class="btn-secondary" (click)="prevStep()">Précédent</button>
+      <button (click)="goToStep(6)" class="btn-primary">
+        Accéder aux options d'export
+      </button>
+    </div>
+  </div>
+
+  <!-- Étape 6: Export et Actions -->
+  <div [hidden]="currentStep !== 6" class="step-content">
+    <div class="card">
+      <h3>Export et Actions</h3>
+      <div class="export-options">
+        <div class="export-section">
+          <h4>📊 Actions sur votre simulation</h4>
+          <div class="actions-grid">
+            <div class="action-card">
+              <div class="action-icon">🎯</div>
+              <h5>Visualisation complète</h5>
+              <p>Accès à la visualisation 3D avancée avec tous les outils d'analyse</p>
+              <button class="btn-primary" (click)="ouvrirVisualisationComplete()">
+                Ouvrir la visualisation
+              </button>
+            </div>
+            
+            <div class="action-card">
+              <div class="action-icon">�</div>
+              <h5>Export Excel</h5>
+              <p>Télécharger les données de la simulation au format Excel</p>
+              <button class="btn-primary" (click)="exportExcel()">
+                Télécharger Excel
+              </button>
+            </div>
+            
+            <div class="action-card">
+              <div class="action-icon">�</div>
+              <h5>Sauvegarder</h5>
+              <p>Enregistrer votre simulation pour la retrouver plus tard</p>
+              <button class="btn-primary" (click)="sauvegarderSimulation()">
+                Sauvegarder simulation
+              </button>
+            </div>
+            
+            <div class="action-card">
+              <div class="action-icon">�</div>
+              <h5>Nouvelle simulation</h5>
+              <p>Recommencer avec de nouveaux colis et paramètres</p>
+              <button class="btn-secondary" (click)="nouvelleSimulation()">
+                Nouveau calcul
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="export-section" *ngIf="simulationResultats">
+          <h4>� Résumé de votre simulation</h4>
+          <div class="final-summary">
+            <div class="summary-row">
+              <span class="summary-label">Nom de la simulation :</span>
+              <span class="summary-value">{{ getSimulationName() }}</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Date :</span>
+              <span class="summary-value">{{ dateAujourdhui | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Colis traités :</span>
+              <span class="summary-value">{{ calculerNombreColisTotal() }} articles</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Conteneurs utilisés :</span>
+              <span class="summary-value">{{ simulationResultats.stats.containersCount }}</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Efficacité moyenne :</span>
+              <span class="summary-value highlight">{{ (simulationResultats.stats.avgVolumeUtilization * 100) | number:'1.1-1' }}%</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Volume total utilisé :</span>
+              <span class="summary-value">{{ simulationResultats.stats.totalVolume | number:'1.2-2' }} m³</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-actions">
+      <button class="btn-secondary" (click)="prevStep()">Précédent</button>
+      <button class="btn-primary" (click)="nouvelleSimulation()">
+        Nouvelle simulation
       </button>
     </div>
   </div>
