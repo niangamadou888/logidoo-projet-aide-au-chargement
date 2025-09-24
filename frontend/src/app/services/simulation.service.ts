@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { ConfigService } from '../core/services/config.service';
 
 export interface SimulationOptions {
   forceUseContainers?: string[];
@@ -89,15 +89,16 @@ export interface OptimalContainerResult {
   providedIn: 'root'
 })
 export class SimulationService {
-  private apiUrl = 'https://logidoo.onrender.com/api/simulations';
-
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private config: ConfigService
+  ) {}
 
   /**
    * Enregistrer une simulation
    */
   enregistrerSimulation(data: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, data);
+    return this.http.post<any>(this.config.getApiUrl('simulations'), data);
   }
 
   /**
@@ -105,7 +106,7 @@ export class SimulationService {
    */
   recupererSimulations(): Observable<any[]> {
     // Support both {success, simulations} and direct array responses
-    return this.http.get<any>(`${this.apiUrl}/user`).pipe(
+    return this.http.get<any>(this.config.getApiUrl('simulations/user')).pipe(
       map((res: any) => res?.simulations ?? res ?? [])
     );
   }
@@ -114,7 +115,7 @@ export class SimulationService {
    * Récupérer une simulation spécifique par ID
    */
   recupererSimulation(id: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.get<any>(this.config.getApiUrl(`simulations/${id}`)).pipe(
       map((res: any) => res?.simulation ?? res)
     );
   }
@@ -127,7 +128,7 @@ export class SimulationService {
     result: SimulationResult;
     executionTime: number;
   }> {
-    return this.http.post<any>(`${this.apiUrl}/preview`, { colis, options });
+    return this.http.post<any>(this.config.getApiUrl('simulations/preview'), { colis, options });
   }
 
   /**
@@ -138,7 +139,7 @@ export class SimulationService {
     optimalContainer: OptimalContainerResult;
     executionTime: number;
   }> {
-    return this.http.post<any>(`${this.apiUrl}/optimal-container`, { colis });
+    return this.http.post<any>(this.config.getApiUrl('simulations/optimal-container'), { colis });
   }
 
   /**
@@ -146,7 +147,7 @@ export class SimulationService {
    */
   sauvegarderResultats(colis: any[], resultats: any, nom?: string, description?: string): Observable<any> {
     const payload: any = { colis, resultats, nom: nom ?? '', description: description ?? '' };
-    return this.http.post<any>(`${this.apiUrl}/save`, payload);
+    return this.http.post<any>(this.config.getApiUrl('simulations/save'), payload);
   }
 
   /**

@@ -1,0 +1,27 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "dashboard": "Panel de control",
+    "settings": "Configuración",
+    "logout": "Cerrar sesión"
+  },
+  "dashboard": {
+    "title": "Panel de control",
+    "statistics": "Estadísticas",
+    "recent_activity": "Actividad reciente"
+  },
+  "user": {
+    "profile": "Perfil",
+    "greeting": "Hola {{name}}"
+  },
+  "forms": {
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "save": "Guardar"
+  },
+  "messages": {
+    "success": "Operación exitosa",
+    "error": "Ha ocurrido un error",
+    "loading": "Cargando..."
+  }
+}

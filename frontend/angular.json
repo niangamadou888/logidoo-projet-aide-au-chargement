@@ -13,15 +13,30 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": "fr",
+        "locales": {
+          "en": {
+            "translation": "src/locale/messages.en.xlf",
+            "baseHref": "/en/"
+          },
+          "es": {
+            "translation": "src/locale/messages.es.xlf",
+            "baseHref": "/es/"
+          }
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/",
+            "outputPath": "dist/front-end",
+            "localize": true,
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
-              "zone.js"
+              "zone.js",
+              "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -86,6 +101,7 @@
           },
           "configurations": {
             "production": {
+              "localize": true,
               "optimization": {
                 "styles": {
                   "minify": true,
@@ -107,9 +123,19 @@
               "outputHashing": "all"
             },
             "development": {
+              "localize": ["fr"],
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "fr": {
+              "localize": ["fr"]
+            },
+            "en": {
+              "localize": ["en"]
+            },
+            "es": {
+              "localize": ["es"]
             }
           },
           "defaultConfiguration": "production"
@@ -122,6 +148,15 @@
             },
             "development": {
               "buildTarget": "front-end:build:development"
+            },
+            "fr": {
+              "buildTarget": "front-end:build:fr"
+            },
+            "en": {
+              "buildTarget": "front-end:build:en"
+            },
+            "es": {
+              "buildTarget": "front-end:build:es"
             }
           },
           "defaultConfiguration": "development"

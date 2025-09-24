@@ -8,12 +8,12 @@
     </div>
     
     <!-- Titre Se connecter -->
-    <h1 class="login-title">Se connecter</h1>
+    <h1 class="login-title" i18n="@@login.title">Se connecter</h1>
     
     <!-- Formulaire de connexion -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <div class="form-group">
-        <label class="form-label">Email*</label>
+        <label class="form-label" i18n="@@login.email.label">Email*</label>
         <input 
           type="email" 
           formControlName="email" 
@@ -58,7 +58,7 @@
         class="login-button"
         [disabled]="loginForm.invalid || loading"
       >
-        <span *ngIf="!loading">Se connecter</span>
+        <span *ngIf="!loading" i18n="@@login.button.submit">Se connecter</span>
         <span *ngIf="loading">Connexion en cours...</span>
       </button>
     </form>

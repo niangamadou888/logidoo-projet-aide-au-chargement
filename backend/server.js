@@ -10,6 +10,8 @@ const compression = require('compression');
 const { logger } = require('./src/config/logger');
 const fs = require('fs');
 const path = require('path');
+const i18n = require('./src/config/i18n');
+const languageMiddleware = require('./src/middleware/language');
 
 // Création du répertoire de logs s'il n'existe pas
 const logsDir = path.join(__dirname, 'logs');
@@ -46,10 +48,20 @@ app.use(morgan('dev')); // Version console pour développement
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
+// Configuration i18n
+app.use(i18n.init);
+app.use(languageMiddleware);
+
+// Middleware pour ajouter la traduction aux réponses
+app.use((req, res, next) => {
+  res.t = req.t || i18n.__;
+  next();
+});
+
 // CORS middleware (simple version)
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Language');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   
   if (req.method === 'OPTIONS') {
@@ -80,7 +92,7 @@ app.use('/api/logs', logsRoutes); // → /api/logs
 // Error handling middleware
 app.use((err, req, res, next) => {
   const errorId = Date.now().toString();
-  logger.error(`Error ID: ${errorId} - ${err.message}`, { 
+  logger.error(`Error ID: ${errorId} - ${err.message}`, {
     errorId,
     stack: err.stack,
     method: req.method,
@@ -90,12 +102,12 @@ app.use((err, req, res, next) => {
     query: req.query,
     user: req.user ? req.user.id : 'anonymous'
   });
-  
+
   res.status(500).json({
     success: false,
-    message: 'Server error',
+    message: req.__ ? req.__('errors.general') : 'Server error',
     errorId: errorId,
-    error: process.env.NODE_ENV === 'development' ? err.message : 'An error occurred'
+    error: process.env.NODE_ENV === 'development' ? err.message : req.__ ? req.__('errors.general') : 'An error occurred'
   });
 });
 
@@ -121,9 +133,18 @@ app.get('/api/health', (req, res) => {
     env: process.env.NODE_ENV || 'development',
     mongoConnection: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
   };
-  
+
   logger.debug('Health check requested', healthData);
   res.json(healthData);
+});
+
+// Route pour tester l'i18n
+app.get('/api/status', (req, res) => {
+  res.json({
+    message: req.__('api.status.success'),
+    language: req.language,
+    timestamp: Date.now()
+  });
 });
 
 // Route pour vérifier les métriques de performance

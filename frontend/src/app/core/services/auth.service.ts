@@ -4,12 +4,12 @@ import { BehaviorSubject, Observable, tap, of } from 'rxjs';
 import { User, AuthResponse } from '../models/user.model';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://logidoo.onrender.com/api/auth';
   private tokenKey = 'auth_token';
   private userKey = 'user_info';
   private isBrowser: boolean;
@@ -18,8 +18,9 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private router: Router,
+    private config: ConfigService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -37,7 +38,7 @@ export class AuthService {
   }
 
   register(username: string, email: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, {
+    return this.http.post<AuthResponse>(this.config.getAuthUrl('register'), {
       username,
       email,
       password
@@ -54,7 +55,7 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, {
+    return this.http.post<AuthResponse>(this.config.getAuthUrl('login'), {
       email,
       password
     }).pipe(
@@ -73,11 +74,11 @@ export class AuthService {
   }
 
   requestPasswordReset(email: string): Observable<{ success: boolean; message: string; resetUrl?: string; devToken?: string; }> {
-    return this.http.post<{ success: boolean; message: string; resetUrl?: string; devToken?: string; }>(`${this.apiUrl}/forgot-password`, { email });
+    return this.http.post<{ success: boolean; message: string; resetUrl?: string; devToken?: string; }>(this.config.getAuthUrl('forgot-password'), { email });
   }
 
   resetPassword(token: string, password: string): Observable<{ success: boolean; message: string; }> {
-    return this.http.post<{ success: boolean; message: string; }>(`${this.apiUrl}/reset-password`, { token, password });
+    return this.http.post<{ success: boolean; message: string; }>(this.config.getAuthUrl('reset-password'), { token, password });
   }
 
   logout(): void {

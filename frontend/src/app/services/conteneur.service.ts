@@ -3,20 +3,17 @@ import { Injectable } from '@angular/core';
 import { Contenant} from '../core/models/contenant.model';
 import { Observable } from 'rxjs';
 import { Colis } from './colis.service';
+import { ConfigService } from '../core/services/config.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConteneurService {
-
-//   En Local
-// private apiUrl = 'http://localhost:3000/api';
-
-//En production
- private apiUrl = 'https://logidoo.onrender.com/api';
-
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private config: ConfigService
+  ) { }
 
 
 
@@ -47,30 +44,30 @@ export class ConteneurService {
       formData.append('image', imageFile, imageFile.name);
     }
 
-    return this.http.post<Contenant>(`${this.apiUrl}/contenants/create`, formData);
+    return this.http.post<Contenant>(this.config.getApiUrl('contenants/create'), formData);
   }
  
     listerContenants(): Observable<Contenant[]> {
-    return this.http.get<Contenant[]>(`${this.apiUrl}/contenants`);
+    return this.http.get<Contenant[]>(this.config.getApiUrl('contenants'));
   }
 
   suggestionContenants(articles: Colis[]): Observable<Contenant[]> {
-    return this.http.post<Contenant[]>(`${this.apiUrl}/contenants/suggestions`, { articles });
+    return this.http.post<Contenant[]>(this.config.getApiUrl('contenants/suggestions'), { articles });
   }
 
 
     getConteneurs(): Observable<Contenant[]> {
-    return this.http.get<Contenant[]>(`${this.apiUrl}/contenants`);
+    return this.http.get<Contenant[]>(this.config.getApiUrl('contenants'));
   }
 
 
     getCategories(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/contenants/categories`);
+    return this.http.get<string[]>(this.config.getApiUrl('contenants/categories'));
   }
   
   // Supprimer un contenant par ID
   deleteContenant(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/contenants/${id}`);
+    return this.http.delete<void>(this.config.getApiUrl(`contenants/${id}`));
   }
   
 }

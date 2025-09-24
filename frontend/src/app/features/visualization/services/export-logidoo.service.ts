@@ -3,13 +3,14 @@
 import { Injectable } from '@angular/core';
 import { VisualizationScene, VisualizationContainer } from '../models/visualization.model';
 import jsPDF from 'jspdf';
+import { ConfigService } from '../../../core/services/config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExportLogidooService {
 
-  constructor() { }
+  constructor(private config: ConfigService) { }
 
   /**
    * Export PDF avec toutes les vues 2D - Version Logidoo avec encodage UTF-8 amélioré et image du contenant
@@ -353,8 +354,7 @@ export class ExportLogidooService {
         fullImageUrl = imagePath;
       } else {
         // Sinon construire l'URL complète avec le serveur approprié
-        const baseUrl = 'https://logidoo.onrender.com'; // En production
-        // const baseUrl = 'http://localhost:3000'; // En local
+        const baseUrl = this.config.apiUrl; // Utiliser l'URL configurée
         fullImageUrl = baseUrl + imagePath;
       }
       

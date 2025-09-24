@@ -2,6 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { ConfigService } from '../core/services/config.service';
 
 export interface Colis {
   reference?: string;
@@ -23,15 +24,16 @@ export interface Colis {
 
 @Injectable({ providedIn: 'root' })
 export class ColisService {
-  private apiUrl = 'https://logidoo.onrender.com/api/colis';
-
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private config: ConfigService
+  ) {}
 
   ajouterColis(colis: Colis): Observable<Colis> {
-    return this.http.post<Colis>(this.apiUrl, colis);
+    return this.http.post<Colis>(this.config.getApiUrl('colis'), colis);
   }
 
   getColis(): Observable<Colis[]> {
-    return this.http.get<Colis[]>(this.apiUrl);
+    return this.http.get<Colis[]>(this.config.getApiUrl('colis'));
   }
 }

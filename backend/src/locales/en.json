@@ -1,0 +1,29 @@
+{
+  "api": {
+    "status": {
+      "success": "API is operational"
+    }
+  },
+  "errors": {
+    "general": "An error occurred",
+    "notFound": "Resource not found",
+    "unauthorized": "Unauthorized",
+    "validation": "Validation error"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Invalid email address",
+    "minLength": "Minimum {{min}} characters",
+    "maxLength": "Maximum {{max}} characters"
+  },
+  "auth": {
+    "login": {
+      "success": "Login successful",
+      "failed": "Invalid credentials"
+    },
+    "register": {
+      "success": "Registration successful",
+      "emailExists": "This email address already exists"
+    }
+  }
+}
