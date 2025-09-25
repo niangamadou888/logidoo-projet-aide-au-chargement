@@ -414,37 +414,6 @@
   }
 }
 
-// ===== FOOTER =====
-.visualization-footer {
-  background: white;
-  border-top: 1px solid #e2e8f0;
-  padding: 1rem 1.5rem;
-
-  .stats-quick {
-    display: flex;
-    gap: 2rem;
-
-    .stat-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.25rem;
-
-      .stat-label {
-        font-size: 0.75rem;
-        color: #64748b;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .stat-value {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #1e293b;
-      }
-    }
-  }
-}
 
 // ===== ANIMATIONS =====
 @keyframes spin {
@@ -508,17 +477,6 @@
     left: 0.5rem;
   }
 
-  .visualization-footer {
-    padding: 0.75rem 1rem;
-
-    .stats-quick {
-      gap: 1rem;
-
-      .stat-item .stat-value {
-        font-size: 1rem;
-      }
-    }
-  }
 }
 
 // ===== EXPORT STYLES =====
