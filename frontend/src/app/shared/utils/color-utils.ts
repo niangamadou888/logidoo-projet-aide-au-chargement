@@ -42,10 +42,11 @@ export class ColorUtils {
   }
 
   /**
-   * Obtient une couleur pour les articles fragiles
+   * Obtient une couleur pour les articles fragiles (kept for backward compatibility)
    */
   static getFragileColor(isFragile: boolean): string {
-    return isFragile ? '#FF6B6B' : '#4ECDC4';
+    // Treat fragile items the same as non-fragile items
+    return '#4ECDC4';
   }
 
   /**

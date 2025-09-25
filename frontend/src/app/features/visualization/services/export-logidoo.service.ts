@@ -1030,7 +1030,7 @@ export class ExportLogidooService {
       `${(item.dimensions.longueur * item.dimensions.largeur * item.dimensions.hauteur / 1000000).toFixed(3)}m³`,
       item.poids ? `${item.poids}kg` : 'N/A',
       item.gerbable !== false ? 'Oui' : 'Non', // Empilable
-      item.fragile ? 'Oui' : 'Non' // Fragile
+      'Non' // Fragile (treated as normal)
     ];
     
     rowData.forEach((data, i) => {
@@ -1157,15 +1157,6 @@ export class ExportLogidooService {
     const indexMatch = item.id ? item.id.match(/(\d+)/) : null;
     const itemNumber = indexMatch ? indexMatch[1] : '1';
     
-    if (item.fragile) {
-      if (volume < 10) {
-        return `Fragile-${itemNumber}`;
-      } else if (volume < 50) {
-        return `Fragile-M-${itemNumber}`;
-      } else {
-        return `Fragile-XL-${itemNumber}`;
-      }
-    }
     
     if (item.gerbable === false) {
       return `NonEmpilable-${itemNumber}`;
@@ -1188,9 +1179,6 @@ export class ExportLogidooService {
   private getItemStatusText(item: any): string {
     const statuses = [];
     
-    if (item.fragile) {
-      statuses.push('Fragile');
-    }
     
     if (item.gerbable === false) {
       statuses.push('Non-empilable');

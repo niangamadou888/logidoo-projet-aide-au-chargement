@@ -249,17 +249,15 @@ export class VisualizationService {
 
     const containerDims: Dimensions3D = { ...container.dimensions };
 
-    // 1) Ordonner les items pour limiter les trous (grands d'abord, fragiles en dernier)
+    // 1) Ordonner les items pour limiter les trous (grands d'abord)
     const items = [...container.items];
     items.sort((a, b) => {
       const va = a.dimensions.longueur * a.dimensions.largeur * a.dimensions.hauteur;
       const vb = b.dimensions.longueur * b.dimensions.largeur * b.dimensions.hauteur;
-      // Fragiles à la fin, sinon volume décroissant
-      if ((a.fragile ? 1 : 0) !== (b.fragile ? 1 : 0)) return (a.fragile ? 1 : 0) - (b.fragile ? 1 : 0);
       return vb - va;
     });
 
-    const placed: Array<{ position: Position3D; dimensions: Dimensions3D; ref: string; gerbable?: boolean; fragile?: boolean }> = [];
+    const placed: Array<{ position: Position3D; dimensions: Dimensions3D; ref: string; gerbable?: boolean }> = [];
 
     // Générer toutes les orientations possibles (6 permutations)
     const orientations = (d: Dimensions3D): Dimensions3D[] => [
@@ -273,7 +271,6 @@ export class VisualizationService {
 
     // 2) Placement avec grille fine et anti-collision
     for (const item of items) {
-      const isFragile = !!item.fragile;
       let placedOK = false;
       let chosenDims: Dimensions3D | null = null;
       let chosenPos: Position3D | null = null;
@@ -293,8 +290,8 @@ export class VisualizationService {
         const pos = GeometryUtils.findBestPosition(
           containerDims,
           orient,
-          placed.map(p => ({ position: p.position, dimensions: p.dimensions, gerbable: p.gerbable, fragile: p.fragile })),
-          isFragile,
+          placed.map(p => ({ position: p.position, dimensions: p.dimensions, gerbable: p.gerbable })),
+          false,
           5
         );
 
@@ -304,17 +301,11 @@ export class VisualizationService {
             pos,
             orient,
             containerDims,
-            placed.map(p => ({ position: p.position, dimensions: p.dimensions, gerbable: p.gerbable, fragile: p.fragile })),
+            placed.map(p => ({ position: p.position, dimensions: p.dimensions, gerbable: p.gerbable })),
             2
           );
-          // Si fragile, s'assurer que le glissement ne casse pas le support
-          if (isFragile && !GeometryUtils.isSupported(pushed, orient, placed.map(p => ({ position: p.position, dimensions: p.dimensions, gerbable: p.gerbable, fragile: p.fragile })))) {
-            chosenDims = orient;
-            chosenPos = pos; // garder la position supportée
-          } else {
-            chosenDims = orient;
-            chosenPos = pushed;
-          }
+          chosenDims = orient;
+          chosenPos = pushed;
           placedOK = true;
           break;
         }
@@ -333,7 +324,7 @@ export class VisualizationService {
       item.dimensions = chosenDims!;
       item.opacity = 1.0;
 
-      placed.push({ position: chosenPos!, dimensions: chosenDims!, ref: item.id, gerbable: item.gerbable, fragile: item.fragile });
+      placed.push({ position: chosenPos!, dimensions: chosenDims!, ref: item.id, gerbable: item.gerbable });
     }
 
     // 3) Sécurité: vérifier qu'aucun colis ne se chevauche (log + ajustement léger)
@@ -346,12 +337,7 @@ export class VisualizationService {
           const nudge = 1;
           const tryPos: Position3D = { ...B.position, x: Math.min(B.position.x + nudge, containerDims.longueur - B.dimensions.longueur) };
           if (!GeometryUtils.collides(tryPos, B.dimensions, placed.filter((_, k) => k !== j))) {
-            // Si l'élément déplacé est fragile, conserver un appui valide
-            const others = placed.filter((_, k) => k !== j).map(p => ({ position: p.position, dimensions: p.dimensions, gerbable: p.gerbable, fragile: p.fragile }));
-            const supportOk = placed[j].fragile ? GeometryUtils.isSupported(tryPos, B.dimensions, others) : true;
-            if (supportOk) {
-              B.position = tryPos;
-            }
+            B.position = tryPos;
           }
         }
       }

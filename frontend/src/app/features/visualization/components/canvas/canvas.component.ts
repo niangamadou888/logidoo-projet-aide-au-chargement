@@ -496,9 +496,6 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     ctx.strokeRect(x, y, width, height);
 
     // Marqueurs spéciaux
-    if (item.fragile && (this.config?.showFragileItems ?? true)) {
-      this.drawFragileMarkerToCtx(ctx, x, y, width, height);
-    }
 
     if (!item.gerbable && (this.config?.highlightNonGerbable ?? true)) {
       this.drawNonStackableMarkerToCtx(ctx, x, y, width, height);
@@ -660,17 +657,6 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     this.render();
   }
 
-  private drawFragileMarkerToCtx(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
-    ctx.fillStyle = '#ff4444';
-    ctx.beginPath();
-    ctx.arc(x + width - 8, y + 8, 6, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 8px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('!', x + width - 8, y + 11);
-  }
 
   private drawNonStackableMarkerToCtx(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
     ctx.strokeStyle = '#ff8800';

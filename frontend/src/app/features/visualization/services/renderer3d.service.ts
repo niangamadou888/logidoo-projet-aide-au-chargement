@@ -466,6 +466,43 @@ export class ThreeDRendererService {
   }
 
   /**
+   * Ajoute un marqueur fragile
+   */
+  private addFragileMarker(parentMesh: any): void {
+    const box = new THREE.Box3().setFromObject(parentMesh);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+
+    // 1) Liseré rouge (outline) pour rendre l'objet bien visible
+    if (parentMesh.geometry) {
+      const edges = new THREE.EdgesGeometry(parentMesh.geometry);
+      const lineMat = new THREE.LineBasicMaterial({ color: 0xff3333 });
+      const line = new THREE.LineSegments(edges, lineMat);
+      line.position.copy(parentMesh.position.clone().sub(parentMesh.position));
+      parentMesh.add(line);
+    }
+
+    // 2) Capot supérieur semi-transparent rouge
+    const topPlaneGeom = new THREE.PlaneGeometry(size.x, size.z);
+    const topPlaneMat = new THREE.MeshBasicMaterial({ color: 0xff6b6b, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
+    const topPlane = new THREE.Mesh(topPlaneGeom, topPlaneMat);
+    topPlane.rotation.x = -Math.PI / 2;
+    topPlane.position.set((box.min.x + box.max.x) / 2 - parentMesh.position.x,
+                          box.max.y - parentMesh.position.y + 0.1,
+                          (box.min.z + box.max.z) / 2 - parentMesh.position.z);
+    parentMesh.add(topPlane);
+
+    // 3) Étiquette billboard "FRAGILE"
+    const label = this.createBillboardLabel('FRAGILE', '#b91c1c', '#ffffff');
+    const scaleFactor = Math.max(20, Math.min(80, Math.min(size.x, size.z) * 0.4));
+    label.scale.setScalar(scaleFactor);
+    label.position.set((box.min.x + box.max.x) / 2 - parentMesh.position.x,
+                       box.max.y - parentMesh.position.y + scaleFactor * 0.02 + 6,
+                       (box.min.z + box.max.z) / 2 - parentMesh.position.z);
+    parentMesh.add(label);
+  }
+
+  /**
    * Met en évidence un item et centre la caméra dessus
    */
   public focusOnItem(item: VisualizationItem): void {
@@ -654,42 +691,6 @@ export class ThreeDRendererService {
     }
   }
 
-  /**
-   * Ajoute un marqueur fragile
-   */
-  private addFragileMarker(parentMesh: any): void {
-    const box = new THREE.Box3().setFromObject(parentMesh);
-    const size = new THREE.Vector3();
-    box.getSize(size);
-
-    // 1) Liseré rouge (outline) pour rendre l'objet bien visible
-    if (parentMesh.geometry) {
-      const edges = new THREE.EdgesGeometry(parentMesh.geometry);
-      const lineMat = new THREE.LineBasicMaterial({ color: 0xff3333 });
-      const line = new THREE.LineSegments(edges, lineMat);
-      line.position.copy(parentMesh.position.clone().sub(parentMesh.position));
-      parentMesh.add(line);
-    }
-
-    // 2) Capot supérieur semi-transparent rouge
-    const topPlaneGeom = new THREE.PlaneGeometry(size.x, size.z);
-    const topPlaneMat = new THREE.MeshBasicMaterial({ color: 0xff6b6b, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
-    const topPlane = new THREE.Mesh(topPlaneGeom, topPlaneMat);
-    topPlane.rotation.x = -Math.PI / 2;
-    topPlane.position.set((box.min.x + box.max.x) / 2 - parentMesh.position.x,
-                          box.max.y - parentMesh.position.y + 0.1,
-                          (box.min.z + box.max.z) / 2 - parentMesh.position.z);
-    parentMesh.add(topPlane);
-
-    // 3) Étiquette billboard "FRAGILE"
-    const label = this.createBillboardLabel('FRAGILE', '#b91c1c', '#ffffff');
-    const scaleFactor = Math.max(20, Math.min(80, Math.min(size.x, size.z) * 0.4));
-    label.scale.setScalar(scaleFactor);
-    label.position.set((box.min.x + box.max.x) / 2 - parentMesh.position.x,
-                       box.max.y - parentMesh.position.y + scaleFactor * 0.02 + 6,
-                       (box.min.z + box.max.z) / 2 - parentMesh.position.z);
-    parentMesh.add(label);
-  }
 
   /**
    * Ajoute un marqueur visuel pour les colis non gerbables (étiquette seulement)
