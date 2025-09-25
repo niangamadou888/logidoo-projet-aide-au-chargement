@@ -2,8 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { BehaviorSubject, Observable, tap, of } from 'rxjs';
 import { User, AuthResponse } from '../models/user.model';
-import { Router } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, Location } from '@angular/common';
 import { ConfigService } from './config.service';
 
 @Injectable({
@@ -19,12 +18,19 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private router: Router,
     private config: ConfigService,
+    private location: Location,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     this.initAuthFromStorage();
+  }
+
+  private navigate(path: string): void {
+    if (this.isBrowser) {
+      this.location.go(path);
+      window.location.reload();
+    }
   }
   
   // Initialize authentication state from localStorage on app startup
@@ -48,7 +54,7 @@ export class AuthService {
           this.setSession(response.token, response.user);
           
           // Navigate to user dashboard after registration (new users are always regular users)
-          this.router.navigate(['/dashboard/user']);
+          this.navigate('/dashboard/user');
         }
       })
     );
@@ -64,10 +70,10 @@ export class AuthService {
           this.setSession(response.token, response.user);
           
           // Navigate to the appropriate dashboard based on user role
-          const dashboardUrl = response.user.role === 'admin' 
-            ? '/dashboard/admin' 
+          const dashboardUrl = response.user.role === 'admin'
+            ? '/dashboard/admin'
             : '/dashboard/user';
-          this.router.navigate([dashboardUrl]);
+          this.navigate(dashboardUrl);
         }
       })
     );
@@ -92,7 +98,7 @@ export class AuthService {
     this.currentUserSubject.next(null);
     
     // Navigate to login page
-    this.router.navigate(['/auth/login']);
+    this.navigate('/auth/login');
   }
 
   isAuthenticated(): boolean {

@@ -1,4 +1,4 @@
-import { ApplicationConfig,APP_INITIALIZER ,importProvidersFrom, provideZoneChangeDetection, ErrorHandler } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection, ErrorHandler } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -16,18 +16,12 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
-import { AuthService } from './core/services/auth.service';
 import { GlobalErrorHandlerService } from './core/services/error-handler.service';
 // Removed ngx-logger integration to avoid missing dependency issues
 import {MatStepperModule} from '@angular/material/stepper';
 
-function initializeAuth(authService: AuthService) {
-  return () => {
-    return new Promise((resolve) => {
-      resolve(true);
-    });
-  };
-}
+// Remove APP_INITIALIZER since it's not doing anything meaningful
+// and was contributing to the circular dependency
 
 
 
@@ -66,12 +60,6 @@ export const appConfig: ApplicationConfig = {
     {
       provide: ErrorHandler,
       useClass: GlobalErrorHandlerService
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeAuth,
-      deps: [AuthService],
-      multi: true
     },
     DatePipe
   ]
