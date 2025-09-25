@@ -104,91 +104,131 @@
 
   <!-- Step 2: Ajout de Colis -->
   <div class="step-content" *ngIf="currentStep === 2">
-    <div class="compact-layout">
-      <!-- Formulaire d'ajout de colis compact -->
-      <div class="colis-form-card-compact">
-        <div class="form-header-compact">
-          <h3><span class="icon">📦</span> Ajouter un colis</h3>
-          <p class="subtitle">Saisissez les informations de votre colis</p>
-        </div>
-
-        <form [formGroup]="colisForm" class="ultra-compact-form">
-          <!-- Ligne 1: Type, Quantité, Fragile, Empilable, Couleur -->
-          <div class="form-row-primary">
-            <div class="form-group-mini">
-              <label>Type</label>
-              <input type="text" formControlName="type" placeholder="Carton, Palette..." class="form-control-mini">
-            </div>
-            <div class="form-group-mini quantity">
-              <label>Qté</label>
-              <input type="number" formControlName="quantite" class="form-control-mini" min="1" value="1">
-            </div>
-            <label class="checkbox-mini">
-              <input type="checkbox" formControlName="fragile" />
-              <span class="check-text">Fragile</span>
-            </label>
-            <label class="checkbox-mini">
-              <input type="checkbox" formControlName="gerbable" />
-              <span class="check-text">Empilable</span>
-            </label>
-            <div class="color-mini">
-              <label>Couleur</label>
-              <input type="color" formControlName="couleur" class="color-input-mini">
-            </div>
+    <!-- Layout en grid : Ajout manuel et Import Excel côte à côte -->
+    <div class="dual-input-grid" *ngIf="showInputForms">
+      <!-- Section Ajout Manuel -->
+      <div class="manual-section">
+        <div class="colis-form-card-compact">
+          <div class="form-header-compact">
+            <h3><span class="icon">📦</span> Ajout manuel</h3>
+            <p class="subtitle">Saisissez les informations de votre colis</p>
           </div>
 
-          <!-- Ligne 2: Dimensions -->
-          <div class="form-row-secondary">
-            <label class="dimensions-label">Dimensions (cm) & Poids (kg)</label>
-            <div class="dimensions-inputs">
-              <input type="number" formControlName="longueur" placeholder="Longueur" class="dimension-input">
-              <span class="separator">×</span>
-              <input type="number" formControlName="largeur" placeholder="Largeur" class="dimension-input">
-              <span class="separator">×</span>
-              <input type="number" formControlName="hauteur" placeholder="Hauteur" class="dimension-input">
-              <span class="separator">|</span>
-              <input type="number" step="0.1" formControlName="poids" placeholder="Poids" class="dimension-input weight">
+          <form [formGroup]="colisForm" class="ultra-compact-form">
+            <!-- Ligne 1: Type, Quantité, Fragile, Empilable, Couleur -->
+            <div class="form-row-primary">
+              <div class="form-group-mini">
+                <label>Type</label>
+                <input type="text" formControlName="type" placeholder="Carton, Palette..." class="form-control-mini">
+              </div>
+              <div class="form-group-mini quantity">
+                <label>Qté</label>
+                <input type="number" formControlName="quantite" class="form-control-mini" min="1" value="1">
+              </div>
+              <label class="checkbox-mini">
+                <input type="checkbox" formControlName="fragile" />
+                <span class="check-text">Fragile</span>
+              </label>
+              <label class="checkbox-mini">
+                <input type="checkbox" formControlName="gerbable" />
+                <span class="check-text">Empilable</span>
+              </label>
+              <div class="color-mini">
+                <label>Couleur</label>
+                <input type="color" formControlName="couleur" class="color-input-mini">
+              </div>
             </div>
-          </div>
 
-          <!-- Bouton d'ajout -->
-          <button type="button" (click)="ajouterColis()" class="btn-add-compact" [disabled]="!colisForm.valid">
-            <span class="plus-icon">+</span>
-            Ajouter
-          </button>
-        </form>
+            <!-- Ligne 2: Dimensions -->
+            <div class="form-row-secondary">
+              <label class="dimensions-label">Dimensions (cm) & Poids (kg)</label>
+              <div class="dimensions-inputs">
+                <input type="number" formControlName="longueur" placeholder="Longueur" class="dimension-input">
+                <span class="separator">×</span>
+                <input type="number" formControlName="largeur" placeholder="Largeur" class="dimension-input">
+                <span class="separator">×</span>
+                <input type="number" formControlName="hauteur" placeholder="Hauteur" class="dimension-input">
+                <span class="separator">|</span>
+                <input type="number" step="0.1" formControlName="poids" placeholder="Poids" class="dimension-input weight">
+              </div>
+            </div>
 
-        <!-- Section destinataire repliable (plus discrète) -->
-        <div class="collapsible-mini" *ngIf="!showDestinataireForm">
-          <button type="button" class="toggle-mini" (click)="showDestinataireForm = true">
-            + Infos destinataire (optionnel)
-          </button>
-        </div>
-        
-        <div class="destinataire-section" *ngIf="showDestinataireForm">
-          <div class="destinataire-header">
-            <span>Informations destinataire</span>
-            <button type="button" class="close-mini" (click)="showDestinataireForm = false">×</button>
+            <!-- Bouton d'ajout -->
+            <button type="button" (click)="ajouterColis()" class="btn-add-compact" [disabled]="!colisForm.valid">
+              <span class="plus-icon">+</span>
+              Ajouter
+            </button>
+          </form>
+
+          <!-- Section destinataire repliable (plus discrète) -->
+          <div class="collapsible-mini" *ngIf="!showDestinataireForm">
+            <button type="button" class="toggle-mini" (click)="showDestinataireForm = true">
+              + Infos destinataire (optionnel)
+            </button>
           </div>
-          <div class="destinataire-form">
-            <input type="text" formControlName="nomDestinataire" placeholder="Nom" class="form-control-mini">
-            <input type="text" formControlName="adresse" placeholder="Adresse complète" class="form-control-mini">
-            <input type="tel" formControlName="telephone" placeholder="Téléphone" class="form-control-mini">
+          
+          <div class="destinataire-section" *ngIf="showDestinataireForm">
+            <div class="destinataire-header">
+              <span>Informations destinataire</span>
+              <button type="button" class="close-mini" (click)="showDestinataireForm = false">×</button>
+            </div>
+            <div class="destinataire-form">
+              <input type="text" formControlName="nomDestinataire" placeholder="Nom" class="form-control-mini">
+              <input type="text" formControlName="adresse" placeholder="Adresse complète" class="form-control-mini">
+              <input type="tel" formControlName="telephone" placeholder="Téléphone" class="form-control-mini">
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Import Excel compact -->
-      <div class="import-card-mini">
-        <input type="file" #fileInput accept=".xlsx,.xls" (change)="importerDepuisExcel($event)" class="file-input" id="excel-file">
-        <label for="excel-file" class="import-label">
-          📊 Import Excel
-        </label>
-        <label for="excel-file" class="btn-import">
-          Choisir un fichier
-        </label>
-        <button class="btn-template" (click)="telechargerModele()">
-          Télécharger modèle
+      <!-- Section Import Excel -->
+      <div class="excel-section">
+        <div class="import-card-enhanced">
+          <div class="form-header-compact">
+            <h3><span class="icon">📊</span> Import Excel</h3>
+            <p class="subtitle">Importez plusieurs colis en une fois</p>
+          </div>
+          
+          <div class="import-zone">
+            <input type="file" #fileInput accept=".xlsx,.xls" (change)="importerDepuisExcel($event)" class="file-input" id="excel-file">
+            
+            <div class="drop-area">
+              <div class="excel-icon">📄</div>
+              <p class="drop-text">Glissez votre fichier Excel ici<br>ou cliquez pour choisir</p>
+            </div>
+            
+            <div class="import-actions">
+              <label for="excel-file" class="btn-uniform btn-primary">
+                <span class="btn-icon">📁</span>
+                Choisir un fichier
+              </label>
+              <button class="btn-uniform btn-secondary" (click)="telechargerModele()">
+                <span class="btn-icon">⬇️</span>
+                Télécharger modèle
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions après ajout de colis (manuel ou import) -->
+    <div class="post-add-actions" *ngIf="listeColis.length > 0">
+      <div class="main-action">
+        <button class="btn-contenant-primary" (click)="nextStep()" [disabled]="!canProceedFromStep2()">
+          <span class="btn-icon">🧱</span>
+          Choix de contenant
+        </button>
+      </div>
+      
+      <div class="secondary-actions">
+        <button class="btn-secondary-action" (click)="viderTousLesColis()">
+          <span class="btn-icon">🗑️</span>
+          Vider tout
+        </button>
+        <button class="btn-secondary-action" (click)="ajouterAutresColis()">
+          <span class="btn-icon">➕</span>
+          Ajouter un autre colis
         </button>
       </div>
     </div>
@@ -336,11 +376,13 @@
       </div>
     </div>
 
-    <div class="step-actions">
+    <div class="step-actions" *ngIf="listeColis.length === 0">
       <button class="btn-secondary" (click)="prevStep()">Précédent</button>
-      <button class="btn-primary" (click)="nextStep()" [disabled]="!canProceedFromStep2()">
-        Suivant : Choisir un contenant
-      </button>
+      <p class="no-colis-message">Ajoutez au moins un colis pour continuer</p>
+    </div>
+    
+    <div class="step-actions" *ngIf="listeColis.length > 0">
+      <button class="btn-secondary" (click)="prevStep()">Précédent</button>
     </div>
   </div>
 

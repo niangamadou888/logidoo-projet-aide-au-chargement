@@ -56,6 +56,9 @@ export class SimulationComponent implements OnInit {
   totalSteps = 6;
   showDestinataireForm = false;
   
+  // Variables pour masquer/afficher les formulaires d'ajout
+  showInputForms = true; // Affiche les formulaires au début
+  
   private isBrowser = true;
 
   constructor(
@@ -111,6 +114,10 @@ export class SimulationComponent implements OnInit {
             couleur: c.couleur || this.getDistinctRandomColor()
           }));
           this.listeColis = this.listeColis.concat(enriched);
+          
+          // Masquer les formulaires d'entrée après l'import
+          this.showInputForms = false;
+          
           this.snackBar.open('Colis importés avec succès', 'OK', { duration: 3000 });
 
           if (this.selectionAutoOptimal && this.listeColis.length > 0) {
@@ -316,6 +323,9 @@ export class SimulationComponent implements OnInit {
 
         // Ajouter à la liste des colis
         this.listeColis.push(nouveauColis);
+        
+        // Masquer les formulaires d'entrée après l'ajout du premier colis
+        this.showInputForms = false;
 
         // Réinitialiser le formulaire avec les valeurs par défaut
         this.colisForm.reset({
@@ -1126,5 +1136,28 @@ get pagedColis(): Colis[] {
     });
     
     return checkList;
+  }
+
+  // Méthode pour vider tous les colis
+  viderTousLesColis(): void {
+    this.listeColis = [];
+    // Réafficher les formulaires d'entrée
+    this.showInputForms = true;
+    
+    this.snackBar.open('Tous les colis ont été supprimés', 'Fermer', {
+      duration: 3000,
+      panelClass: ['success-snack']
+    });
+  }
+
+  // Méthode pour permettre l'ajout d'autres colis (retour au mode manuel)
+  ajouterAutresColis(): void {
+    // Réafficher les formulaires d'entrée
+    this.showInputForms = true;
+    
+    this.snackBar.open('Vous pouvez maintenant ajouter d\'autres colis', 'Fermer', {
+      duration: 2000,
+      panelClass: ['info-snack']
+    });
   }
 }
