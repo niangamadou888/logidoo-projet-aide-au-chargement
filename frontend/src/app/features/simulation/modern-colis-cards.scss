@@ -1,0 +1,587 @@
+// ===== COLIS CARDS MODERNES AVEC PAGINATION =====
+
+.modern-colis-container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  margin-top: 2rem;
+  border: 1px solid var(--logidoo-gray-100);
+}
+
+.modern-colis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--logidoo-gray-800);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    
+    .package-icon {
+      font-size: 1.8rem;
+      color: var(--logidoo-primary);
+    }
+    
+    .count-badge {
+      background: linear-gradient(135deg, var(--logidoo-primary), #1e40af);
+      color: white;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-left: 0.5rem;
+    }
+  }
+  
+  .view-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    
+    .view-toggle {
+      display: flex;
+      background: var(--logidoo-gray-100);
+      border-radius: 8px;
+      padding: 0.25rem;
+      
+      .view-btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        background: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--logidoo-gray-600);
+        font-weight: 500;
+        
+        &.active {
+          background: white;
+          color: var(--logidoo-primary);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        &:hover:not(.active) {
+          color: var(--logidoo-gray-800);
+        }
+      }
+    }
+    
+    .items-per-page {
+      select {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--logidoo-gray-300);
+        border-radius: 8px;
+        font-size: 0.875rem;
+        background: white;
+        cursor: pointer;
+        
+        &:focus {
+          outline: none;
+          border-color: var(--logidoo-primary);
+          box-shadow: 0 0 0 2px rgba(9, 43, 139, 0.1);
+        }
+      }
+    }
+  }
+}
+
+// Grille de cartes modernes
+.modern-colis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+  
+  // Vue liste compacte
+  &.list-view {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    
+    .modern-colis-card {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      
+      .card-visual {
+        width: 60px;
+        height: 60px;
+        margin-right: 1.5rem;
+      }
+      
+      .card-content {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        .left-content {
+          display: flex;
+          gap: 2rem;
+        }
+        
+        .card-info {
+          margin-bottom: 0;
+        }
+        
+        .card-actions {
+          margin-left: auto;
+        }
+      }
+    }
+  }
+}
+
+.modern-colis-card {
+  background: white;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    border-color: var(--logidoo-gray-200);
+  }
+  
+  // Indicateur de couleur en top
+  .color-indicator {
+    height: 4px;
+    background: var(--colis-color, var(--logidoo-primary));
+    width: 100%;
+  }
+  
+  .card-header {
+    padding: 1.5rem;
+    padding-bottom: 1rem;
+    
+    .card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      
+      .card-number {
+        background: var(--logidoo-primary);
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.875rem;
+      }
+      
+      .card-actions {
+        display: flex;
+        gap: 0.5rem;
+        
+        .color-picker-btn {
+          width: 36px;
+          height: 36px;
+          border-radius: 8px;
+          border: 2px solid var(--logidoo-gray-200);
+          cursor: pointer;
+          position: relative;
+          overflow: hidden;
+          background: var(--colis-color, #3b82f6);
+          transition: all 0.2s ease;
+          
+          &:hover {
+            transform: scale(1.05);
+            border-color: var(--logidoo-gray-300);
+          }
+          
+          input[type="color"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+          }
+        }
+        
+        .delete-btn {
+          width: 36px;
+          height: 36px;
+          border-radius: 8px;
+          border: none;
+          background: var(--logidoo-gray-100);
+          color: var(--logidoo-gray-500);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            background: #fef2f2;
+            color: #dc2626;
+            transform: scale(1.05);
+          }
+          
+          .delete-icon {
+            font-size: 1.125rem;
+          }
+        }
+      }
+    }
+    
+    .card-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--logidoo-gray-800);
+      margin-bottom: 0.5rem;
+    }
+    
+    .card-subtitle {
+      font-size: 0.875rem;
+      color: var(--logidoo-gray-500);
+      margin-bottom: 1rem;
+    }
+  }
+  
+  .card-visual {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--logidoo-gray-300);
+    
+    .package-3d {
+      font-size: 2rem;
+      color: var(--colis-color, var(--logidoo-primary));
+    }
+  }
+  
+  .card-info {
+    padding: 0 1.5rem;
+    margin-bottom: 1.5rem;
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      
+      .info-item {
+        .info-label {
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: var(--logidoo-gray-500);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 0.25rem;
+        }
+        
+        .info-value {
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: var(--logidoo-gray-800);
+        }
+      }
+    }
+    
+    .dimensions-visual {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--logidoo-gray-50);
+      border-radius: 8px;
+      text-align: center;
+      
+      .dimensions-text {
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--logidoo-primary);
+        margin-bottom: 0.5rem;
+      }
+      
+      .dimensions-note {
+        font-size: 0.75rem;
+        color: var(--logidoo-gray-500);
+      }
+    }
+  }
+  
+  .card-recipient {
+    padding: 0 1.5rem 1.5rem;
+    
+    .recipient-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--logidoo-gray-700);
+      
+      .recipient-icon {
+        color: var(--logidoo-primary);
+      }
+    }
+    
+    .recipient-details {
+      background: var(--logidoo-gray-50);
+      padding: 0.75rem;
+      border-radius: 8px;
+      border-left: 3px solid var(--logidoo-primary);
+      
+      .recipient-line {
+        font-size: 0.8rem;
+        color: var(--logidoo-gray-700);
+        margin-bottom: 0.25rem;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        .label {
+          font-weight: 600;
+          color: var(--logidoo-gray-800);
+        }
+      }
+    }
+  }
+}
+
+// Pagination moderne
+.modern-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--logidoo-gray-200);
+  margin-top: 1rem;
+  
+  .pagination-info {
+    font-size: 0.875rem;
+    color: var(--logidoo-gray-600);
+    
+    .highlight {
+      font-weight: 600;
+      color: var(--logidoo-gray-800);
+    }
+  }
+  
+  .pagination-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    .nav-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 2px solid #d1d5db;
+      background: white;
+      color: #374151;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      
+      &:hover:not(:disabled) {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      }
+      
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #f3f4f6;
+        color: #9ca3af;
+        border-color: #e5e7eb;
+      }
+      
+      &.page-number {
+        font-size: 0.875rem;
+        font-weight: 600;
+        
+        &.active {
+          background: linear-gradient(135deg, #3b82f6, #1e40af);
+          color: white;
+          border-color: #3b82f6;
+          font-weight: 700;
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+          transform: translateY(-1px) scale(1.1);
+          z-index: 1;
+          position: relative;
+        }
+      }
+    }
+    
+    .nav-separator {
+      padding: 0 0.5rem;
+      color: var(--logidoo-gray-400);
+    }
+  }
+}
+
+// Vue vide élégante
+.empty-colis-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  
+  .empty-icon {
+    font-size: 4rem;
+    color: var(--logidoo-gray-300);
+    margin-bottom: 1rem;
+  }
+  
+  .empty-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--logidoo-gray-600);
+    margin-bottom: 0.5rem;
+  }
+  
+  .empty-subtitle {
+    font-size: 0.875rem;
+    color: var(--logidoo-gray-500);
+  }
+}
+
+// Responsive
+@media (min-width: 1200px) {
+  .modern-colis-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .modern-colis-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .modern-colis-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+  
+  .modern-colis-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+    
+    .view-controls {
+      justify-content: space-between;
+    }
+  }
+  
+  .modern-pagination {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+}
+
+// Action rapide vers visualisation
+.quick-viz-action {
+  margin-top: 2rem;
+  padding: 0 2rem;
+  
+  .quick-viz-container {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--logidoo-gray-200);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    
+    .quick-viz-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      
+      .viz-icon {
+        font-size: 2rem;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+      }
+      
+      .viz-text {
+        h4 {
+          font-size: 1.125rem;
+          font-weight: 700;
+          color: var(--logidoo-gray-800);
+          margin: 0 0 0.25rem 0;
+        }
+        
+        p {
+          font-size: 0.875rem;
+          color: var(--logidoo-gray-600);
+          margin: 0;
+        }
+      }
+    }
+    
+    .btn-quick-viz {
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 1.25rem 2.5rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 6px 18px rgba(59, 130, 246, 0.4);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        
+        .btn-arrow {
+          transform: translateX(6px);
+        }
+      }
+      
+      &:active {
+        transform: translateY(-1px);
+      }
+      
+      .btn-text {
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      }
+      
+      .btn-arrow {
+        font-size: 1.25rem;
+        color: white;
+        transition: transform 0.3s ease;
+        transition: transform 0.3s ease;
+      }
+    }
+  }
+}

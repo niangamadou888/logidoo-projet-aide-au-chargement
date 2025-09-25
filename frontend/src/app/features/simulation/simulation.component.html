@@ -23,7 +23,22 @@
     <h1>Aide au Chargement</h1>
   </div>
 
-  <!-- Stepper Navigation -->
+  <!-- Ste            <div class="feature-item">
+              <span class="feature-icon">📊</span>
+              <span>Mesures et statistiques</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-actions">
+      <button class="btn-secondary" (click)="prevStep()">Précédent</button>
+      <button class="btn-primary" (click)="nouvelleSimulation()">
+        Nouvelle simulation
+      </button>
+    </div>
+  </div>-->
   <div class="stepper-container">
     <div class="stepper-steps" [ngClass]="'step-' + currentStep">
       <div class="step" [class.active]="currentStep === 1" [class.completed]="currentStep > 1" (click)="goToStep(1)">
@@ -58,13 +73,6 @@
         <div class="step-circle">5</div>
         <span class="step-label">Visualisation</span>
       </div>
-
-      <div class="step" [class.active]="currentStep === 6"
-           (click)="currentStep > 4 || simulationResultats ? goToStep(6) : null"
-           [class.disabled]="!simulationResultats">
-        <div class="step-circle">6</div>
-        <span class="step-label">Export</span>
-      </div>
     </div>
   </div>
 
@@ -97,107 +105,85 @@
   <!-- Step 2: Ajout de Colis -->
   <div class="step-content" *ngIf="currentStep === 2">
     <div class="compact-layout">
-      <!-- Formulaire d'ajout de colis optimisé -->
-      <div class="colis-form-card">
-        <div class="form-header">
-          <h2>
-            <span class="icon">📦</span>
-            Ajouter un colis
-          </h2>
+      <!-- Formulaire d'ajout de colis compact -->
+      <div class="colis-form-card-compact">
+        <div class="form-header-compact">
+          <h3><span class="icon">📦</span> Ajouter un colis</h3>
+          <p class="subtitle">Saisissez les informations de votre colis</p>
         </div>
 
-        <form [formGroup]="colisForm" class="compact-form">
-          <!-- Ligne 1: Type et Quantité -->
-          <div class="form-row-compact">
-            <div class="form-group flex-2">
-              <label>Type de colis *</label>
-              <input type="text" formControlName="type" placeholder="Ex: Carton, Palette..." class="form-control">
+        <form [formGroup]="colisForm" class="ultra-compact-form">
+          <!-- Ligne 1: Type, Quantité, Fragile, Empilable, Couleur -->
+          <div class="form-row-primary">
+            <div class="form-group-mini">
+              <label>Type</label>
+              <input type="text" formControlName="type" placeholder="Carton, Palette..." class="form-control-mini">
             </div>
-            <div class="form-group flex-1">
-              <label>Quantité *</label>
-              <input type="number" formControlName="quantite" class="form-control" min="1">
+            <div class="form-group-mini quantity">
+              <label>Qté</label>
+              <input type="number" formControlName="quantite" class="form-control-mini" min="1" value="1">
+            </div>
+            <label class="checkbox-mini">
+              <input type="checkbox" formControlName="fragile" />
+              <span class="check-text">Fragile</span>
+            </label>
+            <label class="checkbox-mini">
+              <input type="checkbox" formControlName="gerbable" />
+              <span class="check-text">Empilable</span>
+            </label>
+            <div class="color-mini">
+              <label>Couleur</label>
+              <input type="color" formControlName="couleur" class="color-input-mini">
             </div>
           </div>
 
           <!-- Ligne 2: Dimensions -->
-          <div class="dimensions-group">
-            <label class="group-label">Dimensions (cm) *</label>
-            <div class="form-row-compact">
-              <div class="form-group">
-                <input type="number" formControlName="longueur" placeholder="L" class="form-control">
-                <small>Longueur</small>
-              </div>
-              <div class="form-group">
-                <input type="number" formControlName="largeur" placeholder="l" class="form-control">
-                <small>Largeur</small>
-              </div>
-              <div class="form-group">
-                <input type="number" formControlName="hauteur" placeholder="H" class="form-control">
-                <small>Hauteur</small>
-              </div>
-              <div class="form-group">
-                <input type="number" step="0.1" formControlName="poids" placeholder="Poids" class="form-control">
-                <small>Poids (kg)</small>
-              </div>
+          <div class="form-row-secondary">
+            <label class="dimensions-label">Dimensions (cm) & Poids (kg)</label>
+            <div class="dimensions-inputs">
+              <input type="number" formControlName="longueur" placeholder="Longueur" class="dimension-input">
+              <span class="separator">×</span>
+              <input type="number" formControlName="largeur" placeholder="Largeur" class="dimension-input">
+              <span class="separator">×</span>
+              <input type="number" formControlName="hauteur" placeholder="Hauteur" class="dimension-input">
+              <span class="separator">|</span>
+              <input type="number" step="0.1" formControlName="poids" placeholder="Poids" class="dimension-input weight">
             </div>
           </div>
 
-          <!-- Ligne 3: Options -->
-          <div class="options-group">
-            <div class="checkbox-row">
-              <label class="checkbox-label">
-                <input type="checkbox" formControlName="fragile" />
-                <span class="checkmark"></span>
-                Fragile
-              </label>
-              <label class="checkbox-label">
-                <input type="checkbox" formControlName="gerbable" />
-                <span class="checkmark"></span>
-                Empilable
-              </label>
-              <div class="color-picker">
-                <label>Couleur</label>
-                <input type="color" formControlName="couleur" class="color-input">
-              </div>
-            </div>
-          </div>
-
-          <!-- Section destinataire repliable -->
-          <div class="collapsible-section">
-            <button type="button" class="toggle-btn" (click)="showDestinataireForm = !showDestinataireForm">
-              <span [class.rotated]="showDestinataireForm">▶</span>
-              Informations destinataire (optionnel)
-            </button>
-            
-            <div class="collapsible-content" [class.expanded]="showDestinataireForm">
-              <div class="form-row-compact">
-                <div class="form-group">
-                  <input type="text" formControlName="nomDestinataire" placeholder="Nom" class="form-control">
-                </div>
-                <div class="form-group flex-2">
-                  <input type="text" formControlName="adresse" placeholder="Adresse" class="form-control">
-                </div>
-                <div class="form-group">
-                  <input type="tel" formControlName="telephone" placeholder="Téléphone" class="form-control">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <button type="button" (click)="ajouterColis()" class="btn-add-colis" [disabled]="!colisForm.valid">
-            <span class="btn-icon">+</span>
-            Ajouter le colis
+          <!-- Bouton d'ajout -->
+          <button type="button" (click)="ajouterColis()" class="btn-add-compact" [disabled]="!colisForm.valid">
+            <span class="plus-icon">+</span>
+            Ajouter
           </button>
         </form>
+
+        <!-- Section destinataire repliable (plus discrète) -->
+        <div class="collapsible-mini" *ngIf="!showDestinataireForm">
+          <button type="button" class="toggle-mini" (click)="showDestinataireForm = true">
+            + Infos destinataire (optionnel)
+          </button>
+        </div>
+        
+        <div class="destinataire-section" *ngIf="showDestinataireForm">
+          <div class="destinataire-header">
+            <span>Informations destinataire</span>
+            <button type="button" class="close-mini" (click)="showDestinataireForm = false">×</button>
+          </div>
+          <div class="destinataire-form">
+            <input type="text" formControlName="nomDestinataire" placeholder="Nom" class="form-control-mini">
+            <input type="text" formControlName="adresse" placeholder="Adresse complète" class="form-control-mini">
+            <input type="tel" formControlName="telephone" placeholder="Téléphone" class="form-control-mini">
+          </div>
+        </div>
       </div>
 
       <!-- Import Excel compact -->
-      <div class="import-card">
-        <div class="import-header">
-          <span class="icon">�</span>
-          <span>Import Excel</span>
-        </div>
+      <div class="import-card-mini">
         <input type="file" #fileInput accept=".xlsx,.xls" (change)="importerDepuisExcel($event)" class="file-input" id="excel-file">
+        <label for="excel-file" class="import-label">
+          📊 Import Excel
+        </label>
         <label for="excel-file" class="btn-import">
           Choisir un fichier
         </label>
@@ -207,100 +193,144 @@
       </div>
     </div>
 
-    <!-- Liste des colis ajoutés -->
-    <div class="colis-list" *ngIf="listeColis.length > 0">
-      <div class="colis-header-section">
-        <h3>Colis ajoutés ({{ calculerNombreColisTotal() }})</h3>
-        <div class="pagination-controls-top" *ngIf="listeColis.length > 5">
-          <select [(ngModel)]="colisPerPage" (change)="onPageSizeChange()" class="page-size-selector">
-            <option value="5">5 par page</option>
-            <option value="10">10 par page</option>
-            <option value="20">20 par page</option>
-            <option value="50">Tout afficher</option>
-          </select>
+    <!-- Liste moderne des colis ajoutés -->
+    <div class="modern-colis-container" *ngIf="listeColis.length > 0">
+      <div class="modern-colis-header">
+        <h3>
+          <span class="package-icon">📦</span>
+          Colis ajoutés
+          <span class="count-badge">{{ listeColis.length }}</span>
+        </h3>
+        
+        <div class="view-controls">
+          <div class="view-toggle">
+            <button class="view-btn" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'">
+              ⊞ Grille
+            </button>
+            <button class="view-btn" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
+              ☰ Liste
+            </button>
+          </div>
+          
+          <div class="items-per-page" *ngIf="listeColis.length > 6">
+            <select [(ngModel)]="colisPerPage" (change)="onPageSizeChange()">
+              <option value="6">6 par page</option>
+              <option value="12">12 par page</option>
+              <option value="24">24 par page</option>
+              <option value="50">Tout afficher</option>
+            </select>
+          </div>
         </div>
       </div>
       
-      <div class="colis-grid">
-        <div *ngFor="let colis of getPaginatedColis(); let i = index" class="colis-item">
-          <div class="colis-header">
-            <div class="colis-color" [style.background-color]="colis.couleur"></div>
-            <span class="colis-type">{{ colis.type }}</span>
-            <span class="colis-quantity">x{{ colis.quantite }}</span>
-            <button class="delete-btn" (click)="supprimerColis(getCurrentPageIndex() * colisPerPage + i)">×</button>
+      <div class="modern-colis-grid" [class.list-view]="viewMode === 'list'">
+        <div *ngFor="let colis of getPaginatedColis(); let i = index" 
+             class="modern-colis-card"
+             [style.--colis-color]="colis.couleur">
+          
+          <div class="color-indicator"></div>
+          
+          <div class="card-header">
+            <div class="card-top-row">
+              <div class="card-number">{{ getCurrentPageIndex() * colisPerPage + i + 1 }}</div>
+              
+              <div class="card-actions">
+                <div class="color-picker-btn" [style.background]="colis.couleur">
+                  <input type="color" [value]="colis.couleur" 
+                         (change)="updateColisCouleur(getCurrentPageIndex() * colisPerPage + i, $any($event.target).value)">
+                </div>
+                <button class="delete-btn" (click)="supprimerColis(getCurrentPageIndex() * colisPerPage + i)">
+                  <span class="delete-icon">🗑️</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class="card-title">{{ colis.type }}</div>
+            <div class="card-subtitle" *ngIf="colis.quantite > 1">
+              Quantité: {{ colis.quantite }} · {{ colis.gerbable ? 'Empilable' : 'Non empilable' }} · {{ colis.fragile ? 'Fragile' : 'Standard' }}
+            </div>
           </div>
           
-          <div class="colis-details">
-            <div class="dimension-grid">
-              <div class="dimension-item">
-                <span class="label">L:</span>
-                <span class="value">{{ colis.longueur }}cm</span>
+          <div class="card-visual">
+            <div class="package-3d">📦</div>
+          </div>
+          
+          <div class="card-info">
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label">Poids</div>
+                <div class="info-value">{{ colis.poids }} kg</div>
               </div>
-              <div class="dimension-item">
-                <span class="label">l:</span>
-                <span class="value">{{ colis.largeur }}cm</span>
-              </div>
-              <div class="dimension-item">
-                <span class="label">H:</span>
-                <span class="value">{{ colis.hauteur }}cm</span>
-              </div>
-              <div class="dimension-item">
-                <span class="label">Poids:</span>
-                <span class="value">{{ colis.poids }}kg</span>
+              <div class="info-item">
+                <div class="info-label">Volume</div>
+                <div class="info-value">{{ (colis.longueur * colis.largeur * colis.hauteur / 1000000).toFixed(3) }} m³</div>
               </div>
             </div>
             
-            <div class="colis-properties">
-              <span *ngIf="colis.fragile" class="property-badge fragile">Fragile</span>
-              <span *ngIf="colis.gerbable" class="property-badge gerbable">Empilable</span>
-              <span *ngIf="!colis.gerbable" class="property-badge non-gerbable">Non empilable</span>
+            <div class="dimensions-visual">
+              <div class="dimensions-text">
+                {{ colis.longueur }}×{{ colis.largeur }}×{{ colis.hauteur }} cm
+              </div>
+              <div class="dimensions-note">Longueur × Largeur × Hauteur</div>
             </div>
-            
-            <div class="colis-actions">
-              <label class="color-input">
-                Couleur:
-                <input type="color" [value]="colis.couleur" 
-                       (change)="updateColisCouleur(getCurrentPageIndex() * colisPerPage + i, $any($event.target).value)">
-              </label>
-              <label class="checkbox-input">
-                <input type="checkbox" [checked]="colis.fragile" (change)="toggleFragile(getCurrentPageIndex() * colisPerPage + i)"> Fragile
-              </label>
-              <label class="checkbox-input">
-                <input type="checkbox" [checked]="colis.gerbable" (change)="toggleGerbable(getCurrentPageIndex() * colisPerPage + i)"> Empilable
-              </label>
+          </div>
+          
+          <div class="card-recipient" *ngIf="colis.nomDestinataire || colis.adresse || colis.telephone">
+            <div class="recipient-header">
+              <span class="recipient-icon">👤</span>
+              Destinataire
+            </div>
+            <div class="recipient-details">
+              <div class="recipient-line" *ngIf="colis.nomDestinataire">
+                <span class="label">Nom:</span> {{ colis.nomDestinataire }}
+              </div>
+              <div class="recipient-line" *ngIf="colis.adresse">
+                <span class="label">Adresse:</span> {{ colis.adresse }}
+              </div>
+              <div class="recipient-line" *ngIf="colis.telephone">
+                <span class="label">Tél:</span> {{ colis.telephone }}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Contrôles de pagination en bas -->
-      <div class="pagination-controls-bottom" *ngIf="getTotalPages() > 1">
+      <!-- Pagination moderne -->
+      <div class="modern-pagination" *ngIf="getTotalPages() > 1">
         <div class="pagination-info">
-          Affichage {{ getStartIndex() + 1 }} - {{ getEndIndex() }} sur {{ listeColis.length }} colis
+          Affichage <span class="highlight">{{ getStartIndex() + 1 }} - {{ getEndIndex() }}</span> 
+          sur <span class="highlight">{{ listeColis.length }}</span> colis
         </div>
-        <div class="pagination-buttons">
-          <button class="btn-pagination" [disabled]="currentPage === 0" (click)="goToFirstPage()" title="Première page">
-            ⏮️
-          </button>
-          <button class="btn-pagination" [disabled]="currentPage === 0" (click)="prevPage()" title="Page précédente">
-            ◀️
+        
+        <div class="pagination-nav">
+          <button class="nav-btn" [disabled]="currentPage === 0" (click)="goToFirstPage()">⏮️</button>
+          <button class="nav-btn" [disabled]="currentPage === 0" (click)="prevPage()">◀️</button>
+          
+          <button *ngFor="let page of getVisiblePageNumbers()" 
+                  class="nav-btn page-number"
+                  [class.active]="page - 1 === currentPage"
+                  (click)="goToPage(page - 1)">
+            {{ page }}
           </button>
           
-          <div class="pagination-numbers">
-            <button 
-              *ngFor="let page of getVisiblePageNumbers(); let i = index" 
-              class="btn-page-number"
-              [class.active]="page - 1 === currentPage"
-              (click)="goToPage(page - 1)">
-              {{ page }}
-            </button>
+          <button class="nav-btn" [disabled]="currentPage >= getTotalPages() - 1" (click)="nextPage()">▶️</button>
+          <button class="nav-btn" [disabled]="currentPage >= getTotalPages() - 1" (click)="goToLastPage()">⏭️</button>
+        </div>
+      </div>
+      
+      <!-- Action rapide vers la visualisation -->
+      <div class="quick-viz-action" *ngIf="listeColis.length > 0 && simulationResultats">
+        <div class="quick-viz-container">
+          <div class="quick-viz-info">
+            <span class="viz-icon">🎯</span>
+            <div class="viz-text">
+              <h4>Simulation prête !</h4>
+              <p>{{ listeColis.length }} colis • Conteneur optimal trouvé</p>
+            </div>
           </div>
-          
-          <button class="btn-pagination" [disabled]="currentPage >= getTotalPages() - 1" (click)="nextPage()" title="Page suivante">
-            ▶️
-          </button>
-          <button class="btn-pagination" [disabled]="currentPage >= getTotalPages() - 1" (click)="goToLastPage()" title="Dernière page">
-            ⏭️
+          <button class="btn-quick-viz" (click)="ouvrirVisualisationComplete()">
+            <span class="btn-text">Voir la visualisation</span>
+            <span class="btn-arrow">→</span>
           </button>
         </div>
       </div>
@@ -460,21 +490,22 @@
       </div>
     </div>
 
-    <!-- Résumé des colis -->
-    <div *ngIf="listeColis.length > 0" class="card colis-summary-card">
-      <h3>Résumé des colis ({{ calculerNombreColisTotal() }})</h3>
-      <div class="colis-summary">
-        <div class="summary-item">
-          <strong>{{ calculerNombreColisTotal() }}</strong>
-          <span>Total colis</span>
+    <!-- Résumé moderne des totaux comme dans le Figma -->
+    <div *ngIf="listeColis.length > 0" class="modern-summary-section">
+      <div class="summary-cards-horizontal">
+        <div class="summary-card-modern total-colis">
+          <div class="summary-value">{{ calculerNombreColisTotal() }}</div>
+          <div class="summary-label">Total colis</div>
         </div>
-        <div class="summary-item">
-          <strong>{{ calculerVolumeTotal() | number:'1.2-2' }} m³</strong>
-          <span>Volume total</span>
+        
+        <div class="summary-card-modern volume-total">
+          <div class="summary-value">{{ calculerVolumeTotal() | number:'1.2-2' }} m³</div>
+          <div class="summary-label">Volume total</div>
         </div>
-        <div class="summary-item">
-          <strong>{{ calculerPoidsTotal() | number:'1.2-2' }} kg</strong>
-          <span>Poids total</span>
+        
+        <div class="summary-card-modern poids-total">
+          <div class="summary-value">{{ calculerPoidsTotal() | number:'1.2-2' }} kg</div>
+          <div class="summary-label">Poids total</div>
         </div>
       </div>
     </div>
@@ -491,64 +522,227 @@
 
   <!-- Étape 4: Calcul & Simulation -->
   <div [hidden]="currentStep !== 4" class="step-content">
-    <div class="card">
-      <h3>Calcul et Simulation</h3>
-      <div *ngIf="!simulationResultats && !simulationEnCours" class="simulation-launch">
-        <p>Prêt à calculer la répartition optimale de vos {{ calculerNombreColisTotal() }} colis :</p>
-        <div class="simulation-preview">
-          <div class="preview-item">
-            <strong>Volume total :</strong> {{ calculerVolumeTotal() | number:'1.2-2' }} m³
-          </div>
-          <div class="preview-item">
-            <strong>Poids total :</strong> {{ calculerPoidsTotal() | number:'1.2-2' }} kg
-          </div>
-          <div class="preview-item" *ngIf="selectedContainerId">
-            <strong>Conteneur sélectionné :</strong> {{ getSelectedContainerInfo() }}
-          </div>
+    <div class="modern-step-4">
+      <!-- Header avec titre et description -->
+      <div class="step-header">
+        <div class="step-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#092B8B" stroke-width="2">
+            <path d="M9 12l2 2 4-4"/>
+            <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
+            <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
+            <path d="M15 6v6"/>
+            <path d="M9 18v-6"/>
+          </svg>
         </div>
-        <button (click)="lancerSimulation()" class="btn-primary btn-large" [disabled]="findingOptimal">
-          <span *ngIf="!findingOptimal">🚀 Lancer le calcul</span>
-          <span *ngIf="findingOptimal">⏳ Calcul en cours...</span>
-        </button>
-      </div>
-
-      <div *ngIf="simulationEnCours" class="simulation-progress">
-        <div class="progress-container">
-          <div class="progress-bar">
-            <div class="progress-fill"></div>
-          </div>
-          <p>Calcul de la répartition optimale en cours...</p>
+        <div class="step-title">
+          <h2>Calcul et Simulation</h2>
+          <p>Calculons la répartition optimale de vos colis</p>
         </div>
       </div>
 
+      <!-- Pré-simulation: Affichage des données avec design moderne -->
+      <div *ngIf="!simulationResultats && !simulationEnCours" class="pre-simulation-modern">
+        
+        <!-- En-tête moderne -->
+        <div class="pre-simulation-header">
+          <h3>Prêt pour le calcul</h3>
+          <p>Voici un résumé de vos données avant le calcul d'optimisation</p>
+        </div>
+
+        <!-- Cartes KPI modernes -->
+        <div class="pre-simulation-kpis">
+          <div class="kpi-card-pre primary">
+            <div class="kpi-icon-modern">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                <polyline points="3.27,6.96 12,12.01 20.73,6.96"/>
+                <line x1="12" y1="22.08" x2="12" y2="12"/>
+              </svg>
+            </div>
+            <div class="kpi-content-pre">
+              <div class="kpi-value-pre">{{ calculerNombreColisTotal() }}</div>
+              <div class="kpi-label-pre">Colis à optimiser</div>
+            </div>
+          </div>
+          
+          <div class="kpi-card-pre secondary">
+            <div class="kpi-icon-modern">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14.828 14.828a4 4 0 0 1-5.656 0"/>
+                <path d="M9 9a3 3 0 1 1 6 0c0 1-1 1-1 1H9s-1 0-1-1z"/>
+                <path d="M9 21v-7h6v7"/>
+              </svg>
+            </div>
+            <div class="kpi-content-pre">
+              <div class="kpi-value-pre">{{ calculerVolumeTotal() | number:'1.2-2' }}</div>
+              <div class="kpi-label-pre">Volume total (m³)</div>
+            </div>
+          </div>
+          
+          <div class="kpi-card-pre tertiary">
+            <div class="kpi-icon-modern">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <div class="kpi-content-pre">
+              <div class="kpi-value-pre">{{ calculerPoidsTotal() | number:'1.2-2' }}</div>
+              <div class="kpi-label-pre">Poids total (kg)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informations conteneur avec design moderne -->
+        <div *ngIf="selectedContainerId" class="selected-container-modern">
+          <div class="container-info-card">
+            <div class="container-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="3" width="22" height="16" rx="2" ry="2"/>
+                <line x1="1" y1="7" x2="23" y2="7"/>
+              </svg>
+            </div>
+            <div class="container-details">
+              <h4>Conteneur sélectionné</h4>
+              <p>{{ getSelectedContainerInfo() }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bouton de lancement modernisé -->
+        <div class="launch-simulation-modern">
+          <button (click)="lancerSimulation()" class="btn-launch-modern" [disabled]="findingOptimal">
+            <div class="btn-icon">
+              <svg *ngIf="!findingOptimal" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polygon points="10,8 16,12 10,16 10,8"/>
+              </svg>
+              <div *ngIf="findingOptimal" class="spinner-modern"></div>
+            </div>
+            <span class="btn-text">{{ findingOptimal ? 'Calcul en cours...' : 'Lancer l\'optimisation' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Calcul en cours -->
+      <div *ngIf="simulationEnCours && !simulationResultats" class="simulation-progress">
+        <div class="progress-header">
+          <h3>Calcul en cours...</h3>
+          <p>Optimisation du placement des colis</p>
+        </div>
+        <div class="progress-visual">
+          <div class="progress-ring">
+            <div class="progress-circle"></div>
+          </div>
+          <div class="progress-steps">
+            <div class="progress-step active">
+              <div class="step-dot"></div>
+              <span>Analyse des colis</span>
+            </div>
+            <div class="progress-step active">
+              <div class="step-dot"></div>
+              <span>Calcul optimal</span>
+            </div>
+            <div class="progress-step">
+              <div class="step-dot"></div>
+              <span>Finalisation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Résultats de la simulation -->
       <div *ngIf="simulationResultats" class="simulation-results">
-        <h4>✅ Résultats du calcul</h4>
-        <div class="results-grid">
-          <div class="result-card">
-            <h5>Efficacité</h5>
-            <div class="result-value">{{ (simulationResultats.stats.avgVolumeUtilization * 100) | number:'1.1-1' }}%</div>
+        <div class="results-header">
+          <div class="success-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 12l2 2 4-4"/>
+              <circle cx="12" cy="12" r="10"/>
+            </svg>
+            <span>Calcul terminé avec succès</span>
           </div>
-          <div class="result-card">
-            <h5>Volume total</h5>
-            <div class="result-value">{{ simulationResultats.stats.totalVolume | number:'1.2-2' }} m³</div>
+          <div class="execution-time" *ngIf="previewTime">
+            <span>Temps d'exécution: {{ previewTime | number:'1.0-0' }}ms</span>
           </div>
-          <div class="result-card">
-            <h5>Colis placés</h5>
-            <div class="result-value">{{ simulationResultats.stats.placedCount }}/{{ calculerNombreColisTotal() }}</div>
+        </div>
+
+        <div class="results-dashboard">
+          <!-- KPIs principaux -->
+          <div class="kpi-grid">
+            <div class="kpi-card efficiency">
+              <div class="kpi-header">
+                <span class="kpi-icon">📊</span>
+                <span class="kpi-label">Efficacité</span>
+              </div>
+              <div class="kpi-value">{{ (simulationResultats.stats.avgVolumeUtilization * 100) | number:'1.1-1' }}%</div>
+              <div class="kpi-progress">
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" [style.width]="(simulationResultats.stats.avgVolumeUtilization * 100) + '%'"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card volume">
+              <div class="kpi-header">
+                <span class="kpi-icon">📐</span>
+                <span class="kpi-label">Volume utilisé</span>
+              </div>
+              <div class="kpi-value">{{ simulationResultats.stats.totalVolume | number:'1.2-2' }} m³</div>
+              <div class="kpi-subtitle">Sur {{ calculerVolumeTotal() | number:'1.2-2' }} m³ total</div>
+            </div>
+
+            <div class="kpi-card placement">
+              <div class="kpi-header">
+                <span class="kpi-icon">📦</span>
+                <span class="kpi-label">Colis placés</span>
+              </div>
+              <div class="kpi-value">{{ simulationResultats.stats.placedCount }}<span class="kpi-total">/{{ calculerNombreColisTotal() }}</span></div>
+              <div class="kpi-progress">
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" [style.width]="((simulationResultats.stats.placedCount / calculerNombreColisTotal()) * 100) + '%'"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-card containers">
+              <div class="kpi-header">
+                <span class="kpi-icon">🚛</span>
+                <span class="kpi-label">Conteneurs</span>
+              </div>
+              <div class="kpi-value">{{ simulationResultats.stats.containersCount }}</div>
+              <div class="kpi-subtitle">Conteneur{{ simulationResultats.stats.containersCount > 1 ? 's' : '' }} utilisé{{ simulationResultats.stats.containersCount > 1 ? 's' : '' }}</div>
+            </div>
           </div>
-          <div class="result-card">
-            <h5>Conteneurs utilisés</h5>
-            <div class="result-value">{{ simulationResultats.stats.containersCount }}</div>
+
+          <!-- Détails additionnels -->
+          <div class="additional-stats" *ngIf="simulationResultats.stats.unplacedCount > 0">
+            <div class="warning-card">
+              <div class="warning-icon">⚠️</div>
+              <div class="warning-content">
+                <h4>Attention</h4>
+                <p>{{ simulationResultats.stats.unplacedCount }} colis n'ont pas pu être placés. 
+                   Considérez utiliser un conteneur plus grand ou diviser en plusieurs envois.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="step-actions">
-      <button class="btn-secondary" (click)="prevStep()">Précédent</button>
-      <button (click)="goToStep(5)" class="btn-primary" 
+      <button class="btn-secondary" (click)="prevStep()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Précédent
+      </button>
+      <button (click)="ouvrirVisualisationComplete()" class="btn-primary" 
         *ngIf="simulationResultats" [disabled]="!simulationResultats">
-        Voir la visualisation
+        Voir les schémas
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
       </button>
     </div>
   </div>
@@ -556,54 +750,110 @@
   <!-- Étape 5: Visualisation -->
   <div [hidden]="currentStep !== 5" class="step-content">
     <div class="card">
-      <h3>Visualisation 3D</h3>
-      <div *ngIf="simulationResultats" class="visualization-container">
-        <div class="visualization-header">
-          <h4>Résultats de la simulation</h4>
-          <p>Votre simulation a été calculée avec succès. Vous pouvez maintenant visualiser le placement des colis.</p>
-        </div>
+      <h3>Visualisation Interactive</h3>
+      <div *ngIf="simulationResultats" class="visualization-container-modern">
+        
+        <!-- En-tête avec informations sur la visualisation -->
+        <div class="visualization-header-modern">
+          <div class="viz-intro">
+            <h4>✨ Résultats de la simulation</h4>
+            <p>Votre simulation a été calculée avec succès. Explorez maintenant le placement optimisé de vos colis en modes 2D et 3D.</p>
+          </div>
 
-        <div class="simulation-summary-before-viz">
-          <div class="summary-grid">
-            <div class="summary-item">
-              <div class="summary-icon">📊</div>
-              <div class="summary-content">
-                <h5>Efficacité</h5>
-                <span class="summary-value">{{ (simulationResultats.stats.avgVolumeUtilization * 100) | number:'1.1-1' }}%</span>
+          <!-- Indicateur de modes disponibles -->
+          <div class="viz-modes-info">
+            <div class="mode-info">
+              <div class="mode-icon">🎯</div>
+              <div class="mode-details">
+                <h5>Visualisation 2D/3D</h5>
+                <p>Basculez entre vue planaire et tridimensionnelle</p>
               </div>
             </div>
-            <div class="summary-item">
-              <div class="summary-icon">📦</div>
-              <div class="summary-content">
-                <h5>Colis placés</h5>
-                <span class="summary-value">{{ simulationResultats.stats.placedCount }}/{{ calculerNombreColisTotal() }}</span>
-              </div>
-            </div>
-            <div class="summary-item">
-              <div class="summary-icon">🚛</div>
-              <div class="summary-content">
-                <h5>Conteneurs</h5>
-                <span class="summary-value">{{ simulationResultats.stats.containersCount }}</span>
-              </div>
-            </div>
-            <div class="summary-item">
-              <div class="summary-icon">📐</div>
-              <div class="summary-content">
-                <h5>Volume total</h5>
-                <span class="summary-value">{{ simulationResultats.stats.totalVolume | number:'1.2-2' }} m³</span>
+            <div class="mode-info">
+              <div class="mode-icon">�</div>
+              <div class="mode-details">
+                <h5>Outils d'analyse</h5>
+                <p>Mesures, rotations, et analyse détaillée</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="visualization-actions">
-          <button class="btn-primary btn-large" (click)="ouvrirVisualisationComplete()">
-            🎯 Ouvrir la visualisation 3D complète
-          </button>
-          <p class="visualization-description">
-            La visualisation complète vous donnera accès à tous les outils d'analyse 3D/2D,
-            d'export et de manipulation des vues.
-          </p>
+        <!-- Résumé des résultats avec design moderne -->
+        <div class="viz-results-summary">
+          <div class="summary-cards-viz">
+            <div class="viz-card efficiency">
+              <div class="viz-card-icon">📊</div>
+              <div class="viz-card-content">
+                <div class="viz-card-value">{{ (simulationResultats.stats.avgVolumeUtilization * 100) | number:'1.1-1' }}%</div>
+                <div class="viz-card-label">Efficacité moyenne</div>
+              </div>
+            </div>
+            
+            <div class="viz-card placement">
+              <div class="viz-card-icon">📦</div>
+              <div class="viz-card-content">
+                <div class="viz-card-value">{{ simulationResultats.stats.placedCount }}<span class="total-suffix">/{{ calculerNombreColisTotal() }}</span></div>
+                <div class="viz-card-label">Colis placés</div>
+              </div>
+            </div>
+            
+            <div class="viz-card containers">
+              <div class="viz-card-icon">🚛</div>
+              <div class="viz-card-content">
+                <div class="viz-card-value">{{ simulationResultats.stats.containersCount }}</div>
+                <div class="viz-card-label">Conteneur{{ simulationResultats.stats.containersCount > 1 ? 's' : '' }}</div>
+              </div>
+            </div>
+            
+            <div class="viz-card volume">
+              <div class="viz-card-icon">📐</div>
+              <div class="viz-card-content">
+                <div class="viz-card-value">{{ simulationResultats.stats.totalVolume | number:'1.2-2' }}</div>
+                <div class="viz-card-label">Volume (m³)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions de visualisation avec design moderne -->
+        <div class="viz-actions-modern">
+          <div class="main-action">
+            <button class="btn-viz-launch" (click)="ouvrirVisualisationComplete()">
+              <div class="btn-viz-content">
+                <div class="btn-viz-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                  </svg>
+                </div>
+                <div class="btn-viz-text">
+                  <span class="btn-title">Ouvrir la visualisation interactive</span>
+                  <span class="btn-subtitle">Modes 2D & 3D • Outils d'analyse</span>
+                </div>
+              </div>
+            </button>
+          </div>
+
+          <!-- Info sur les fonctionnalités -->
+          <div class="viz-features-info">
+            <div class="feature-item">
+              <span class="feature-icon">🎮</span>
+              <span>Navigation 3D fluide</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">📐</span>
+              <span>Vue en plan 2D détaillée</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">📊</span>
+              <span>Mesures et statistiques</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">💾</span>
+              <span>Export images & données</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

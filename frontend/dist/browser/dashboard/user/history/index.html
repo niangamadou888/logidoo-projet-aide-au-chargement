@@ -1,0 +1,548 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="utf-8">
+  <title>Module Aide au Chargement | Logidoo</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+<link rel="stylesheet" href="styles.css"><style ng-app-id="ng">
+
+[_nghost-ng-c1536842746] {
+  --bright-blue: oklch(51.01% 0.274 263.83);
+  --electric-violet: oklch(53.18% 0.28 296.97);
+  --french-violet: oklch(47.66% 0.246 305.88);
+  --vivid-pink: oklch(69.02% 0.277 332.77);
+  --hot-red: oklch(61.42% 0.238 15.34);
+  --orange-red: oklch(63.32% 0.24 31.68);
+  --gray-900: oklch(19.37% 0.006 300.98);
+  --gray-700: oklch(36.98% 0.014 302.71);
+  --gray-400: oklch(70.9% 0.015 304.04);
+  --red-to-pink-to-purple-vertical-gradient:
+    linear-gradient(
+      
+      180deg,
+      var(--orange-red) 0%,
+      var(--vivid-pink) 50%,
+      var(--electric-violet) 100% );
+  --red-to-pink-to-purple-horizontal-gradient:
+    linear-gradient(
+      
+      90deg,
+      var(--orange-red) 0%,
+      var(--vivid-pink) 50%,
+      var(--electric-violet) 100% );
+  --pill-accent: var(--bright-blue);
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1[_ngcontent-ng-c1536842746] {
+  font-size: 3.125rem;
+  color: var(--gray-900);
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: -0.125rem;
+  margin: 0;
+  font-family:
+    "Inter Tight",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
+}
+p[_ngcontent-ng-c1536842746] {
+  margin: 0;
+  color: var(--gray-700);
+}
+main[_ngcontent-ng-c1536842746] {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  box-sizing: inherit;
+  position: relative;
+}
+.angular-logo[_ngcontent-ng-c1536842746] {
+  max-width: 9.2rem;
+}
+.content[_ngcontent-ng-c1536842746] {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 700px;
+  margin-bottom: 3rem;
+}
+.content[_ngcontent-ng-c1536842746]   h1[_ngcontent-ng-c1536842746] {
+  margin-top: 1.75rem;
+}
+.content[_ngcontent-ng-c1536842746]   p[_ngcontent-ng-c1536842746] {
+  margin-top: 1.5rem;
+}
+.divider[_ngcontent-ng-c1536842746] {
+  width: 1px;
+  background: var(--red-to-pink-to-purple-vertical-gradient);
+  margin-inline: 0.5rem;
+}
+.pill-group[_ngcontent-ng-c1536842746] {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+.pill[_ngcontent-ng-c1536842746] {
+  display: flex;
+  align-items: center;
+  --pill-accent: var(--bright-blue);
+  background: color-mix(in srgb, var(--pill-accent) 5%, transparent);
+  color: var(--pill-accent);
+  padding-inline: 0.75rem;
+  padding-block: 0.375rem;
+  border-radius: 2.75rem;
+  border: 0;
+  transition: background 0.3s ease;
+  font-family: var(--inter-font);
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.4rem;
+  letter-spacing: -0.00875rem;
+  text-decoration: none;
+}
+.pill[_ngcontent-ng-c1536842746]:hover {
+  background: color-mix(in srgb, var(--pill-accent) 15%, transparent);
+}
+.pill-group[_ngcontent-ng-c1536842746]   .pill[_ngcontent-ng-c1536842746]:nth-child(6n+1) {
+  --pill-accent: var(--bright-blue);
+}
+.pill-group[_ngcontent-ng-c1536842746]   .pill[_ngcontent-ng-c1536842746]:nth-child(6n+2) {
+  --pill-accent: var(--french-violet);
+}
+.pill-group[_ngcontent-ng-c1536842746]   .pill[_ngcontent-ng-c1536842746]:nth-child(6n+3), 
+.pill-group[_ngcontent-ng-c1536842746]   .pill[_ngcontent-ng-c1536842746]:nth-child(6n+4), 
+.pill-group[_ngcontent-ng-c1536842746]   .pill[_ngcontent-ng-c1536842746]:nth-child(6n+5) {
+  --pill-accent: var(--hot-red);
+}
+.pill-group[_ngcontent-ng-c1536842746]   svg[_ngcontent-ng-c1536842746] {
+  margin-inline-start: 0.25rem;
+}
+.social-links[_ngcontent-ng-c1536842746] {
+  display: flex;
+  align-items: center;
+  gap: 0.73rem;
+  margin-top: 1.5rem;
+}
+.social-links[_ngcontent-ng-c1536842746]   path[_ngcontent-ng-c1536842746] {
+  transition: fill 0.3s ease;
+  fill: var(--gray-400);
+}
+.social-links[_ngcontent-ng-c1536842746]   a[_ngcontent-ng-c1536842746]:hover   svg[_ngcontent-ng-c1536842746]   path[_ngcontent-ng-c1536842746] {
+  fill: var(--gray-900);
+}
+@media screen and (max-width: 650px) {
+  .content[_ngcontent-ng-c1536842746] {
+    flex-direction: column;
+    width: max-content;
+  }
+  .divider[_ngcontent-ng-c1536842746] {
+    height: 1px;
+    width: 100%;
+    background: var(--red-to-pink-to-purple-horizontal-gradient);
+    margin-block: 1.5rem;
+  }
+}
+/*# sourceMappingURL=/app.component.css.map */</style><style ng-app-id="ng">
+
+.dashboard-layout[_ngcontent-ng-c2151447615] {
+  display: flex;
+  height: 100vh;
+  font-family:
+    "Segoe UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
+.sidebar[_ngcontent-ng-c2151447615] {
+  width: 280px;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.logo-section[_ngcontent-ng-c2151447615] {
+  padding: 24px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-section[_ngcontent-ng-c2151447615]   .logo[_ngcontent-ng-c2151447615] {
+  width: 64px;
+  height: 40px;
+}
+.navigation[_ngcontent-ng-c2151447615] {
+  flex: 1;
+  padding: 20px 0;
+}
+.nav-section-title[_ngcontent-ng-c2151447615] {
+  padding: 16px 20px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.nav-item[_ngcontent-ng-c2151447615] {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: #6b7280;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.nav-item[_ngcontent-ng-c2151447615]:hover {
+  background-color: #f9fafb;
+  color: #374151;
+}
+.nav-item.active[_ngcontent-ng-c2151447615] {
+  background-color: #e0e7ff;
+  color: #4338ca;
+  border-right: 3px solid #4338ca;
+}
+.nav-item[_ngcontent-ng-c2151447615]   .nav-icon[_ngcontent-ng-c2151447615] {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+.nav-item[_ngcontent-ng-c2151447615]   .nav-text[_ngcontent-ng-c2151447615] {
+  font-size: 14px;
+  font-weight: 500;
+}
+.logout-section[_ngcontent-ng-c2151447615] {
+  padding: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+.logout-btn[_ngcontent-ng-c2151447615] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.logout-btn[_ngcontent-ng-c2151447615]:hover {
+  background: #b91c1c;
+}
+.logout-btn[_ngcontent-ng-c2151447615]   .logout-icon[_ngcontent-ng-c2151447615] {
+  font-size: 18px;
+}
+.main-content[_ngcontent-ng-c2151447615] {
+  flex: 1;
+  background: #f8fafc;
+  overflow-y: auto;
+}
+.welcome-header[_ngcontent-ng-c2151447615] {
+  background:
+    linear-gradient(
+      135deg,
+      #1e40af 0%,
+      #3730a3 100%);
+  color: white;
+  padding: 24px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.avatar-section[_ngcontent-ng-c2151447615] {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.avatar-section[_ngcontent-ng-c2151447615]   .avatar[_ngcontent-ng-c2151447615] {
+  width: 40px;
+  height: 40px;
+  background: #fbbf24;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.avatar-section[_ngcontent-ng-c2151447615]   .welcome-text[_ngcontent-ng-c2151447615] {
+  font-size: 20px;
+  font-weight: 600;
+}
+.user-menu[_ngcontent-ng-c2151447615]   .user-menu-btn[_ngcontent-ng-c2151447615] {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-menu[_ngcontent-ng-c2151447615]   .user-menu-btn[_ngcontent-ng-c2151447615]   .user-avatar[_ngcontent-ng-c2151447615] {
+  font-size: 20px;
+}
+.page-content[_ngcontent-ng-c2151447615] {
+  padding: 32px;
+  height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+.history-container[_ngcontent-ng-c2151447615] {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.loading-state[_ngcontent-ng-c2151447615] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+.loading-state[_ngcontent-ng-c2151447615]   .loading-spinner[_ngcontent-ng-c2151447615] {
+  font-size: 18px;
+  color: #6b7280;
+}
+.error-state[_ngcontent-ng-c2151447615] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+.error-state[_ngcontent-ng-c2151447615]   .error-message[_ngcontent-ng-c2151447615] {
+  color: #dc2626;
+  font-size: 16px;
+  text-align: center;
+}
+.empty-state[_ngcontent-ng-c2151447615] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  text-align: center;
+}
+.empty-state[_ngcontent-ng-c2151447615]   .empty-icon[_ngcontent-ng-c2151447615] {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+.empty-state[_ngcontent-ng-c2151447615]   .empty-title[_ngcontent-ng-c2151447615] {
+  font-size: 24px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+.empty-state[_ngcontent-ng-c2151447615]   .empty-description[_ngcontent-ng-c2151447615] {
+  font-size: 16px;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+.empty-state[_ngcontent-ng-c2151447615]   .empty-action-btn[_ngcontent-ng-c2151447615] {
+  background:
+    linear-gradient(
+      135deg,
+      #1e40af 0%,
+      #3730a3 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.empty-state[_ngcontent-ng-c2151447615]   .empty-action-btn[_ngcontent-ng-c2151447615]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.simulations-grid[_ngcontent-ng-c2151447615] {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.table-container[_ngcontent-ng-c2151447615] {
+  overflow-x: auto;
+}
+.simulations-table[_ngcontent-ng-c2151447615] {
+  width: 100%;
+  border-collapse: collapse;
+}
+.simulations-table[_ngcontent-ng-c2151447615]   th[_ngcontent-ng-c2151447615] {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.simulations-table[_ngcontent-ng-c2151447615]   td[_ngcontent-ng-c2151447615] {
+  padding: 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+.simulations-table[_ngcontent-ng-c2151447615]   tbody[_ngcontent-ng-c2151447615]   tr[_ngcontent-ng-c2151447615]:hover {
+  background-color: #f9fafb;
+}
+.sim-id[_ngcontent-ng-c2151447615] {
+  font-weight: 600;
+  color: #374151;
+  white-space: pre-line;
+  font-size: 14px;
+}
+.sim-name[_ngcontent-ng-c2151447615], 
+.sim-description[_ngcontent-ng-c2151447615] {
+  color: #374151;
+  font-size: 14px;
+}
+.sim-description[_ngcontent-ng-c2151447615] {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #6b7280;
+}
+.sim-date[_ngcontent-ng-c2151447615] {
+  color: #6b7280;
+  font-size: 14px;
+}
+.sim-packages[_ngcontent-ng-c2151447615] {
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+}
+.sim-progress[_ngcontent-ng-c2151447615]   .progress-bar[_ngcontent-ng-c2151447615] {
+  position: relative;
+  width: 120px;
+  height: 24px;
+  background: #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.sim-progress[_ngcontent-ng-c2151447615]   .progress-bar[_ngcontent-ng-c2151447615]   .progress-fill[_ngcontent-ng-c2151447615] {
+  height: 100%;
+  background:
+    linear-gradient(
+      90deg,
+      #1e40af 0%,
+      #3730a3 100%);
+  border-radius: 12px;
+  transition: width 0.3s ease;
+}
+.sim-progress[_ngcontent-ng-c2151447615]   .progress-bar[_ngcontent-ng-c2151447615]   .progress-text[_ngcontent-ng-c2151447615] {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.sim-actions[_ngcontent-ng-c2151447615]   .action-menu-btn[_ngcontent-ng-c2151447615] {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+.sim-actions[_ngcontent-ng-c2151447615]   .action-menu-btn[_ngcontent-ng-c2151447615]:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+@media (max-width: 1024px) {
+  .sidebar[_ngcontent-ng-c2151447615] {
+    width: 240px;
+  }
+}
+@media (max-width: 768px) {
+  .dashboard-layout[_ngcontent-ng-c2151447615] {
+    flex-direction: column;
+  }
+  .sidebar[_ngcontent-ng-c2151447615] {
+    width: 100%;
+    min-height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .navigation[_ngcontent-ng-c2151447615] {
+    display: flex;
+    overflow-x: auto;
+    padding: 12px 0;
+  }
+  .nav-item[_ngcontent-ng-c2151447615] {
+    white-space: nowrap;
+    min-width: fit-content;
+  }
+  .logout-section[_ngcontent-ng-c2151447615] {
+    display: none;
+  }
+  .page-content[_ngcontent-ng-c2151447615] {
+    padding: 16px;
+  }
+  .welcome-header[_ngcontent-ng-c2151447615] {
+    padding: 16px 20px;
+  }
+}
+/*# sourceMappingURL=/history.component.css.map */</style><style ng-app-id="ng">mat-icon,mat-icon.mat-primary,mat-icon.mat-accent,mat-icon.mat-warn{color:var(--mat-icon-color, inherit)}.mat-icon{-webkit-user-select:none;user-select:none;background-repeat:no-repeat;display:inline-block;fill:currentColor;height:24px;width:24px;overflow:hidden}.mat-icon.mat-icon-inline{font-size:inherit;height:inherit;line-height:inherit;width:inherit}.mat-icon.mat-ligature-font[fontIcon]::before{content:attr(fontIcon)}[dir=rtl] .mat-icon-rtl-mirror{transform:scale(-1, 1)}.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-prefix .mat-icon,.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix .mat-icon{display:block}.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-prefix .mat-icon-button .mat-icon,.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix .mat-icon-button .mat-icon{margin:auto}
+</style><style ng-app-id="ng">.mat-mdc-icon-button{-webkit-user-select:none;user-select:none;display:inline-block;position:relative;box-sizing:border-box;border:none;outline:none;background-color:rgba(0,0,0,0);fill:currentColor;color:inherit;text-decoration:none;cursor:pointer;z-index:0;overflow:visible;border-radius:50%;flex-shrink:0;text-align:center;width:var(--mdc-icon-button-state-layer-size, 40px);height:var(--mdc-icon-button-state-layer-size, 40px);padding:calc(calc(var(--mdc-icon-button-state-layer-size, 40px) - var(--mdc-icon-button-icon-size, 24px)) / 2);font-size:var(--mdc-icon-button-icon-size, 24px);color:var(--mdc-icon-button-icon-color, var(--mat-sys-on-surface-variant));-webkit-tap-highlight-color:rgba(0,0,0,0)}.mat-mdc-icon-button .mat-mdc-button-ripple,.mat-mdc-icon-button .mat-mdc-button-persistent-ripple,.mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before{top:0;left:0;right:0;bottom:0;position:absolute;pointer-events:none;border-radius:inherit}.mat-mdc-icon-button .mat-mdc-button-ripple{overflow:hidden}.mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before{content:"";opacity:0}.mat-mdc-icon-button .mdc-button__label,.mat-mdc-icon-button .mat-icon{z-index:1;position:relative}.mat-mdc-icon-button .mat-focus-indicator{top:0;left:0;right:0;bottom:0;position:absolute;border-radius:inherit}.mat-mdc-icon-button:focus>.mat-focus-indicator::before{content:"";border-radius:inherit}.mat-mdc-icon-button .mat-ripple-element{background-color:var(--mat-icon-button-ripple-color, color-mix(in srgb, var(--mat-sys-on-surface-variant) calc(var(--mat-sys-pressed-state-layer-opacity) * 100%), transparent))}.mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before{background-color:var(--mat-icon-button-state-layer-color, var(--mat-sys-on-surface-variant))}.mat-mdc-icon-button.mat-mdc-button-disabled .mat-mdc-button-persistent-ripple::before{background-color:var(--mat-icon-button-disabled-state-layer-color, var(--mat-sys-on-surface-variant))}.mat-mdc-icon-button:hover>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-icon-button-hover-state-layer-opacity, var(--mat-sys-hover-state-layer-opacity))}.mat-mdc-icon-button.cdk-program-focused>.mat-mdc-button-persistent-ripple::before,.mat-mdc-icon-button.cdk-keyboard-focused>.mat-mdc-button-persistent-ripple::before,.mat-mdc-icon-button.mat-mdc-button-disabled-interactive:focus>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-icon-button-focus-state-layer-opacity, var(--mat-sys-focus-state-layer-opacity))}.mat-mdc-icon-button:active>.mat-mdc-button-persistent-ripple::before{opacity:var(--mat-icon-button-pressed-state-layer-opacity, var(--mat-sys-pressed-state-layer-opacity))}.mat-mdc-icon-button .mat-mdc-button-touch-target{position:absolute;top:50%;height:48px;left:50%;width:48px;transform:translate(-50%, -50%);display:var(--mat-icon-button-touch-target-display, block)}.mat-mdc-icon-button._mat-animation-noopable{transition:none !important;animation:none !important}.mat-mdc-icon-button[disabled],.mat-mdc-icon-button.mat-mdc-button-disabled{cursor:default;pointer-events:none;color:var(--mdc-icon-button-disabled-icon-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-icon-button.mat-mdc-button-disabled-interactive{pointer-events:auto}.mat-mdc-icon-button img,.mat-mdc-icon-button svg{width:var(--mdc-icon-button-icon-size, 24px);height:var(--mdc-icon-button-icon-size, 24px);vertical-align:baseline}.mat-mdc-icon-button .mat-mdc-button-persistent-ripple{border-radius:50%}.mat-mdc-icon-button[hidden]{display:none}.mat-mdc-icon-button.mat-unthemed:not(.mdc-ripple-upgraded):focus::before,.mat-mdc-icon-button.mat-primary:not(.mdc-ripple-upgraded):focus::before,.mat-mdc-icon-button.mat-accent:not(.mdc-ripple-upgraded):focus::before,.mat-mdc-icon-button.mat-warn:not(.mdc-ripple-upgraded):focus::before{background:rgba(0,0,0,0);opacity:1}
+</style><style ng-app-id="ng">@media(forced-colors: active){.mat-mdc-button:not(.mdc-button--outlined),.mat-mdc-unelevated-button:not(.mdc-button--outlined),.mat-mdc-raised-button:not(.mdc-button--outlined),.mat-mdc-outlined-button:not(.mdc-button--outlined),.mat-mdc-icon-button.mat-mdc-icon-button,.mat-mdc-outlined-button .mdc-button__ripple{outline:solid 1px}}
+</style><style ng-app-id="ng">.mat-focus-indicator{position:relative}.mat-focus-indicator::before{top:0;left:0;right:0;bottom:0;position:absolute;box-sizing:border-box;pointer-events:none;display:var(--mat-focus-indicator-display, none);border-width:var(--mat-focus-indicator-border-width, 3px);border-style:var(--mat-focus-indicator-border-style, solid);border-color:var(--mat-focus-indicator-border-color, transparent);border-radius:var(--mat-focus-indicator-border-radius, 4px)}.mat-focus-indicator:focus::before{content:""}@media(forced-colors: active){html{--mat-focus-indicator-display: block}}
+</style><style ng-app-id="ng">mat-menu{display:none}.mat-mdc-menu-content{margin:0;padding:8px 0;outline:0}.mat-mdc-menu-content,.mat-mdc-menu-content .mat-mdc-menu-item .mat-mdc-menu-item-text{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;flex:1;white-space:normal;font-family:var(--mat-menu-item-label-text-font, var(--mat-sys-label-large-font));line-height:var(--mat-menu-item-label-text-line-height, var(--mat-sys-label-large-line-height));font-size:var(--mat-menu-item-label-text-size, var(--mat-sys-label-large-size));letter-spacing:var(--mat-menu-item-label-text-tracking, var(--mat-sys-label-large-tracking));font-weight:var(--mat-menu-item-label-text-weight, var(--mat-sys-label-large-weight))}@keyframes _mat-menu-enter{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:none}}@keyframes _mat-menu-exit{from{opacity:1}to{opacity:0}}.mat-mdc-menu-panel{min-width:112px;max-width:280px;overflow:auto;box-sizing:border-box;outline:0;animation:_mat-menu-enter 120ms cubic-bezier(0, 0, 0.2, 1);border-radius:var(--mat-menu-container-shape, var(--mat-sys-corner-extra-small));background-color:var(--mat-menu-container-color, var(--mat-sys-surface-container));box-shadow:var(--mat-menu-container-elevation-shadow, 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12));will-change:transform,opacity}.mat-mdc-menu-panel.mat-menu-panel-exit-animation{animation:_mat-menu-exit 100ms 25ms linear forwards}.mat-mdc-menu-panel.mat-menu-panel-animations-disabled{animation:none}.mat-mdc-menu-panel.mat-menu-panel-animating{pointer-events:none}.mat-mdc-menu-panel.mat-menu-panel-animating:has(.mat-mdc-menu-content:empty){display:none}@media(forced-colors: active){.mat-mdc-menu-panel{outline:solid 1px}}.mat-mdc-menu-panel .mat-divider{color:var(--mat-menu-divider-color, var(--mat-sys-surface-variant));margin-bottom:var(--mat-menu-divider-bottom-spacing, 8px);margin-top:var(--mat-menu-divider-top-spacing, 8px)}.mat-mdc-menu-item{display:flex;position:relative;align-items:center;justify-content:flex-start;overflow:hidden;padding:0;cursor:pointer;width:100%;text-align:left;box-sizing:border-box;color:inherit;font-size:inherit;background:none;text-decoration:none;margin:0;min-height:48px;padding-left:var(--mat-menu-item-leading-spacing, 12px);padding-right:var(--mat-menu-item-trailing-spacing, 12px);-webkit-user-select:none;user-select:none;cursor:pointer;outline:none;border:none;-webkit-tap-highlight-color:rgba(0,0,0,0)}.mat-mdc-menu-item::-moz-focus-inner{border:0}[dir=rtl] .mat-mdc-menu-item{padding-left:var(--mat-menu-item-trailing-spacing, 12px);padding-right:var(--mat-menu-item-leading-spacing, 12px)}.mat-mdc-menu-item:has(.material-icons,mat-icon,[matButtonIcon]){padding-left:var(--mat-menu-item-with-icon-leading-spacing, 12px);padding-right:var(--mat-menu-item-with-icon-trailing-spacing, 12px)}[dir=rtl] .mat-mdc-menu-item:has(.material-icons,mat-icon,[matButtonIcon]){padding-left:var(--mat-menu-item-with-icon-trailing-spacing, 12px);padding-right:var(--mat-menu-item-with-icon-leading-spacing, 12px)}.mat-mdc-menu-item,.mat-mdc-menu-item:visited,.mat-mdc-menu-item:link{color:var(--mat-menu-item-label-text-color, var(--mat-sys-on-surface))}.mat-mdc-menu-item .mat-icon-no-color,.mat-mdc-menu-item .mat-mdc-menu-submenu-icon{color:var(--mat-menu-item-icon-color, var(--mat-sys-on-surface-variant))}.mat-mdc-menu-item[disabled]{cursor:default;opacity:.38}.mat-mdc-menu-item[disabled]::after{display:block;position:absolute;content:"";top:0;left:0;bottom:0;right:0}.mat-mdc-menu-item:focus{outline:0}.mat-mdc-menu-item .mat-icon{flex-shrink:0;margin-right:var(--mat-menu-item-spacing, 12px);height:var(--mat-menu-item-icon-size, 24px);width:var(--mat-menu-item-icon-size, 24px)}[dir=rtl] .mat-mdc-menu-item{text-align:right}[dir=rtl] .mat-mdc-menu-item .mat-icon{margin-right:0;margin-left:var(--mat-menu-item-spacing, 12px)}.mat-mdc-menu-item:not([disabled]):hover{background-color:var(--mat-menu-item-hover-state-layer-color, color-mix(in srgb, var(--mat-sys-on-surface) calc(var(--mat-sys-hover-state-layer-opacity) * 100%), transparent))}.mat-mdc-menu-item:not([disabled]).cdk-program-focused,.mat-mdc-menu-item:not([disabled]).cdk-keyboard-focused,.mat-mdc-menu-item:not([disabled]).mat-mdc-menu-item-highlighted{background-color:var(--mat-menu-item-focus-state-layer-color, color-mix(in srgb, var(--mat-sys-on-surface) calc(var(--mat-sys-focus-state-layer-opacity) * 100%), transparent))}@media(forced-colors: active){.mat-mdc-menu-item{margin-top:1px}}.mat-mdc-menu-submenu-icon{width:var(--mat-menu-item-icon-size, 24px);height:10px;fill:currentColor;padding-left:var(--mat-menu-item-spacing, 12px)}[dir=rtl] .mat-mdc-menu-submenu-icon{padding-right:var(--mat-menu-item-spacing, 12px);padding-left:0}[dir=rtl] .mat-mdc-menu-submenu-icon polygon{transform:scaleX(-1);transform-origin:center}@media(forced-colors: active){.mat-mdc-menu-submenu-icon{fill:CanvasText}}.mat-mdc-menu-item .mat-mdc-menu-ripple{top:0;left:0;right:0;bottom:0;position:absolute;pointer-events:none}
+</style><style ng-app-id="ng">.mat-ripple{overflow:hidden;position:relative}.mat-ripple:not(:empty){transform:translateZ(0)}.mat-ripple.mat-ripple-unbounded{overflow:visible}.mat-ripple-element{position:absolute;border-radius:50%;pointer-events:none;transition:opacity,transform 0ms cubic-bezier(0, 0, 0.2, 1);transform:scale3d(0, 0, 0);background-color:var(--mat-ripple-color, color-mix(in srgb, var(--mat-sys-on-surface) 10%, transparent))}@media(forced-colors: active){.mat-ripple-element{display:none}}.cdk-drag-preview .mat-ripple-element,.cdk-drag-placeholder .mat-ripple-element{display:none}
+</style></head>
+<body class="mat-typography"><!--nghm--><script type="text/javascript" id="ng-event-dispatch-contract">(()=>{function p(t,n,r,o,e,i,f,m){return{eventType:t,event:n,targetElement:r,eic:o,timeStamp:e,eia:i,eirp:f,eiack:m}}function u(t){let n=[],r=e=>{n.push(e)};return{c:t,q:n,et:[],etc:[],d:r,h:e=>{r(p(e.type,e,e.target,t,Date.now()))}}}function s(t,n,r){for(let o=0;o<n.length;o++){let e=n[o];(r?t.etc:t.et).push(e),t.c.addEventListener(e,t.h,r)}}function c(t,n,r,o,e=window){let i=u(t);e._ejsas||(e._ejsas={}),e._ejsas[n]=i,s(i,r),s(i,o,!0)}window.__jsaction_bootstrap=c;})();
+</script><script>window.__jsaction_bootstrap(document.body,"ng",["click","mousedown","keydown"],[]);</script>
+  <app-root ng-version="19.2.14" _nghost-ng-c1536842746="" ngh="4" ng-server-context="ssg"><router-outlet _ngcontent-ng-c1536842746=""></router-outlet><app-history _nghost-ng-c2151447615="" ngh="3"><div _ngcontent-ng-c2151447615="" class="dashboard-layout"><aside _ngcontent-ng-c2151447615="" class="sidebar"><div _ngcontent-ng-c2151447615="" class="logo-section"><img _ngcontent-ng-c2151447615="" src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo"></div><nav _ngcontent-ng-c2151447615="" class="navigation"><a _ngcontent-ng-c2151447615="" routerlink="/dashboard/user" class="nav-item" ng-reflect-router-link="/dashboard/user" href="/dashboard/user" jsaction="click:;"><span _ngcontent-ng-c2151447615="" class="nav-icon">📊</span><span _ngcontent-ng-c2151447615="" class="nav-text">Dashboard</span></a><a _ngcontent-ng-c2151447615="" routerlink="/simulation" class="nav-item" ng-reflect-router-link="/simulation" href="/simulation" jsaction="click:;"><span _ngcontent-ng-c2151447615="" class="nav-icon">➕</span><span _ngcontent-ng-c2151447615="" class="nav-text">Nouvelle simulation</span></a><a _ngcontent-ng-c2151447615="" routerlink="/history" class="nav-item active" ng-reflect-router-link="/history" href="/history" jsaction="click:;"><span _ngcontent-ng-c2151447615="" class="nav-icon">🕒</span><span _ngcontent-ng-c2151447615="" class="nav-text">Historique</span></a><div _ngcontent-ng-c2151447615="" class="nav-section-title">ADMINISTRATION</div><a _ngcontent-ng-c2151447615="" routerlink="/dashboard/user/profile" class="nav-item" ng-reflect-router-link="/dashboard/user/profile" href="/dashboard/user/profile" jsaction="click:;"><span _ngcontent-ng-c2151447615="" class="nav-icon">👤</span><span _ngcontent-ng-c2151447615="" class="nav-text">Profil</span></a><a _ngcontent-ng-c2151447615="" class="nav-item"><span _ngcontent-ng-c2151447615="" class="nav-icon">⚙️</span><span _ngcontent-ng-c2151447615="" class="nav-text">Paramètres</span></a></nav><div _ngcontent-ng-c2151447615="" class="logout-section"><button _ngcontent-ng-c2151447615="" class="logout-btn" jsaction="click:;"><mat-icon _ngcontent-ng-c2151447615="" role="img" class="mat-icon notranslate logout-icon material-icons mat-ligature-font mat-icon-no-color" aria-hidden="true" data-mat-icon-type="font" ngh="0">power_settings_new</mat-icon><span _ngcontent-ng-c2151447615="" class="logout-text">Log Out</span></button></div></aside><main _ngcontent-ng-c2151447615="" class="main-content"><header _ngcontent-ng-c2151447615="" class="welcome-header"><div _ngcontent-ng-c2151447615="" class="avatar-section"><div _ngcontent-ng-c2151447615="" class="avatar">🕒</div><span _ngcontent-ng-c2151447615="" class="welcome-text">Historique des simulations</span></div><div _ngcontent-ng-c2151447615="" class="user-menu"><button _ngcontent-ng-c2151447615="" mat-icon-button="" class="mat-mdc-menu-trigger user-menu-btn mdc-icon-button mat-mdc-icon-button _mat-animation-noopable mat-unthemed mat-mdc-button-base" mat-ripple-loader-uninitialized="" mat-ripple-loader-class-name="mat-mdc-button-ripple" mat-ripple-loader-centered="" ng-reflect-menu="[object Object]" aria-haspopup="menu" aria-expanded="false" ngh="1" jsaction="click:;mousedown:;keydown:;"><span class="mat-mdc-button-persistent-ripple mdc-icon-button__ripple"></span><span _ngcontent-ng-c2151447615="" class="user-avatar">👤</span><span class="mat-focus-indicator"></span><span class="mat-mdc-button-touch-target"></span></button><!--container--><mat-menu _ngcontent-ng-c2151447615="" ngh="2"><!--container--></mat-menu></div></header><div _ngcontent-ng-c2151447615="" class="page-content"><div _ngcontent-ng-c2151447615="" class="history-container"><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><!--bindings={
+  "ng-reflect-ng-if": null
+}--><!--bindings={
+  "ng-reflect-ng-if": "0"
+}--><div _ngcontent-ng-c2151447615="" class="empty-state"><div _ngcontent-ng-c2151447615="" class="empty-icon">📭</div><div _ngcontent-ng-c2151447615="" class="empty-title">Aucune simulation trouvée</div><div _ngcontent-ng-c2151447615="" class="empty-description">Créez votre première simulation pour commencer</div><button _ngcontent-ng-c2151447615="" routerlink="/simulation" class="empty-action-btn" tabindex="0" ng-reflect-router-link="/simulation" jsaction="click:;"> Nouvelle simulation </button></div><!--bindings={
+  "ng-reflect-ng-if": "true"
+}--></div></div></main></div></app-history><!--container--></app-root>
+<link rel="modulepreload" href="chunk-TXDUYLVM.js"><script src="polyfills.js" type="module"></script><script src="scripts.js" defer=""></script><script src="main.js" type="module"></script>
+
+<script id="ng-state" type="application/json">{"__nghData__":[{},{"n":{"2":"hfn2"}},{"t":{"0":"t12"},"c":{"0":[]}},{"n":{"35":"34f","47":"46fn"},"c":{"46":[],"58":[],"59":[],"60":[],"61":[{"i":"t20","r":1}]},"d":[51,52,53,54,55],"t":{"58":"t17","59":"t18","60":"t19","61":"t20"}},{"c":{"0":[{"i":"c2151447615","r":1}]}}]}</script></body></html>

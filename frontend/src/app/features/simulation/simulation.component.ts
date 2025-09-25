@@ -4,8 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
+import Swal from 'sweetalert2';
 import { ConteneurService } from '../../services/conteneur.service';
 import { SimulationService, SimulationResult, OptimalContainerResult } from '../../services/simulation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -162,37 +162,25 @@ export class SimulationComponent implements OnInit {
   }
 
   nouvelleSimulation() {
-    Swal.fire({
-      title: 'Nouvelle simulation',
-      text: 'Voulez-vous vraiment recommencer ? Les données actuelles seront perdues.',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Oui, recommencer',
-      cancelButtonText: 'Annuler'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.resetResultats();
-        this.listeColis = [];
-        this.simulationForm.reset();
-        this.colisForm.reset();
-        this.selectedContainerId = null;
-        this.currentStep = 1;
-        this.currentPage = 1;
-        
-        // Nettoyer les données de visualisation
-        try {
-          sessionStorage.removeItem('simulationData');
-        } catch (error) {
-          console.warn('Impossible de nettoyer sessionStorage:', error);
-        }
-        
-        Swal.fire({
-          icon: 'success',
-          title: 'Nouvelle simulation initialisée !',
-          text: 'Vous pouvez maintenant commencer une nouvelle simulation.',
-          timer: 2000
-        });
-      }
+    // Réinitialisation directe sans confirmation
+    this.resetResultats();
+    this.listeColis = [];
+    this.simulationForm.reset();
+    this.colisForm.reset();
+    this.selectedContainerId = null;
+    this.currentStep = 1;
+    this.currentPage = 1;
+    
+    // Nettoyer les données de visualisation
+    try {
+      sessionStorage.removeItem('simulationData');
+    } catch (error) {
+      console.warn('Impossible de nettoyer sessionStorage:', error);
+    }
+    
+    this.snackBar.open('Nouvelle simulation initialisée !', 'OK', {
+      duration: 2000,
+      panelClass: ['success-snackbar']
     });
   }
 
@@ -580,37 +568,16 @@ export class SimulationComponent implements OnInit {
 
         console.log('Données préparées pour visualisation:', simulationData);
 
-        Swal.fire({
-          icon: 'success',
-          title: `Simulation "${simulation.nom}" validée !`,
-          text: `${this.simulationResultats?.containers.length || 0} contenants utilisés pour ${this.calculerNombreColisTotal()} colis.`,
-          showCancelButton: true,
-          confirmButtonText: '🚀 Voir la visualisation 3D',
-          cancelButtonText: 'Nouvelle simulation',
-          confirmButtonColor: '#f97316',
-          cancelButtonColor: '#6b7280'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            console.log('Navigation vers visualisation avec:', simulationData);
-
-            // ✅ Navigation vers la visualisation avec les données
-            this.router.navigate(['/visualization'], {
-              state: {
-                simulationData: simulationData
-              }
-            }).then(success => {
-              if (success) {
-                console.log('Navigation réussie');
-              } else {
-                console.error('Erreur de navigation');
-                this.snackBar.open('Erreur lors de la navigation', 'OK', { duration: 3000 });
-              }
-            });
-          } else {
-            // Nouvelle simulation
-            this.nouvelleSimulation();
+        // Show simple success notification without auto-redirect
+        this.snackBar.open(
+          `Simulation "${simulation.nom}" validée ! ${this.simulationResultats?.containers.length || 0} contenants utilisés pour ${this.calculerNombreColisTotal()} colis.`,
+          'OK',
+          {
+            duration: 4000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
           }
-        });
+        );
       },
       error: (error) => {
         console.error('Erreur lors de la sauvegarde:', error);
@@ -827,21 +794,28 @@ get pagedColis(): Colis[] {
     ).subscribe({
       next: (response) => {
         this.loading = false;
-        Swal.fire({
-          icon: 'success',
-          title: 'Simulation sauvegardée !',
-          text: `La simulation "${simulation.nom}" a été sauvegardée avec succès.`,
-          timer: 2000
-        });
+        this.snackBar.open(
+          `La simulation "${simulation.nom}" a été sauvegardée avec succès.`,
+          'OK',
+          {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          }
+        );
       },
       error: (error) => {
         this.loading = false;
         console.error('Erreur lors de la sauvegarde:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Erreur de sauvegarde',
-          text: 'Une erreur s\'est produite lors de la sauvegarde.'
-        });
+        this.snackBar.open(
+          'Une erreur s\'est produite lors de la sauvegarde.',
+          'OK',
+          {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          }
+        );
       }
     });
   }
@@ -856,7 +830,8 @@ get pagedColis(): Colis[] {
   emailShare = '';
   simulationName = '';
   dateAujourdhui = new Date();
-  colisPerPage = 10;
+  colisPerPage = 6;
+  viewMode: 'grid' | 'list' = 'grid';
   
   // Méthodes de pagination améliorées
   getPaginatedColis(): Colis[] {
@@ -1115,28 +1090,19 @@ get pagedColis(): Colis[] {
   }
   
   newSimulation(): void {
-    Swal.fire({
-      title: 'Nouvelle simulation',
-      text: 'Voulez-vous vraiment commencer une nouvelle simulation ?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Oui, recommencer',
-      cancelButtonText: 'Annuler'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.listeColis = [];
-        this.simulationResultats = null;
-        this.selectedContainerId = null;
-        this.currentStep = 1;
-        this.currentPage = 1;
-        this.colisForm.reset();
-        
-        Swal.fire({
-          icon: 'success',
-          title: 'Nouvelle simulation initialisée !',
-          timer: 2000
-        });
-      }
+    // Reset simulation directly without confirmation dialog
+    this.listeColis = [];
+    this.simulationResultats = null;
+    this.selectedContainerId = null;
+    this.currentStep = 1;
+    this.currentPage = 1;
+    this.colisForm.reset();
+    
+    // Optional: Show simple success message
+    this.snackBar.open('Nouvelle simulation initialisée !', 'Fermer', {
+      duration: 2000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
     });
   }
   

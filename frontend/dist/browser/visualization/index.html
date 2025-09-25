@@ -1,0 +1,844 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="utf-8">
+  <title>Module Aide au Chargement | Logidoo</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+<link rel="stylesheet" href="styles.css"><style ng-app-id="ng">
+
+[_nghost-ng-c1536842746] {
+  --bright-blue: oklch(51.01% 0.274 263.83);
+  --electric-violet: oklch(53.18% 0.28 296.97);
+  --french-violet: oklch(47.66% 0.246 305.88);
+  --vivid-pink: oklch(69.02% 0.277 332.77);
+  --hot-red: oklch(61.42% 0.238 15.34);
+  --orange-red: oklch(63.32% 0.24 31.68);
+  --gray-900: oklch(19.37% 0.006 300.98);
+  --gray-700: oklch(36.98% 0.014 302.71);
+  --gray-400: oklch(70.9% 0.015 304.04);
+  --red-to-pink-to-purple-vertical-gradient:
+    linear-gradient(
+      
+      180deg,
+      var(--orange-red) 0%,
+      var(--vivid-pink) 50%,
+      var(--electric-violet) 100% );
+  --red-to-pink-to-purple-horizontal-gradient:
+    linear-gradient(
+      
+      90deg,
+      var(--orange-red) 0%,
+      var(--vivid-pink) 50%,
+      var(--electric-violet) 100% );
+  --pill-accent: var(--bright-blue);
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1[_ngcontent-ng-c1536842746] {
+  font-size: 3.125rem;
+  color: var(--gray-900);
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: -0.125rem;
+  margin: 0;
+  font-family:
+    "Inter Tight",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
+}
+p[_ngcontent-ng-c1536842746] {
+  margin: 0;
+  color: var(--gray-700);
+}
+main[_ngcontent-ng-c1536842746] {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  box-sizing: inherit;
+  position: relative;
+}
+.angular-logo[_ngcontent-ng-c1536842746] {
+  max-width: 9.2rem;
+}
+.content[_ngcontent-ng-c1536842746] {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 700px;
+  margin-bottom: 3rem;
+}
+.content[_ngcontent-ng-c1536842746]   h1[_ngcontent-ng-c1536842746] {
+  margin-top: 1.75rem;
+}
+.content[_ngcontent-ng-c1536842746]   p[_ngcontent-ng-c1536842746] {
+  margin-top: 1.5rem;
+}
+.divider[_ngcontent-ng-c1536842746] {
+  width: 1px;
+  background: var(--red-to-pink-to-purple-vertical-gradient);
+  margin-inline: 0.5rem;
+}
+.pill-group[_ngcontent-ng-c1536842746] {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+.pill[_ngcontent-ng-c1536842746] {
+  display: flex;
+  align-items: center;
+  --pill-accent: var(--bright-blue);
+  background: color-mix(in srgb, var(--pill-accent) 5%, transparent);
+  color: var(--pill-accent);
+  padding-inline: 0.75rem;
+  padding-block: 0.375rem;
+  border-radius: 2.75rem;
+  border: 0;
+  transition: background 0.3s ease;
+  font-family: var(--inter-font);
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.4rem;
+  letter-spacing: -0.00875rem;
+  text-decoration: none;
+}
+.pill[_ngcontent-ng-c1536842746]:hover {
+  background: color-mix(in srgb, var(--pill-accent) 15%, transparent);
+}
+.pill-group[_ngcontent-ng-c1536842746]   .pill[_ngcontent-ng-c1536842746]:nth-child(6n+1) {
+  --pill-accent: var(--bright-blue);
+}
+.pill-group[_ngcontent-ng-c1536842746]   .pill[_ngcontent-ng-c1536842746]:nth-child(6n+2) {
+  --pill-accent: var(--french-violet);
+}
+.pill-group[_ngcontent-ng-c1536842746]   .pill[_ngcontent-ng-c1536842746]:nth-child(6n+3), 
+.pill-group[_ngcontent-ng-c1536842746]   .pill[_ngcontent-ng-c1536842746]:nth-child(6n+4), 
+.pill-group[_ngcontent-ng-c1536842746]   .pill[_ngcontent-ng-c1536842746]:nth-child(6n+5) {
+  --pill-accent: var(--hot-red);
+}
+.pill-group[_ngcontent-ng-c1536842746]   svg[_ngcontent-ng-c1536842746] {
+  margin-inline-start: 0.25rem;
+}
+.social-links[_ngcontent-ng-c1536842746] {
+  display: flex;
+  align-items: center;
+  gap: 0.73rem;
+  margin-top: 1.5rem;
+}
+.social-links[_ngcontent-ng-c1536842746]   path[_ngcontent-ng-c1536842746] {
+  transition: fill 0.3s ease;
+  fill: var(--gray-400);
+}
+.social-links[_ngcontent-ng-c1536842746]   a[_ngcontent-ng-c1536842746]:hover   svg[_ngcontent-ng-c1536842746]   path[_ngcontent-ng-c1536842746] {
+  fill: var(--gray-900);
+}
+@media screen and (max-width: 650px) {
+  .content[_ngcontent-ng-c1536842746] {
+    flex-direction: column;
+    width: max-content;
+  }
+  .divider[_ngcontent-ng-c1536842746] {
+    height: 1px;
+    width: 100%;
+    background: var(--red-to-pink-to-purple-horizontal-gradient);
+    margin-block: 1.5rem;
+  }
+}
+/*# sourceMappingURL=/app.component.css.map */</style><style ng-app-id="ng">@charset "UTF-8";
+
+
+
+.visualization-container[_ngcontent-ng-c532378349] {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+  overflow: hidden;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+.visualization-container.sidebar-collapsed[_ngcontent-ng-c532378349]   .sidebar[_ngcontent-ng-c532378349] {
+  transform: translateX(100%);
+}
+.visualization-container.sidebar-collapsed[_ngcontent-ng-c532378349]   .main-interface[_ngcontent-ng-c532378349] {
+  padding-right: 0;
+}
+.visualization-header[_ngcontent-ng-c532378349] {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+.visualization-header[_ngcontent-ng-c532378349]   .header-left[_ngcontent-ng-c532378349] {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.visualization-header[_ngcontent-ng-c532378349]   .header-center[_ngcontent-ng-c532378349] {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.visualization-header[_ngcontent-ng-c532378349]   .header-right[_ngcontent-ng-c532378349] {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.simulation-info[_ngcontent-ng-c532378349]   h1[_ngcontent-ng-c532378349] {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: #1e293b;
+}
+.simulation-info[_ngcontent-ng-c532378349]   .simulation-meta[_ngcontent-ng-c532378349] {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-top: 0.25rem;
+  display: flex;
+  gap: 0.5rem;
+}
+.container-navigation[_ngcontent-ng-c532378349] {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f1f5f9;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+.container-navigation[_ngcontent-ng-c532378349]   .container-indicator[_ngcontent-ng-c532378349] {
+  font-weight: 500;
+  color: #475569;
+  min-width: 3rem;
+  text-align: center;
+}
+.btn[_ngcontent-ng-c532378349] {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+}
+.btn[_ngcontent-ng-c532378349]:hover {
+  background: #f1f5f9;
+}
+.btn.btn-primary[_ngcontent-ng-c532378349] {
+  background: #f97316;
+  color: white;
+  border-color: #f97316;
+}
+.btn.btn-primary[_ngcontent-ng-c532378349]:hover {
+  background: #ea580c;
+  border-color: #ea580c;
+}
+.btn.btn-icon[_ngcontent-ng-c532378349] {
+  padding: 0.5rem;
+  min-width: 2.5rem;
+  justify-content: center;
+}
+.btn.btn-toggle[_ngcontent-ng-c532378349] {
+  background: #e2e8f0;
+  color: #475569;
+}
+.btn.btn-toggle.active[_ngcontent-ng-c532378349] {
+  background: #f97316;
+  color: white;
+}
+.loading-container[_ngcontent-ng-c532378349] {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+.loading-container[_ngcontent-ng-c532378349]   .loading-spinner[_ngcontent-ng-c532378349] {
+  text-align: center;
+}
+.loading-container[_ngcontent-ng-c532378349]   .loading-spinner[_ngcontent-ng-c532378349]   .spinner[_ngcontent-ng-c532378349] {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid #e2e8f0;
+  border-top: 3px solid #f97316;
+  border-radius: 50%;
+  animation: _ngcontent-ng-c532378349_spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+.loading-container[_ngcontent-ng-c532378349]   .loading-spinner[_ngcontent-ng-c532378349]   p[_ngcontent-ng-c532378349] {
+  color: #64748b;
+  font-size: 1rem;
+}
+.error-container[_ngcontent-ng-c532378349] {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+.error-container[_ngcontent-ng-c532378349]   .error-message[_ngcontent-ng-c532378349] {
+  text-align: center;
+  max-width: 400px;
+}
+.error-container[_ngcontent-ng-c532378349]   .error-message[_ngcontent-ng-c532378349]   svg[_ngcontent-ng-c532378349] {
+  margin-bottom: 1rem;
+}
+.error-container[_ngcontent-ng-c532378349]   .error-message[_ngcontent-ng-c532378349]   h3[_ngcontent-ng-c532378349] {
+  color: #dc2626;
+  margin-bottom: 0.5rem;
+}
+.error-container[_ngcontent-ng-c532378349]   .error-message[_ngcontent-ng-c532378349]   p[_ngcontent-ng-c532378349] {
+  color: #64748b;
+  margin-bottom: 1.5rem;
+}
+.main-interface[_ngcontent-ng-c532378349] {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-right: 320px;
+  transition: padding-right 0.3s ease;
+  position: relative;
+}
+.toolbar-container[_ngcontent-ng-c532378349] {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.75rem 1.5rem;
+}
+.visualization-area[_ngcontent-ng-c532378349] {
+  flex: 1;
+  position: relative;
+  background: #f8fafc;
+  min-height: 500px;
+  max-height: calc(100vh - 100px);
+}
+.visualization-area[_ngcontent-ng-c532378349]   .viewer-container[_ngcontent-ng-c532378349] {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  min-height: 500px;
+}
+.visualization-area[_ngcontent-ng-c532378349]   .viewer-container[_ngcontent-ng-c532378349]   .loading-2d[_ngcontent-ng-c532378349] {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #6b7280;
+}
+.visualization-area[_ngcontent-ng-c532378349]   .viewer-container[_ngcontent-ng-c532378349]   .loading-2d[_ngcontent-ng-c532378349]   .loading-spinner[_ngcontent-ng-c532378349] {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  animation: _ngcontent-ng-c532378349_spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+.visualization-area[_ngcontent-ng-c532378349]   .viewer-container[_ngcontent-ng-c532378349]   .loading-2d[_ngcontent-ng-c532378349]   p[_ngcontent-ng-c532378349] {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+}
+.visualization-area[_ngcontent-ng-c532378349]   .viewer-container[_ngcontent-ng-c532378349]   .loading-2d[_ngcontent-ng-c532378349]   small[_ngcontent-ng-c532378349] {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+.visualization-area[_ngcontent-ng-c532378349]   .viewer-container[_ngcontent-ng-c532378349]   .debug-info[_ngcontent-ng-c532378349] {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  z-index: 1000;
+}
+.visualization-area[_ngcontent-ng-c532378349]   .viewer-container[_ngcontent-ng-c532378349]   .debug-info[_ngcontent-ng-c532378349]   p[_ngcontent-ng-c532378349] {
+  margin: 0.25rem 0;
+}
+@keyframes _ngcontent-ng-c532378349_spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.view-controls-2d[_ngcontent-ng-c532378349] {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.view-controls-2d[_ngcontent-ng-c532378349]   .view-selector[_ngcontent-ng-c532378349] {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.view-controls-2d[_ngcontent-ng-c532378349]   .view-selector[_ngcontent-ng-c532378349]   .view-label[_ngcontent-ng-c532378349] {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  white-space: nowrap;
+}
+.view-controls-2d[_ngcontent-ng-c532378349]   .view-selector[_ngcontent-ng-c532378349]   .view-buttons[_ngcontent-ng-c532378349] {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.view-controls-2d[_ngcontent-ng-c532378349]   .view-selector[_ngcontent-ng-c532378349]   .view-buttons[_ngcontent-ng-c532378349]   .view-btn[_ngcontent-ng-c532378349] {
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.view-controls-2d[_ngcontent-ng-c532378349]   .view-selector[_ngcontent-ng-c532378349]   .view-buttons[_ngcontent-ng-c532378349]   .view-btn[_ngcontent-ng-c532378349]:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+.view-controls-2d[_ngcontent-ng-c532378349]   .view-selector[_ngcontent-ng-c532378349]   .view-buttons[_ngcontent-ng-c532378349]   .view-btn.active[_ngcontent-ng-c532378349] {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+.view-controls-2d[_ngcontent-ng-c532378349]   .view-selector[_ngcontent-ng-c532378349]   .view-buttons[_ngcontent-ng-c532378349]   .view-btn[_ngcontent-ng-c532378349]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+.view-indicators[_ngcontent-ng-c532378349] {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.view-indicators[_ngcontent-ng-c532378349]   .view-mode-badge[_ngcontent-ng-c532378349] {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.view-indicators[_ngcontent-ng-c532378349]   .view-mode-badge[data-mode="2d"][_ngcontent-ng-c532378349] {
+  background: rgba(59, 130, 246, 0.9);
+}
+.view-indicators[_ngcontent-ng-c532378349]   .view-mode-badge[data-mode="3d"][_ngcontent-ng-c532378349] {
+  background: rgba(249, 115, 22, 0.9);
+}
+.view-indicators[_ngcontent-ng-c532378349]   .zoom-indicator[_ngcontent-ng-c532378349] {
+  background: rgba(255, 255, 255, 0.95);
+  color: #374151;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  border: 1px solid #e5e7eb;
+}
+.sidebar[_ngcontent-ng-c532378349] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100%;
+  background: white;
+  border-left: 1px solid #e2e8f0;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+  z-index: 50;
+  overflow-y: auto;
+}
+.sidebar.collapsed[_ngcontent-ng-c532378349] {
+  transform: translateX(100%);
+}
+.visualization-footer[_ngcontent-ng-c532378349] {
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 1rem 1.5rem;
+}
+.visualization-footer[_ngcontent-ng-c532378349]   .stats-quick[_ngcontent-ng-c532378349] {
+  display: flex;
+  gap: 2rem;
+}
+.visualization-footer[_ngcontent-ng-c532378349]   .stats-quick[_ngcontent-ng-c532378349]   .stat-item[_ngcontent-ng-c532378349] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+.visualization-footer[_ngcontent-ng-c532378349]   .stats-quick[_ngcontent-ng-c532378349]   .stat-item[_ngcontent-ng-c532378349]   .stat-label[_ngcontent-ng-c532378349] {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.visualization-footer[_ngcontent-ng-c532378349]   .stats-quick[_ngcontent-ng-c532378349]   .stat-item[_ngcontent-ng-c532378349]   .stat-value[_ngcontent-ng-c532378349] {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+@keyframes _ngcontent-ng-c532378349_spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 1024px) {
+  .visualization-container[_ngcontent-ng-c532378349]:not(.sidebar-collapsed)   .main-interface[_ngcontent-ng-c532378349] {
+    padding-right: 0;
+  }
+  .visualization-container[_ngcontent-ng-c532378349]:not(.sidebar-collapsed)   .sidebar[_ngcontent-ng-c532378349] {
+    transform: translateX(100%);
+  }
+  .container-navigation[_ngcontent-ng-c532378349]   .container-indicator[_ngcontent-ng-c532378349] {
+    display: none;
+  }
+  .header-center[_ngcontent-ng-c532378349] {
+    display: none;
+  }
+}
+@media (max-width: 768px) {
+  .visualization-header[_ngcontent-ng-c532378349] {
+    padding: 0.75rem 1rem;
+  }
+  .visualization-header[_ngcontent-ng-c532378349]   .simulation-info[_ngcontent-ng-c532378349]   h1[_ngcontent-ng-c532378349] {
+    font-size: 1.25rem;
+  }
+  .visualization-header[_ngcontent-ng-c532378349]   .header-right[_ngcontent-ng-c532378349] {
+    gap: 0.5rem;
+  }
+  .visualization-header[_ngcontent-ng-c532378349]   .btn[_ngcontent-ng-c532378349] {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+  .visualization-header[_ngcontent-ng-c532378349]   .btn.btn-icon[_ngcontent-ng-c532378349] {
+    padding: 0.375rem;
+  }
+  .toolbar-container[_ngcontent-ng-c532378349] {
+    padding: 0.5rem 1rem;
+  }
+  .view-indicators[_ngcontent-ng-c532378349] {
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+  .visualization-footer[_ngcontent-ng-c532378349] {
+    padding: 0.75rem 1rem;
+  }
+  .visualization-footer[_ngcontent-ng-c532378349]   .stats-quick[_ngcontent-ng-c532378349] {
+    gap: 1rem;
+  }
+  .visualization-footer[_ngcontent-ng-c532378349]   .stats-quick[_ngcontent-ng-c532378349]   .stat-item[_ngcontent-ng-c532378349]   .stat-value[_ngcontent-ng-c532378349] {
+    font-size: 1rem;
+  }
+}
+.export-dropdown[_ngcontent-ng-c532378349] {
+  position: relative;
+  display: inline-block;
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-btn[_ngcontent-ng-c532378349] {
+  background: #f97316;
+  color: white;
+  border: 1px solid #f97316;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-btn[_ngcontent-ng-c532378349]:hover {
+  background: #ea580c;
+  border-color: #ea580c;
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-btn.dropdown-open[_ngcontent-ng-c532378349] {
+  background: #ea580c;
+  border-color: #ea580c;
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-menu[_ngcontent-ng-c532378349] {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  z-index: 1000;
+  overflow: hidden;
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-section[_ngcontent-ng-c532378349] {
+  border-bottom: 1px solid #f1f5f9;
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-section[_ngcontent-ng-c532378349]:last-child {
+  border-bottom: none;
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-section[_ngcontent-ng-c532378349]   .export-section-title[_ngcontent-ng-c532378349] {
+  padding: 0.75rem 1rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #f8fafc;
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-section[_ngcontent-ng-c532378349]   .export-option[_ngcontent-ng-c532378349] {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: white;
+  color: #374151;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-section[_ngcontent-ng-c532378349]   .export-option[_ngcontent-ng-c532378349]:hover {
+  background: #f8fafc;
+  color: #1f2937;
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-section[_ngcontent-ng-c532378349]   .export-option[_ngcontent-ng-c532378349]   svg[_ngcontent-ng-c532378349] {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-section[_ngcontent-ng-c532378349]   .export-option.export-logidoo[_ngcontent-ng-c532378349] {
+  background:
+    linear-gradient(
+      135deg,
+      #ff6b35 0%,
+      #0066cc 100%);
+  color: white;
+  font-weight: 600;
+  border: 2px solid transparent;
+  margin: 0.5rem;
+  border-radius: 8px;
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-section[_ngcontent-ng-c532378349]   .export-option.export-logidoo[_ngcontent-ng-c532378349]:hover {
+  background:
+    linear-gradient(
+      135deg,
+      #ea580c 0%,
+      #0052a3 100%);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-section[_ngcontent-ng-c532378349]   .export-option.export-logidoo[_ngcontent-ng-c532378349]   .logidoo-text[_ngcontent-ng-c532378349] {
+  background:
+    linear-gradient(
+      45deg,
+      #fff,
+      #f0f8ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+.export-dropdown[_ngcontent-ng-c532378349]   .export-section[_ngcontent-ng-c532378349]   .export-option.export-logidoo[_ngcontent-ng-c532378349]   svg[_ngcontent-ng-c532378349] {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+/*# sourceMappingURL=/visualization.component.css.map */</style><style ng-app-id="ng">
+
+.export-dropdown[_ngcontent-ng-c532378349] {
+  position: relative;
+  display: inline-block;
+}
+.export-btn[_ngcontent-ng-c532378349] {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: auto;
+}
+.export-btn[_ngcontent-ng-c532378349]   .dropdown-arrow[_ngcontent-ng-c532378349] {
+  transition: transform 0.2s ease;
+}
+.export-btn.dropdown-open[_ngcontent-ng-c532378349]   .dropdown-arrow[_ngcontent-ng-c532378349] {
+  transform: rotate(180deg);
+}
+.export-menu[_ngcontent-ng-c532378349] {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1000;
+  min-width: 280px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-top: 4px;
+}
+.export-section[_ngcontent-ng-c532378349] {
+  padding: 8px 0;
+}
+.export-section[_ngcontent-ng-c532378349]:not(:last-child) {
+  border-bottom: 1px solid #f1f5f9;
+}
+.export-section-title[_ngcontent-ng-c532378349] {
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.export-option[_ngcontent-ng-c532378349] {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  color: #334155;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+.export-option[_ngcontent-ng-c532378349]:hover {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+.export-option[_ngcontent-ng-c532378349]:active {
+  background-color: #e2e8f0;
+}
+.export-option[_ngcontent-ng-c532378349]   svg[_ngcontent-ng-c532378349] {
+  flex-shrink: 0;
+  color: #64748b;
+}
+.export-option[_ngcontent-ng-c532378349]:hover   svg[_ngcontent-ng-c532378349] {
+  color: #3b82f6;
+}
+.export-premium[_ngcontent-ng-c532378349] {
+  background:
+    linear-gradient(
+      135deg,
+      #f8fafc 0%,
+      #f1f5f9 100%);
+  border-left: 3px solid #3b82f6;
+}
+.export-premium[_ngcontent-ng-c532378349]:hover {
+  background:
+    linear-gradient(
+      135deg,
+      #e2e8f0 0%,
+      #cbd5e1 100%);
+}
+.premium-badge[_ngcontent-ng-c532378349] {
+  margin-left: auto;
+  font-size: 12px;
+}
+.export-menu-overlay[_ngcontent-ng-c532378349] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background: transparent;
+}
+.export-menu[_ngcontent-ng-c532378349] {
+  animation: _ngcontent-ng-c532378349_slideDown 0.2s ease-out;
+  transform-origin: top right;
+}
+@keyframes _ngcontent-ng-c532378349_slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@media (max-width: 768px) {
+  .export-menu[_ngcontent-ng-c532378349] {
+    right: -8px;
+    min-width: 260px;
+  }
+}
+/*# sourceMappingURL=/visualization.component.css.map */</style></head>
+<body class="mat-typography"><!--nghm--><script type="text/javascript" id="ng-event-dispatch-contract">(()=>{function p(t,n,r,o,e,i,f,m){return{eventType:t,event:n,targetElement:r,eic:o,timeStamp:e,eia:i,eirp:f,eiack:m}}function u(t){let n=[],r=e=>{n.push(e)};return{c:t,q:n,et:[],etc:[],d:r,h:e=>{r(p(e.type,e,e.target,t,Date.now()))}}}function s(t,n,r){for(let o=0;o<n.length;o++){let e=n[o];(r?t.etc:t.et).push(e),t.c.addEventListener(e,t.h,r)}}function c(t,n,r,o,e=window){let i=u(t);e._ejsas||(e._ejsas={}),e._ejsas[n]=i,s(i,r),s(i,o,!0)}window.__jsaction_bootstrap=c;})();
+</script><script>window.__jsaction_bootstrap(document.body,"ng",["click"],[]);</script>
+  <app-root ng-version="19.2.14" _nghost-ng-c1536842746="" ngh="1" ng-server-context="ssg"><router-outlet _ngcontent-ng-c1536842746=""></router-outlet><app-visualization _nghost-ng-c532378349="" ngh="0"><div _ngcontent-ng-c532378349="" class="visualization-container"><header _ngcontent-ng-c532378349="" class="visualization-header"><div _ngcontent-ng-c532378349="" class="header-left"><button _ngcontent-ng-c532378349="" title="Retour à la simulation" class="btn btn-icon" jsaction="click:;"><svg _ngcontent-ng-c532378349="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path _ngcontent-ng-c532378349="" d="M19 12H5M12 19l-7-7 7-7"></path></svg></button><div _ngcontent-ng-c532378349="" class="simulation-info"><h1 _ngcontent-ng-c532378349="">Visualisation de simulation</h1><div _ngcontent-ng-c532378349="" class="simulation-meta"><span _ngcontent-ng-c532378349="">0 conteneur(s)</span><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--></div><!--bindings={
+  "ng-reflect-ng-if": "[object Object]"
+}--></div></div><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><div _ngcontent-ng-c532378349="" class="header-right" data-current-view="3d"><button _ngcontent-ng-c532378349="" title="Basculer vue 2D/3D" class="btn btn-toggle active" data-toggle-view="2d" jsaction="click:;"><span _ngcontent-ng-c532378349="">3D</span><!--bindings={
+  "ng-reflect-ng-if": "true"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--></button><button _ngcontent-ng-c532378349="" title="Réinitialiser la vue" class="btn btn-icon" jsaction="click:;"><svg _ngcontent-ng-c532378349="" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path _ngcontent-ng-c532378349="" d="M1 4v6h6M23 20v-6h-6"></path><path _ngcontent-ng-c532378349="" d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg></button><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><button _ngcontent-ng-c532378349="" title="Basculer panneau latéral" class="btn btn-icon" jsaction="click:;"><svg _ngcontent-ng-c532378349="" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect _ngcontent-ng-c532378349="" x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line _ngcontent-ng-c532378349="" x1="15" y1="3" x2="15" y2="21"></line></svg></button></div></header><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><div _ngcontent-ng-c532378349="" class="error-container"><div _ngcontent-ng-c532378349="" class="error-message"><svg _ngcontent-ng-c532378349="" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle _ngcontent-ng-c532378349="" cx="12" cy="12" r="10"></circle><line _ngcontent-ng-c532378349="" x1="15" y1="9" x2="9" y2="15"></line><line _ngcontent-ng-c532378349="" x1="9" y1="9" x2="15" y2="15"></line></svg><h3 _ngcontent-ng-c532378349="">Erreur de visualisation</h3><p _ngcontent-ng-c532378349="">Aucune donnée de simulation disponible</p><button _ngcontent-ng-c532378349="" class="btn btn-primary" jsaction="click:;"> Retour à la simulation </button></div></div><!--bindings={
+  "ng-reflect-ng-if": "true"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--></div></app-visualization><!--container--></app-root>
+<link rel="modulepreload" href="chunk-TXDUYLVM.js"><script src="polyfills.js" type="module"></script><script src="scripts.js" defer=""></script><script src="main.js" type="module"></script>
+
+<script id="ng-state" type="application/json">{"__nghData__":[{"t":{"9":"t4","10":"t6","13":"t7","14":"t8","19":"t9","24":"t10","25":"t11","26":"t12","27":"t13"},"c":{"9":[{"i":"t4","r":1,"t":{"3":"t5"},"c":{"3":[]}}],"10":[],"13":[{"i":"t7","r":1}],"14":[],"19":[],"24":[],"25":[{"i":"t11","r":1}],"26":[],"27":[]}},{"c":{"0":[{"i":"c532378349","r":1}]}}]}</script></body></html>
