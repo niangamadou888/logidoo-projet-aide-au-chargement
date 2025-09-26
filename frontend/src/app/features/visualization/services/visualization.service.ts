@@ -134,8 +134,8 @@ export class VisualizationService {
       const visualizationContainer: VisualizationContainer = {
         id: container.id || `container-${index}`,
         ref: container.ref,
-        matricule: container.matricule || 'N/A',
-        type: container.type || 'Container',
+        matricule: container.matricule || fromCache?.matricule || `CONT-${String(index + 1).padStart(3, '0')}`,
+        type: container.type || fromCache?.type || 'Container',
         categorie: container.categorie || 'conteneur',
         dimensions: chosenDims,
         items: this.convertItemsToVisualization(container.items || [], container.id),
@@ -152,7 +152,8 @@ export class VisualizationService {
           poids: weightUtilPercent
         },
         color: this.getContainerColor(container.categorie),
-        position: { x: index * 800, y: 0, z: 0 }
+        position: { x: index * 800, y: 0, z: 0 },
+        images: container.images || fromCache?.images || []
       };
 
       console.log('📏 Dimensions utilisées:', visualizationContainer.dimensions);
