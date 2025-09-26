@@ -134,6 +134,7 @@ export class VisualizationService {
       const visualizationContainer: VisualizationContainer = {
         id: container.id || `container-${index}`,
         ref: container.ref,
+        matricule: container.matricule || 'N/A',
         type: container.type || 'Container',
         categorie: container.categorie || 'conteneur',
         dimensions: chosenDims,

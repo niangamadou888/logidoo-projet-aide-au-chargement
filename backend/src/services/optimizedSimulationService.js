@@ -518,6 +518,7 @@ function evaluateContainerFit(container, expandedItems) {
   
   return {
     containerId: container._id,
+    matricule: container.matricule,
     containerType: container.type,
     containerCategory: container.categorie,
     dimensions: container.dimensions,

@@ -222,7 +222,7 @@ export class ExportLogidooService {
         pdf.setFontSize(14);
         pdf.setFont('helvetica', 'bold');
         pdf.setTextColor(colors.blue);
-        const containerTitle = `Contenant ${index + 1}: ${container.type}`;
+        const containerTitle = `Contenant ${index + 1}: ${container.matricule || 'N/A'} - ${container.type}`;
         pdf.text(containerTitle, 25, yPos + 5);
         
         // Image du contenant (image réelle)
@@ -458,8 +458,9 @@ export class ExportLogidooService {
     pdf.setFontSize(10);
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(colors.blue);
-    
+
     const details = [
+      { label: 'Matricule:', value: container.matricule || 'N/A' },
       { label: 'Type:', value: container.type || 'Standard' },
       { label: 'Dimensions:', value: `${container.dimensions.longueur} × ${container.dimensions.largeur} × ${container.dimensions.hauteur} cm` },
       { label: 'Volume total:', value: `${((container.dimensions.longueur * container.dimensions.largeur * container.dimensions.hauteur) / 1000000).toFixed(2)} m³` },
@@ -549,7 +550,7 @@ export class ExportLogidooService {
     pdf.setFontSize(14);
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(colors.blue);
-    const containerTitle = `Contenant ${index + 1}: ${container.type}`;
+    const containerTitle = `Contenant ${index + 1}: ${container.matricule || 'N/A'} - ${container.type}`;
     pdf.text(containerTitle, 25, yPos + 1);
     
     // Détails en colonnes
@@ -962,7 +963,7 @@ export class ExportLogidooService {
     pdf.setFontSize(12);
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(colors.blue);
-    const containerTitle = `Contenant ${index + 1} - ${container.type}`;
+    const containerTitle = `Contenant ${index + 1} - ${container.matricule || 'N/A'} - ${container.type}`;
     pdf.text(containerTitle, 25, yPos + 3);
   }
 

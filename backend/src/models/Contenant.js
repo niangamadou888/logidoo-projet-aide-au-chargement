@@ -1,15 +1,16 @@
 const mongoose = require('mongoose');
 
 const ContenantSchema = new mongoose.Schema({
+  matricule: { type: String, required: true, unique: true },
 
   categorie: {
     type: String,
-    enum: ["camion", "conteneur"], 
+    enum: ["camion", "conteneur"],
     required: true
   },
 
-  
-  type: { type: String, required: true }, 
+
+  type: { type: String, required: true },
   modele: { type: String }, 
 
 

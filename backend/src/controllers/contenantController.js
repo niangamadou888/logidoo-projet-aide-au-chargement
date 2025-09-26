@@ -27,6 +27,17 @@ exports.creerContenant = async (req, res) => {
   try {
     let data = req.body;
 
+    // Vérifier que le matricule est fourni
+    if (!data.matricule || data.matricule.trim() === '') {
+      return res.status(400).json({
+        message: "Le matricule est requis",
+        error: "Matricule manquant"
+      });
+    }
+
+    // S'assurer que le matricule est une chaîne de caractères
+    data.matricule = data.matricule.toString().trim();
+
     // Parse dimensions si elles sont envoyées en string
     if (data.dimensions && typeof data.dimensions === "string") {
       data.dimensions = JSON.parse(data.dimensions);
@@ -58,7 +69,7 @@ exports.creerContenant = async (req, res) => {
 
     // Calcul automatique du volume si non fourni
     if (data.dimensions && (!data.volume || data.volume === 0)) {
-      data.volume = (data.dimensions.longueur * data.dimensions.largeur * data.dimensions.hauteur) / 1000000;
+      data.volume = (data.dimensions.longueur * data.dimensions.largeur * data.dimensions.hauteur) / 1000000000;
     }
 
     const contenant = await service.creerContenant(data);

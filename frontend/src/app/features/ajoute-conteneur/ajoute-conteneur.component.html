@@ -11,6 +11,14 @@
       <!-- Colonne gauche -->
       <div class="col">
         <mat-form-field appearance="outline" class="full">
+          <mat-label>Matricule</mat-label>
+          <input matInput formControlName="matricule" />
+          <mat-error *ngIf="contenantForm.get('matricule')?.hasError('required')">
+            Matricule requis
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
           <mat-label>Catégorie</mat-label>
           <mat-select formControlName="categorie">
             <mat-option *ngFor="let cat of categories" [value]="cat">{{ cat | titlecase }}</mat-option>

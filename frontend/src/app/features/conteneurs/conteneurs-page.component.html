@@ -99,8 +99,12 @@
                   {{ c.disponible ? 'Disponible' : 'Indisponible' }}
                 </div>
               </div>
-              
+
               <div class="card-details">
+                <div class="detail-row">
+                  <span class="detail-icon">🏷️</span>
+                  <span class="detail-text">Matricule: {{ c.matricule || 'Non défini' }}</span>
+                </div>
                 <div class="detail-row">
                   <span class="detail-icon">📏</span>
                   <span class="detail-text">{{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm</span>

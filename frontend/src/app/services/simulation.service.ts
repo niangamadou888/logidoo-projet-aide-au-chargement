@@ -31,6 +31,7 @@ export interface SimulationResult {
 export interface ContainerResult {
   id: string;
   ref: string;
+  matricule: string;
   type: string;
   categorie: string;
   capacity: { volume: number; poids: number };
@@ -65,6 +66,7 @@ export interface ItemWithPosition {
 
 export interface OptimalContainerResult {
   containerId: string;
+  matricule: string;
   containerType: string;
   containerCategory: string;
   dimensions: {
@@ -89,7 +91,7 @@ export interface OptimalContainerResult {
   providedIn: 'root'
 })
 export class SimulationService {
-  private apiUrl = 'https://logidoo.onrender.com/api/simulations';
+  private apiUrl = 'http://localhost:3000/api/simulations';
 
   constructor(private http: HttpClient) {}
 

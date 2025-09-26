@@ -228,6 +228,7 @@ export class SimulationComponent implements OnInit {
 
           if (selectedContainer) {
             this.selectedContainerStats = {
+              matricule: selectedContainer.matricule,
               containerType: selectedContainer.type,
               containerCategory: selectedContainer.categorie,
               dimensions: selectedContainer.dimensions,

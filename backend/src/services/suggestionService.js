@@ -8,7 +8,7 @@ function calculerBesoins(articles) {
   let poidsTotal = 0;
 
   articles.forEach(article => {
-    const volumeArticle = (article.longueur * article.largeur * article.hauteur) / 1000000; // cm³ → m³
+    const volumeArticle = (article.longueur * article.largeur * article.hauteur) / 1000000000; // mm³ → m³
     volumeTotal += volumeArticle * article.quantite;
     poidsTotal += article.poids * article.quantite;
   });
@@ -22,7 +22,7 @@ function calculerBesoins(articles) {
 
 async function creerContenant(data){
     if(data.dimensions){
-     data.volume = (data.dimensions.longueur * data.dimensions.largeur * data.dimensions.hauteur) / 1000000;
+     data.volume = (data.dimensions.longueur * data.dimensions.largeur * data.dimensions.hauteur) / 1000000000;
     }
     const contenant=new Contenant(data);
     await contenant.save();
@@ -99,7 +99,7 @@ async function updateContenant(id, data) {
   }
   // Calcul automatique du volume si dimensions présentes
   if (data.dimensions) {
-    data.volume = (data.dimensions.longueur * data.dimensions.largeur * data.dimensions.hauteur) / 1000000;
+    data.volume = (data.dimensions.longueur * data.dimensions.largeur * data.dimensions.hauteur) / 1000000000;
   }
   const updatedContenant = await Contenant.findByIdAndUpdate(
     id,

@@ -35,6 +35,7 @@ export interface VisualizationItem {
 export interface VisualizationContainer {
   id: string;
   ref?: string;
+  matricule: string;
   type: string;
   categorie: 'camion' | 'conteneur';
   dimensions: Dimensions3D;

@@ -26,6 +26,10 @@
       <div class="container-info" *ngIf="getCurrentContainer() as container">
         <h4>Conteneur actuel</h4>
         <div class="info-item">
+          <span class="label">Matricule:</span>
+          <span class="value">{{ container.matricule || 'N/A' }}</span>
+        </div>
+        <div class="info-item">
           <span class="label">Type:</span>
           <span class="value">{{ container.type || 'N/A' }}</span>
         </div>

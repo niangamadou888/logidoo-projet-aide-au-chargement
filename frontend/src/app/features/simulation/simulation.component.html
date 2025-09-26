@@ -249,6 +249,7 @@
             (click)="selectContainer(c._id)">
             <img *ngIf="c.images && c.images.length > 0" [src]="'https://logidoo.onrender.com' + c.images[0]"
               [alt]="c.type" width="100">
+            <div class="conteneur-matricule">Matricule: {{ c.matricule || 'Non défini' }}</div>
             <div class="conteneur-title">Type: {{ c.type }}</div>
             <div class="conteneur-dimensions">
               {{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm
@@ -418,6 +419,7 @@
       <div class="containers-grid">
         <div *ngFor="let container of simulationResultats.containers" class="container-result-card">
           <div class="container-header">
+            <div class="container-matricule">{{ container.matricule || 'Non défini' }}</div>
             <strong>{{ container.type }}</strong>
             <span class="container-category">{{ container.categorie }}</span>
           </div>
