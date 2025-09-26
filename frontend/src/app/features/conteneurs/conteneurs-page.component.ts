@@ -68,6 +68,7 @@ export class ConteneursPageComponent implements OnInit {
 
   deleteContenant(id?: string): void {
     if (!id) return;
+    if (!this.isBrowser) return;
     const confirmed = window.confirm('Supprimer ce contenant ?');
     if (!confirmed) return;
 

@@ -495,7 +495,7 @@ export class ExportService {
               `${item.dimensions.longueur}×${item.dimensions.largeur}×${item.dimensions.hauteur}`,
               `${(item.dimensions.longueur * item.dimensions.largeur * item.dimensions.hauteur / 1000).toFixed(1)}L`,
               item.poids ? `${item.poids}kg` : 'N/A',
-              item.fragile ? 'Fragile' : 'Standard',
+              'Standard',
               (typeof item.gerbable !== 'undefined' ? (item.gerbable ? 'Empilable' : 'Non empilable') : 'N/A')
             ];
             

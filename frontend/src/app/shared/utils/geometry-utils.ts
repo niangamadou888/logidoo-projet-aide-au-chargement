@@ -53,8 +53,8 @@ export class GeometryUtils {
   static findBestPosition(
     containerDims: Dimensions3D,
     itemDims: Dimensions3D,
- 
-    existingItems: Array<{position: Position3D, dimensions: Dimensions3D, gerbable?: boolean, fragile?: boolean}>,
+
+    existingItems: Array<{position: Position3D, dimensions: Dimensions3D, gerbable?: boolean}>,
     fragile = false,
     step = 10
   ): Position3D | null {
@@ -70,37 +70,13 @@ export class GeometryUtils {
 
     if (maxX < minX || maxY < minY || maxZ < minZ) return null;
 
-    if (fragile) {
-      // Pour un objet fragile: ne pas "flotter"; poser uniquement sur le sol (z=0)
-      // ou exactement au-dessus du sommet d'un objet déjà placé (plateau de support).
-      const supportLevels = new Set<number>();
-      supportLevels.add(0);
-      for (const ex of existingItems) {
-        supportLevels.add(ex.position.z + ex.dimensions.hauteur);
-      }
-      // Essayer du plus haut au plus bas pour garder les fragiles au sommet, mais posés
-      const zLevels = Array.from(supportLevels.values()).sort((a, b) => b - a);
-
-      for (const z of zLevels) {
-        for (let y = minY; y <= maxY; y += step) {
-          for (let x = minX; x <= maxX; x += step) {
-            const position: Position3D = { x, y, z };
-            if (!this.collides(position, itemDims, existingItems) && this.isSupported(position, itemDims, existingItems)) {
-              return position;
-            }
-          }
-        }
-      }
-    } else {
-      // Parcours standard: de bas en haut
-      for (let z = minZ; z <= maxZ; z += step) {
-        for (let y = minY; y <= maxY; y += step) {
-          for (let x = minX; x <= maxX; x += step) {
-            const position: Position3D = { x, y, z };
-            if (!this.collides(position, itemDims, existingItems)) {
-              return position;
-            }
- 
+    // Parcours standard: de bas en haut
+    for (let z = minZ; z <= maxZ; z += step) {
+      for (let y = minY; y <= maxY; y += step) {
+        for (let x = minX; x <= maxX; x += step) {
+          const position: Position3D = { x, y, z };
+          if (!this.collides(position, itemDims, existingItems)) {
+            return position;
           }
         }
       }
@@ -115,7 +91,7 @@ export class GeometryUtils {
   static collides(
     position: Position3D,
     dimensions: Dimensions3D,
-    existingItems: Array<{position: Position3D, dimensions: Dimensions3D, gerbable?: boolean, fragile?: boolean}>
+    existingItems: Array<{position: Position3D, dimensions: Dimensions3D, gerbable?: boolean}>
   ): boolean {
     for (const existing of existingItems) {
       // 1) Collision volumique classique (empêche le chevauchement)
@@ -139,18 +115,6 @@ export class GeometryUtils {
         }
       }
 
-      // 3) Règle "fragile en dessous": interdire toute pose au-dessus d'un colis fragile
-      if (existing.fragile === true) {
-        const xOverlap = position.x < existing.position.x + existing.dimensions.longueur &&
-                         position.x + dimensions.longueur > existing.position.x;
-        const yOverlap = position.y < existing.position.y + existing.dimensions.largeur &&
-                         position.y + dimensions.largeur > existing.position.y;
-        const candidateBottomZ = position.z;
-        const existingTopZ = existing.position.z + existing.dimensions.hauteur;
-        if (xOverlap && yOverlap && candidateBottomZ >= existingTopZ) {
-          return true; // rien au-dessus d'un fragile
-        }
-      }
     }
     return false;
   }
@@ -163,7 +127,7 @@ export class GeometryUtils {
   static isSupported(
     position: Position3D,
     dimensions: Dimensions3D,
-    existingItems: Array<{position: Position3D, dimensions: Dimensions3D, gerbable?: boolean, fragile?: boolean}>
+    existingItems: Array<{position: Position3D, dimensions: Dimensions3D, gerbable?: boolean}>
   ): boolean {
     if (position.z === 0) return true;
 

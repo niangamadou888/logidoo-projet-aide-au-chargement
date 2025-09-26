@@ -13,7 +13,7 @@ export interface PlacementResult {
 }
 
 export interface PlacementConstraint {
-  type: 'fragile' | 'weight' | 'stackable' | 'dimension' | 'stability';
+  type: 'weight' | 'stackable' | 'dimension' | 'stability';
   description: string;
   satisfied: boolean;
   severity: 'info' | 'warning' | 'error';

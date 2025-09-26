@@ -261,30 +261,6 @@
     </div>
   </div>
 
-  <!-- Footer avec statistiques rapides -->
-  <footer class="visualization-footer" *ngIf="!loading && !error && scene">
-    <div class="stats-quick">
-      <div class="stat-item" *ngIf="scene.containers.length">
-        <span class="stat-label">Conteneurs:</span>
-        <span class="stat-value">{{ scene.containers.length }}</span>
-      </div>
-      
-      <div class="stat-item" *ngIf="scene.containers[scene.currentContainerIndex]">
-        <span class="stat-label">Items:</span>
-        <span class="stat-value">{{ scene.containers[scene.currentContainerIndex].items.length }}</span>
-      </div>
-      
-      <div class="stat-item" *ngIf="scene.containers[scene.currentContainerIndex]">
-        <span class="stat-label">Volume utilisé:</span>
-        <span class="stat-value">{{ scene.containers[scene.currentContainerIndex].utilization.volume | number:'1.0-0' }}%</span>
-      </div>
-      
-      <div class="stat-item" *ngIf="scene.containers[scene.currentContainerIndex]">
-        <span class="stat-label">Poids utilisé:</span>
-        <span class="stat-value">{{ scene.containers[scene.currentContainerIndex].utilization.poids | number:'1.0-0' }}%</span>
-      </div>
-    </div>
-  </footer>
 </div>
 
 
@@ -424,6 +400,3 @@
   }
 }
 </style>
-
-
-
