@@ -9,7 +9,7 @@ import { isPlatformBrowser } from '@angular/common';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/auth';
+  private apiUrl = 'https://logidoo-projet-aide-au-chargement-7.onrender.com/api/auth';
   private tokenKey = 'auth_token';
   private userKey = 'user_info';
   private isBrowser: boolean;

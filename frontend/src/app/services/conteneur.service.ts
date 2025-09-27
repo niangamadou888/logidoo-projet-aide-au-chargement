@@ -11,10 +11,10 @@ import { Colis } from './colis.service';
 export class ConteneurService {
 
 //   En Local
- private apiUrl = 'http://localhost:3000/api';
+ private apiUrl = 'https://logidoo-projet-aide-au-chargement-7.onrender.com/api';
 
 //En production
-// private apiUrl = 'https://logidoo.onrender.com/api';
+// private apiUrl = 'https://logidoo-projet-aide-au-chargement-7.onrender.com/api';
 
   constructor(private http: HttpClient) { }
 
