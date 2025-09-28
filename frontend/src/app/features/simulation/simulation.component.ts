@@ -661,6 +661,15 @@ export class SimulationComponent implements OnInit {
     }
   }
 
+  // Back button handler for header: if inside the stepper, move to previous step; otherwise go back to dashboard
+  onBackClick(): void {
+    if (this.currentStep > 1) {
+      this.prevStep();
+    } else {
+      this.router.navigate(['/dashboard/user']);
+    }
+  }
+
   canProceedFromStep1(): boolean {
     return this.listeColis.length > 0;
   }
@@ -711,6 +720,20 @@ export class SimulationComponent implements OnInit {
         nom: restored.nom || '',
         description: restored.description || ''
       });
+      // Restore selection state if present
+      if (restored.selectedContainerId) {
+        this.selectedContainerId = restored.selectedContainerId;
+      }
+      if (typeof restored.selectionAutoOptimal === 'boolean') {
+        this.selectionAutoOptimal = restored.selectionAutoOptimal;
+      }
+      // If a target step was provided in navigation state (e.g., from visualization), open it
+      try {
+        const target = (restored.targetStep || (window.history && (window.history.state as any)?.targetStep)) as number | undefined;
+        if (typeof target === 'number' && target >= 1 && target <= this.totalSteps) {
+          this.currentStep = target;
+        }
+      } catch {}
     } else {
       this.nouvelleSimulation();
     }
@@ -727,6 +750,14 @@ export class SimulationComponent implements OnInit {
       next: (data) => {
         this.containers = data;
         this.loading = false;
+        // If we restored a selected container from navigation state, evaluate it now
+        if (this.selectedContainerId && this.listeColis && this.listeColis.length > 0) {
+          // If selection mode is manual or a container was explicitly selected, evaluate it
+          this.evaluateSelectedContainer();
+        } else if (this.selectionAutoOptimal && this.listeColis && this.listeColis.length > 0) {
+          // Otherwise, if auto selection is on, re-run optimal container search
+          this.trouverConteneurOptimal();
+        }
       },
       error: (err) => {
         console.error('Erreur de chargement des container', err);
@@ -746,6 +777,9 @@ export class SimulationComponent implements OnInit {
       resultats: this.simulationResultats,
       nom: 'Test Visualisation',
       description: 'Test direct',
+      // Preserve selection state for round-trip navigation
+      selectedContainerId: this.selectedContainerId,
+      selectionAutoOptimal: this.selectionAutoOptimal,
       timestamp: Date.now()
     };
 
@@ -856,6 +890,9 @@ get pagedColis(): Colis[] {
       resultats: this.simulationResultats,
       nom: this.simulationName || `Simulation du ${new Date().toLocaleDateString()}`,
       description: this.simulationDescription || '',
+      // Preserve the currently selected container and selection mode so the user returns to the same choice
+      selectedContainerId: this.selectedContainerId,
+      selectionAutoOptimal: this.selectionAutoOptimal,
       timestamp: Date.now()
     };
 

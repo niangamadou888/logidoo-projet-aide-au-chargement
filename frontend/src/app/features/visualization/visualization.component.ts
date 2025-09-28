@@ -283,8 +283,9 @@ export class VisualizationComponent implements OnInit, OnDestroy {
    * Retour à la simulation
   */
   goBackToSimulation(): void {
+    // Navigate back to simulation and request to open the "Choix de contenant" step (step 2)
     this.router.navigate(['/simulation'], {
-      state: { simulationData: this.simulationData }
+      state: { simulationData: this.simulationData, targetStep: 2 }
     });
   }
 
