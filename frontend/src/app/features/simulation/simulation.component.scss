@@ -5136,9 +5136,9 @@
 // Alignement des actions
 .actions-right {
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   margin-top: 1.5rem;
-  padding-left: 0;
+  padding-right: 0;
   
   button {
     background: linear-gradient(135deg, var(--logidoo-blue) 0%, #1a56db 100%);
