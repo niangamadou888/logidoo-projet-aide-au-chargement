@@ -756,6 +756,59 @@ get pagedColis(): Colis[] {
     this.currentPage = page;
   }
 
+  // Nouvelles méthodes pour la pagination améliorée
+  getPaginatedColis(): Colis[] {
+    return this.pagedColis; // Utilise le getter existant
+  }
+  
+  getTotalPages(): number {
+    return this.totalPages; // Utilise le getter existant
+  }
+  
+  getPageNumbers(): number[] {
+    const total = this.totalPages;
+    const current = this.currentPage;
+    const pages: number[] = [];
+    
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (current <= 4) {
+        for (let i = 1; i <= 5; i++) {
+          pages.push(i);
+        }
+        pages.push(-1); // ellipse
+        pages.push(total);
+      } else if (current >= total - 3) {
+        pages.push(1);
+        pages.push(-1); // ellipse
+        for (let i = total - 4; i <= total; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push(-1); // ellipse
+        for (let i = current - 1; i <= current + 1; i++) {
+          pages.push(i);
+        }
+        pages.push(-1); // ellipse
+        pages.push(total);
+      }
+    }
+    
+    return pages;
+  }
+  
+  onItemsPerPageChange(): void {
+    this.currentPage = 1;
+  }
+  
+  getActualIndex(paginatedIndex: number): number {
+    return (this.currentPage - 1) * this.itemsPerPage + paginatedIndex;
+  }
+
   // Méthodes pour les nouvelles étapes d'intégration
   ouvrirVisualisationComplete(): void {
     if (!this.simulationResultats) {
@@ -861,29 +914,6 @@ get pagedColis(): Colis[] {
   colisPerPage = 6;
   viewMode: 'grid' | 'list' = 'list'; // Par défaut en mode liste compact
   
-  // Méthodes de pagination améliorées
-  getPaginatedColis(): Colis[] {
-    if (this.colisPerPage >= this.listeColis.length) {
-      return this.listeColis;
-    }
-    const startIndex = (this.currentPage - 1) * this.colisPerPage;
-    const endIndex = startIndex + this.colisPerPage;
-    return this.listeColis.slice(startIndex, endIndex);
-  }
-  
-  getCurrentPageIndex(): number {
-    return this.currentPage - 1; // Conversion en base 0
-  }
-  
-  getStartIndex(): number {
-    return (this.currentPage - 1) * this.colisPerPage;
-  }
-  
-  getEndIndex(): number {
-    const end = this.currentPage * this.colisPerPage;
-    return Math.min(end, this.listeColis.length);
-  }
-  
   getVisiblePageNumbers(): number[] {
     const totalPages = this.totalPages;
     const maxVisiblePages = 5;
@@ -927,10 +957,6 @@ get pagedColis(): Colis[] {
   
   onPageSizeChange(): void {
     this.currentPage = 1; // Retour à la première page
-  }
-  
-  getTotalPages(): number {
-    return Math.ceil(this.listeColis.length / this.colisPerPage);
   }
   
   // Méthodes pour les étapes 4, 5, 6  

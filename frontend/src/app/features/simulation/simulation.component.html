@@ -8,8 +8,7 @@
         </svg>
       </button>
       <div class="logo">
-        <span class="logo-text">Logid</span>
-        <span class="logo-infinity">∞</span>
+        <img src="assets/images/logo-logidoo.png" alt="Logidoo" class="logo-image">
       </div>
     </div>
     
@@ -174,9 +173,24 @@
         </div>
       </div>
       
-      <!-- Liste compacte des colis -->
+      <!-- Liste compacte des colis avec pagination -->
       <div class="compact-colis-list">
-        <div *ngFor="let colis of listeColis; let i = index" 
+        <!-- En-tête avec info pagination -->
+        <div class="colis-list-header" *ngIf="listeColis.length > 0">
+          <span class="colis-count">{{ listeColis.length }} colis • Page {{ currentPage }} sur {{ getTotalPages() }}</span>
+          <div class="view-controls">
+            <span class="items-per-page">Afficher:</span>
+            <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+              <option [value]="5">5</option>
+              <option [value]="10">10</option>
+              <option [value]="20">20</option>
+              <option [value]="50">50</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Liste paginée -->
+        <div *ngFor="let colis of getPaginatedColis(); let i = index" 
              class="compact-colis-item">
           
           <!-- Indicateur de couleur -->
@@ -198,12 +212,38 @@
           <!-- Actions -->
           <div class="colis-actions">
             <input type="color" [value]="colis.couleur" 
-                   (change)="updateColisCouleur(i, $any($event.target).value)"
+                   (change)="updateColisCouleur(getActualIndex(i), $any($event.target).value)"
                    class="color-picker-mini">
-            <button class="delete-btn-mini" (click)="supprimerColis(i)">
+            <button class="delete-btn-mini" (click)="supprimerColis(getActualIndex(i))">
               <span>×</span>
             </button>
           </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-controls" *ngIf="getTotalPages() > 1">
+          <button class="page-btn" 
+                  [disabled]="currentPage === 1" 
+                  (click)="goToPage(currentPage - 1)">
+            ‹ Précédent
+          </button>
+          
+          <div class="page-numbers">
+            <button *ngFor="let page of getPageNumbers()" 
+                    class="page-number" 
+                    [class.active]="page === currentPage"
+                    [class.ellipsis]="page === -1"
+                    [disabled]="page === -1"
+                    (click)="page !== -1 ? goToPage(page) : null">
+              {{ page === -1 ? '...' : page }}
+            </button>
+          </div>
+          
+          <button class="page-btn" 
+                  [disabled]="currentPage === getTotalPages()" 
+                  (click)="goToPage(currentPage + 1)">
+            Suivant ›
+          </button>
         </div>
       </div>
     </div>
@@ -232,6 +272,26 @@
             <span class="step-number">2</span>
             Choix du contenant
           </h3>
+
+          <!-- Mode de sélection : automatique ou manuel -->
+          <div class="selection-mode-toggle">
+            <label class="mode-option">
+              <input type="radio" name="selectionMode" [value]="true" [(ngModel)]="selectionAutoOptimal">
+              <span class="radio-custom"></span>
+              <span class="mode-text">
+                <strong>Automatique</strong>
+                <small>Le conteneur optimal sera sélectionné</small>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="selectionMode" [value]="false" [(ngModel)]="selectionAutoOptimal">
+              <span class="radio-custom"></span>
+              <span class="mode-text">
+                <strong>Manuel</strong>
+                <small>Sélectionnez le conteneur de votre choix</small>
+              </span>
+            </label>
+          </div>
           
           <!-- Grille des conteneurs style Figma -->
           <div class="figma-containers-grid">
@@ -239,6 +299,7 @@
                  class="figma-container-card" 
                  [class.selected]="c._id === selectedContainerId"
                  [class.recommended]="optimalContainer && c._id === optimalContainer.containerId"
+                 [class.dimmed]="selectionAutoOptimal && optimalContainer && c._id !== optimalContainer.containerId"
                  (click)="c._id && selectContainer(c._id)">
               
               <!-- Image du conteneur -->
@@ -339,14 +400,6 @@
                 Capacité : {{ calculerPoidsTotal() | number:'1.2-2' }} kg max
               </div>
             </div>
-          </div>
-          
-          <!-- Bouton de lancement de visualisation -->
-          <div class="figma-action-button">
-            <button class="figma-launch-btn" (click)="nextStep()" 
-                    [disabled]="!canProceedFromStep2()">
-              Lancer la visualisation
-            </button>
           </div>
         </div>
       </div>
