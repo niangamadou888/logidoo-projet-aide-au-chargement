@@ -262,8 +262,8 @@
             <input type="color" [value]="colis.couleur" 
                    (change)="updateColisCouleur(getActualIndex(i), $any($event.target).value)"
                    class="color-picker-mini">
-            <button class="delete-btn-mini" (click)="supprimerColis(getActualIndex(i))">
-              <span>×</span>
+            <button class="delete-btn-mini" (click)="supprimerColis(getActualIndex(i))" title="Supprimer">
+              <span>🗑️</span>
             </button>
           </div>
         </div>

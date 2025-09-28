@@ -328,7 +328,29 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        
+
+        /* Brand-aligned checkboxes for fragile/empilable */
+        .checkbox-mini.inline {
+          display: flex;
+          align-items: center;
+          gap: 0.35rem;
+          font-size: 0.85rem;
+          color: var(--logidoo-gray-700);
+
+          input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            /* Use Logidoo brand color */
+            accent-color: var(--logidoo-blue);
+          }
+
+          .check-label {
+            margin-left: 2px;
+            user-select: none;
+          }
+        }
+
         .color-picker-mini {
           width: 24px;
           height: 24px;
@@ -336,7 +358,7 @@
           border-radius: 4px;
           cursor: pointer;
         }
-        
+
         .delete-btn-mini {
           background: none;
           border: 1px solid var(--logidoo-gray-300);
