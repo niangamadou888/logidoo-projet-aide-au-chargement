@@ -231,7 +231,13 @@
           
           <!-- Infos principales -->
           <div class="colis-main-info">
-            <div class="colis-title">{{ colis.type }}</div>
+            <div class="colis-title">
+              {{ colis.type }}
+              <span class="colis-badges">
+                <span *ngIf="colis.fragile" class="badge badge-fragile" title="Fragile">Fragile</span>
+                <span *ngIf="colis.gerbable" class="badge badge-gerbable" title="Empilable">Empilable</span>
+              </span>
+            </div>
             <div class="colis-dimensions">{{ colis.longueur }}×{{ colis.largeur }}×{{ colis.hauteur }} cm</div>
           </div>
           
@@ -244,6 +250,15 @@
           
           <!-- Actions -->
           <div class="colis-actions">
+            <label class="checkbox-mini inline" title="Fragile">
+              <input type="checkbox" [checked]="colis.fragile" (change)="toggleFragile(getActualIndex(i))" />
+              <span class="check-label">Fragile</span>
+            </label>
+
+            <label class="checkbox-mini inline" title="Empilable">
+              <input type="checkbox" [checked]="colis.gerbable" (change)="toggleGerbable(getActualIndex(i))" />
+              <span class="check-label">Empilable</span>
+            </label>
             <input type="color" [value]="colis.couleur" 
                    (change)="updateColisCouleur(getActualIndex(i), $any($event.target).value)"
                    class="color-picker-mini">

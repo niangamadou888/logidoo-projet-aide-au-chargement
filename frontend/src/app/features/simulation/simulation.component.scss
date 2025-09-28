@@ -299,6 +299,30 @@
           border-radius: 4px;
         }
       }
+
+      .colis-badges {
+        display: inline-flex;
+        gap: 0.4rem;
+        margin-left: 0.6rem;
+        vertical-align: middle;
+      }
+
+      .badge {
+        font-size: 0.65rem;
+        padding: 0.14rem 0.4rem;
+        border-radius: 999px;
+        font-weight: 600;
+        color: white;
+        display: inline-block;
+      }
+
+      .badge-fragile {
+        background: linear-gradient(90deg, #ef4444, #dc2626);
+      }
+
+      .badge-gerbable {
+        background: linear-gradient(90deg, #06b6d4, #0ea5b8);
+      }
       
       .colis-actions {
         display: flex;
