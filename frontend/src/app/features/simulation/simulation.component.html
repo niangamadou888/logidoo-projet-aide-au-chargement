@@ -323,7 +323,7 @@
           <!-- Mode de sélection : automatique ou manuel -->
           <div class="selection-mode-toggle">
             <label class="mode-option">
-              <input type="radio" name="selectionMode" [value]="true" [(ngModel)]="selectionAutoOptimal">
+              <input type="radio" name="selectionMode" [value]="true" [(ngModel)]="selectionAutoOptimal" (change)="onSelectionModeChange(true)">
               <span class="radio-custom"></span>
               <span class="mode-text">
                 <strong>Automatique</strong>
@@ -331,7 +331,7 @@
               </span>
             </label>
             <label class="mode-option">
-              <input type="radio" name="selectionMode" [value]="false" [(ngModel)]="selectionAutoOptimal">
+              <input type="radio" name="selectionMode" [value]="false" [(ngModel)]="selectionAutoOptimal" (change)="onSelectionModeChange(false)">
               <span class="radio-custom"></span>
               <span class="mode-text">
                 <strong>Manuel</strong>

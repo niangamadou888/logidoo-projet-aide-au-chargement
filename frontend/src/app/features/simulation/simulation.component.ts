@@ -212,6 +212,30 @@ export class SimulationComponent implements OnInit {
     this.simulationEnCours = false;
   }
 
+  // Handler appelé depuis la template lorsque l'utilisateur change le mode de sélection
+  onSelectionModeChange(value: boolean) {
+    this.selectionAutoOptimal = value;
+
+    // Si on active l'auto-sélection et qu'il y a des colis, relancer la recherche du conteneur optimal
+    if (this.selectionAutoOptimal && this.listeColis.length > 0) {
+      this.trouverConteneurOptimal();
+    } else {
+      // En mode manuel, s'il y a un conteneur sélectionné, afficher ses stats
+      if (this.selectedContainerId && this.listeColis.length > 0) {
+        this.evaluateSelectedContainer();
+      } else {
+        // Sinon, réinitialiser l'état lié à l'auto-sélection
+        this.optimalContainer = null;
+        this.selectedContainerStats = null;
+      }
+    }
+
+    // Invalider les anciens résultats de simulation
+    this.simulationResultats = null;
+    this.previewTime = null;
+    this.simulationEnCours = false;
+  }
+
   // Méthode mise à jour pour la nouvelle interface
   selectContainer(containerId: string): void {
     if (!containerId) return;
