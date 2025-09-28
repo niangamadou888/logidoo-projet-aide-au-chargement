@@ -531,33 +531,43 @@ export class SimulationComponent implements OnInit {
 
   validerSimulation() {
     if (this.listeColis.length === 0) {
-      this.snackBar.open('Veuillez ajouter au moins un colis à la simulation', 'OK', {
-        duration: 3000
+      Swal.fire({
+        icon: 'warning',
+        title: 'Aucun colis',
+        text: 'Veuillez ajouter au moins un colis à la simulation',
+        confirmButtonColor: '#2563eb'
       });
       return;
     }
 
-    if (!this.simulationForm.valid) {
-      this.snackBar.open('Veuillez remplir le nom de la simulation', 'OK', {
-        duration: 3000
+    if (!this.simulationName || this.simulationName.trim() === '') {
+      Swal.fire({
+        icon: 'warning', 
+        title: 'Informations manquantes',
+        text: 'Veuillez remplir le nom de la simulation',
+        confirmButtonColor: '#2563eb'
       });
       return;
     }
 
-    // Si on n'a pas encore de résultats, lancer la simulation d'abord
-    if (!this.simulationResultats) {
-      this.snackBar.open('Veuillez d\'abord lancer la simulation', 'OK', {
-        duration: 3000
+    // Vérifier qu'on a bien des résultats de simulation pour pouvoir valider
+    if (!this.simulationResultats || !this.selectedContainerId) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Simulation requise',
+        text: 'Veuillez d\'abord lancer la simulation pour obtenir les calculs d\'optimisation',
+        confirmButtonColor: '#2563eb'
       });
       return;
     }
 
+    // Directement sauvegarder la simulation avec les résultats
     this.loading = true;
 
     // Créer l'objet de simulation
     const simulation = {
-      nom: this.simulationForm.value.nom,
-      description: this.simulationForm.value.description,
+      nom: this.simulationName,
+      description: this.simulationDescription,
       colis: this.listeColis,
       resultats: this.simulationResultats
     };
@@ -567,42 +577,53 @@ export class SimulationComponent implements OnInit {
       resultats: this.simulationResultats
     });
 
-    // Sauvegarder les résultats (avec nom/description)
+    // Sauvegarder les résultats de simulation
     this.simulationService.sauvegarderResultats(this.listeColis, this.simulationResultats, simulation.nom, simulation.description).subscribe({
       next: (response) => {
         console.log('Simulation sauvegardée:', response);
         this.loading = false;
-
-        // Préparer les données pour la visualisation
-        const simulationData = {
-          colis: this.listeColis,
-          resultats: this.simulationResultats,
-          nom: simulation.nom,
-          description: simulation.description,
-          simulationId: response.simulation?._id,
-          timestamp: Date.now()
-        };
-
-        console.log('Données préparées pour visualisation:', simulationData);
-
-        // Show simple success notification without auto-redirect
-        this.snackBar.open(
-          `Simulation "${simulation.nom}" validée ! ${this.simulationResultats?.containers.length || 0} contenants utilisés pour ${this.calculerNombreColisTotal()} colis.`,
-          'OK',
-          {
-            duration: 4000,
-            horizontalPosition: 'center',
-            verticalPosition: 'top'
-          }
-        );
+        this.showSuccessSwal(simulation);
       },
       error: (error) => {
         console.error('Erreur lors de la sauvegarde:', error);
-        this.snackBar.open('Erreur lors de la sauvegarde de la simulation', 'OK', {
-          duration: 3000
-        });
         this.loading = false;
+        this.showErrorSwal();
       }
+    });
+  }
+
+  private showSuccessSwal(simulation: any) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Simulation validée !',
+      html: `
+        <div style="text-align: left; margin: 10px 0;">
+          <p><strong>Nom:</strong> ${simulation.nom}</p>
+          <p><strong>Colis:</strong> ${this.listeColis.length} article(s)</p>
+          <p><strong>Conteneur optimal:</strong> ${this.getSelectedContainerType()}</p>
+          <p><strong>Utilisation volume:</strong> ${((this.selectedContainerStats?.volumeUtilization || this.optimalContainer?.volumeUtilization || 0) * 100).toFixed(0)}%</p>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: '🚀 Visualiser en 3D',
+      cancelButtonText: '📊 Voir tableau de bord',
+      confirmButtonColor: '#10b981',
+      cancelButtonColor: '#6b7280'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.ouvrirVisualisationComplete();
+      } else {
+        this.router.navigate(['/dashboard/user']);
+      }
+    });
+  }
+
+  private showErrorSwal() {
+    Swal.fire({
+      icon: 'error',
+      title: 'Erreur',
+      text: 'Erreur lors de la sauvegarde de la simulation',
+      confirmButtonColor: '#2563eb'
     });
   }
 
@@ -658,6 +679,19 @@ export class SimulationComponent implements OnInit {
     if (!this.selectedContainerId) return 0;
     const container = this.containers.find(c => c._id === this.selectedContainerId);
     return container?.volume || 0;
+  }
+
+  getSelectedContainerWeight(): number {
+    if (!this.selectedContainerId) return 0;
+    const container = this.containers.find(c => c._id === this.selectedContainerId);
+    return container?.capacitePoids || 0;
+  }
+
+  getSelectedContainerDimensions(): string {
+    if (!this.selectedContainerId) return '';
+    const container = this.containers.find(c => c._id === this.selectedContainerId);
+    if (!container || !container.dimensions) return '';
+    return `${container.dimensions.longueur} x ${container.dimensions.largeur} x ${container.dimensions.hauteur} mm`;
   }
 
   ngOnInit() {
@@ -820,8 +854,8 @@ get pagedColis(): Colis[] {
     const simulationData = {
       colis: this.listeColis,
       resultats: this.simulationResultats,
-      nom: this.simulationForm.value.nom || `Simulation du ${new Date().toLocaleDateString()}`,
-      description: this.simulationForm.value.description || '',
+      nom: this.simulationName || `Simulation du ${new Date().toLocaleDateString()}`,
+      description: this.simulationDescription || '',
       timestamp: Date.now()
     };
 
@@ -910,6 +944,7 @@ get pagedColis(): Colis[] {
   // Variables pour l'export et partage (ajoutées à la déclaration des propriétés)
   emailShare = '';
   simulationName = '';
+  simulationDescription = '';
   dateAujourdhui = new Date();
   colisPerPage = 6;
   viewMode: 'grid' | 'list' = 'list'; // Par défaut en mode liste compact
@@ -1164,6 +1199,7 @@ get pagedColis(): Colis[] {
     
     const simulationData = {
       name: this.simulationName,
+      description: this.simulationDescription,
       date: new Date(),
       colis: this.listeColis,
       container: this.containers.find(c => c._id === this.selectedContainerId),
@@ -1181,6 +1217,7 @@ get pagedColis(): Colis[] {
       timer: 2000
     });
     this.simulationName = '';
+    this.simulationDescription = '';
   }
   
   newSimulation(): void {
