@@ -1,56 +1,32 @@
 <div class="logidoo-container">
-  <!-- Header -->
-  <div class="header">
-    <button class="back-btn" routerLink="/dashboard/user">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M19 12H5M12 19l-7-7 7-7" />
-      </svg>
-    </button>
-    <div class="logo-container">
+  <!-- Header compact avec logo à gauche et stepper à droite -->
+  <div class="compact-header">
+    <div class="header-left">
+      <button class="back-btn" routerLink="/dashboard/user">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </button>
       <div class="logo">
         <span class="logo-text">Logid</span>
         <span class="logo-infinity">∞</span>
       </div>
     </div>
-  </div>
-
-  <!-- Title -->
-  <div class="title-section">
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2">
-      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-      <polyline points="9,22 9,12 15,12 15,22" />
-    </svg>
-    <h1>Aide au Chargement</h1>
-  </div>
-
-  <!-- Ste            <div class="feature-item">
-              <span class="feature-icon">📊</span>
-              <span>Mesures et statistiques</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="step-actions">
-      <button class="btn-secondary" (click)="prevStep()">Précédent</button>
-      <button class="btn-primary" (click)="nouvelleSimulation()">
-        Nouvelle simulation
-      </button>
-    </div>
-  </div>-->
-  <div class="stepper-container">
-    <div class="stepper-steps" [ngClass]="'step-' + currentStep">
-      <div class="step" [class.active]="currentStep === 1" [class.completed]="currentStep > 1" (click)="goToStep(1)">
+    
+    <!-- Stepper compact à droite -->
+    <div class="compact-stepper">
+      <div class="step-item" [class.active]="currentStep === 1" [class.completed]="currentStep > 1" (click)="goToStep(1)">
         <div class="step-circle">1</div>
-        <span class="step-label">Ajout de Colis</span>
+        <span class="step-text">Colis</span>
       </div>
       
-      <div class="step" [class.active]="currentStep === 2" [class.completed]="currentStep > 2" 
+      <div class="step-connector"></div>
+      
+      <div class="step-item" [class.active]="currentStep === 2" [class.completed]="currentStep > 2" 
            (click)="currentStep > 1 || canProceedFromStep1() ? goToStep(2) : null"
            [class.disabled]="currentStep === 1 && !canProceedFromStep1()">
         <div class="step-circle">2</div>
-        <span class="step-label">Choix de Contenant</span>
+        <span class="step-text">Contenant</span>
       </div>
     </div>
   </div>
@@ -180,145 +156,54 @@
       </div>
     </div>
 
-    <!-- Liste moderne des colis ajoutés -->
-    <div class="modern-colis-container" *ngIf="listeColis.length > 0">
-      <div class="modern-colis-header">
+    <!-- Liste compacte des colis ajoutés -->
+    <div class="compact-colis-container" *ngIf="listeColis.length > 0">
+      <div class="compact-colis-header">
         <h3>
           <span class="package-icon">📦</span>
-          Colis ajoutés
-          <span class="count-badge">{{ listeColis.length }}</span>
+          {{ listeColis.length }} colis
         </h3>
         
-        <div class="view-controls">
-          <div class="view-toggle">
-            <button class="view-btn" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'">
-              ⊞ Grille
-            </button>
-            <button class="view-btn" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
-              ☰ Liste
-            </button>
-          </div>
-          
-          <div class="items-per-page" *ngIf="listeColis.length > 6">
-            <select [(ngModel)]="colisPerPage" (change)="onPageSizeChange()">
-              <option value="6">6 par page</option>
-              <option value="12">12 par page</option>
-              <option value="24">24 par page</option>
-              <option value="50">Tout afficher</option>
-            </select>
-          </div>
+        <div class="compact-actions">
+          <button class="btn-icon" (click)="viderTousLesColis()" title="Vider tout">
+            <span>🗑️</span>
+          </button>
+          <button class="btn-icon" (click)="ajouterAutresColis()" title="Ajouter">
+            <span>➕</span>
+          </button>
         </div>
       </div>
       
-      <div class="modern-colis-grid" [class.list-view]="viewMode === 'list'">
-        <div *ngFor="let colis of getPaginatedColis(); let i = index" 
-             class="modern-colis-card"
-             [style.--colis-color]="colis.couleur">
+      <!-- Liste compacte des colis -->
+      <div class="compact-colis-list">
+        <div *ngFor="let colis of listeColis; let i = index" 
+             class="compact-colis-item">
           
-          <div class="color-indicator"></div>
+          <!-- Indicateur de couleur -->
+          <div class="color-dot" [style.background]="colis.couleur"></div>
           
-          <div class="card-header">
-            <div class="card-top-row">
-              <div class="card-number">{{ getCurrentPageIndex() * colisPerPage + i + 1 }}</div>
-              
-              <div class="card-actions">
-                <div class="color-picker-btn" [style.background]="colis.couleur">
-                  <input type="color" [value]="colis.couleur" 
-                         (change)="updateColisCouleur(getCurrentPageIndex() * colisPerPage + i, $any($event.target).value)">
-                </div>
-                <button class="delete-btn" (click)="supprimerColis(getCurrentPageIndex() * colisPerPage + i)">
-                  <span class="delete-icon">🗑️</span>
-                </button>
-              </div>
-            </div>
-            
-            <div class="card-title">{{ colis.type }}</div>
-            <div class="card-subtitle" *ngIf="colis.quantite > 1">
-              Quantité: {{ colis.quantite }} · {{ colis.gerbable ? 'Empilable' : 'Non empilable' }} · {{ colis.fragile ? 'Fragile' : 'Standard' }}
-            </div>
+          <!-- Infos principales -->
+          <div class="colis-main-info">
+            <div class="colis-title">{{ colis.type }}</div>
+            <div class="colis-dimensions">{{ colis.longueur }}×{{ colis.largeur }}×{{ colis.hauteur }} cm</div>
           </div>
           
-          <div class="card-visual">
-            <div class="package-3d">📦</div>
+          <!-- Stats -->
+          <div class="colis-stats">
+            <span class="stat">{{ colis.poids }}kg</span>
+            <span class="stat">{{ (colis.longueur * colis.largeur * colis.hauteur / 1000000).toFixed(3) }}m³</span>
+            <span class="stat" *ngIf="colis.quantite > 1">×{{ colis.quantite }}</span>
           </div>
           
-          <div class="card-info">
-            <div class="info-grid">
-              <div class="info-item">
-                <div class="info-label">Poids</div>
-                <div class="info-value">{{ colis.poids }} kg</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label">Volume</div>
-                <div class="info-value">{{ (colis.longueur * colis.largeur * colis.hauteur / 1000000).toFixed(3) }} m³</div>
-              </div>
-            </div>
-            
-            <div class="dimensions-visual">
-              <div class="dimensions-text">
-                {{ colis.longueur }}×{{ colis.largeur }}×{{ colis.hauteur }} cm
-              </div>
-              <div class="dimensions-note">Longueur × Largeur × Hauteur</div>
-            </div>
+          <!-- Actions -->
+          <div class="colis-actions">
+            <input type="color" [value]="colis.couleur" 
+                   (change)="updateColisCouleur(i, $any($event.target).value)"
+                   class="color-picker-mini">
+            <button class="delete-btn-mini" (click)="supprimerColis(i)">
+              <span>×</span>
+            </button>
           </div>
-          
-          <div class="card-recipient" *ngIf="colis.nomDestinataire || colis.adresse || colis.telephone">
-            <div class="recipient-header">
-              <span class="recipient-icon">👤</span>
-              Destinataire
-            </div>
-            <div class="recipient-details">
-              <div class="recipient-line" *ngIf="colis.nomDestinataire">
-                <span class="label">Nom:</span> {{ colis.nomDestinataire }}
-              </div>
-              <div class="recipient-line" *ngIf="colis.adresse">
-                <span class="label">Adresse:</span> {{ colis.adresse }}
-              </div>
-              <div class="recipient-line" *ngIf="colis.telephone">
-                <span class="label">Tél:</span> {{ colis.telephone }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Pagination moderne -->
-      <div class="modern-pagination" *ngIf="getTotalPages() > 1">
-        <div class="pagination-info">
-          Affichage <span class="highlight">{{ getStartIndex() + 1 }} - {{ getEndIndex() }}</span> 
-          sur <span class="highlight">{{ listeColis.length }}</span> colis
-        </div>
-        
-        <div class="pagination-nav">
-          <button class="nav-btn" [disabled]="currentPage === 0" (click)="goToFirstPage()">⏮️</button>
-          <button class="nav-btn" [disabled]="currentPage === 0" (click)="prevPage()">◀️</button>
-          
-          <button *ngFor="let page of getVisiblePageNumbers()" 
-                  class="nav-btn page-number"
-                  [class.active]="page - 1 === currentPage"
-                  (click)="goToPage(page - 1)">
-            {{ page }}
-          </button>
-          
-          <button class="nav-btn" [disabled]="currentPage >= getTotalPages() - 1" (click)="nextPage()">▶️</button>
-          <button class="nav-btn" [disabled]="currentPage >= getTotalPages() - 1" (click)="goToLastPage()">⏭️</button>
-        </div>
-      </div>
-      
-      <!-- Action rapide vers la visualisation -->
-      <div class="quick-viz-action" *ngIf="listeColis.length > 0 && simulationResultats">
-        <div class="quick-viz-container">
-          <div class="quick-viz-info">
-            <span class="viz-icon">🎯</span>
-            <div class="viz-text">
-              <h4>Simulation prête !</h4>
-              <p>{{ listeColis.length }} colis • Conteneur optimal trouvé</p>
-            </div>
-          </div>
-          <button class="btn-quick-viz" (click)="ouvrirVisualisationComplete()">
-            <span class="btn-text">Voir la visualisation</span>
-            <span class="btn-arrow">→</span>
-          </button>
         </div>
       </div>
     </div>
@@ -389,7 +274,7 @@
         </div>
         
         <!-- Section droite : Résultats de simulation (style Figma) -->
-        <div class="figma-results-panel" *ngIf="selectedContainerStats || optimalContainer">
+        <div class="figma-results-panel" *ngIf="selectedContainerId || selectedContainerStats || optimalContainer">
           <div class="figma-results-header">
             <h3>Résultats de la simulation</h3>
             <div class="figma-results-number">1</div>

@@ -17,54 +17,266 @@
   --logidoo-success: #10b981;
 }
 
-// Styles modernes pour le stepper
-.stepper-container {
-  margin: 1.5rem auto 2rem;
-  max-width: 1000px;
-  padding: 0 1.5rem;
+// ===== HEADER COMPACT =====
+.compact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: white;
+  border-bottom: 1px solid var(--logidoo-gray-200);
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    
+    .back-btn {
+      background: none;
+      border: 1px solid var(--logidoo-gray-300);
+      border-radius: 8px;
+      padding: 0.5rem;
+      cursor: pointer;
+      color: var(--logidoo-gray-600);
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: var(--logidoo-gray-50);
+        border-color: var(--logidoo-blue);
+        color: var(--logidoo-blue);
+      }
+    }
+    
+    .logo {
+      display: flex;
+      align-items: baseline;
+      font-size: 1.5rem;
+      font-weight: 700;
+      
+      .logo-text {
+        color: var(--logidoo-blue);
+      }
+      
+      .logo-infinity {
+        color: var(--logidoo-yellow);
+        font-size: 1.8rem;
+        margin-left: -2px;
+      }
+    }
+  }
+  
+  // Stepper compact à droite
+  .compact-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      
+      &:hover:not(.disabled) {
+        background: var(--logidoo-gray-50);
+      }
+      
+      &.active {
+        background: var(--logidoo-blue);
+        color: white;
+        
+        .step-circle {
+          background: white;
+          color: var(--logidoo-blue);
+        }
+      }
+      
+      &.completed:not(.active) {
+        .step-circle {
+          background: var(--logidoo-success);
+          color: white;
+        }
+      }
+      
+      &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      
+      .step-circle {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--logidoo-gray-200);
+        color: var(--logidoo-gray-600);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+      
+      .step-text {
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+    }
+    
+    .step-connector {
+      width: 24px;
+      height: 2px;
+      background: var(--logidoo-gray-200);
+      margin: 0 0.25rem;
+    }
+  }
+}
+
+// ===== LISTE COMPACTE DES COLIS =====
+.compact-colis-container {
+  margin: 1.5rem 0;
+  
+  .compact-colis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    
+    h3 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--logidoo-gray-800);
+      
+      .package-icon {
+        font-size: 1.2rem;
+      }
+    }
+    
+    .compact-actions {
+      display: flex;
+      gap: 0.5rem;
+      
+      .btn-icon {
+        background: none;
+        border: 1px solid var(--logidoo-gray-300);
+        border-radius: 6px;
+        padding: 0.5rem;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background: var(--logidoo-gray-50);
+          border-color: var(--logidoo-blue);
+        }
+      }
+    }
+  }
+  
+  .compact-colis-list {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid var(--logidoo-gray-200);
+    overflow: hidden;
+    
+    .compact-colis-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--logidoo-gray-100);
+      transition: background 0.2s ease;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      &:hover {
+        background: var(--logidoo-gray-50);
+      }
+      
+      .color-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 0.75rem;
+        border: 2px solid white;
+        box-shadow: 0 0 0 1px var(--logidoo-gray-300);
+      }
+      
+      .colis-main-info {
+        flex: 1;
+        
+        .colis-title {
+          font-weight: 600;
+          color: var(--logidoo-gray-800);
+          font-size: 0.9rem;
+        }
+        
+        .colis-dimensions {
+          font-size: 0.8rem;
+          color: var(--logidoo-gray-600);
+          margin-top: 0.1rem;
+        }
+      }
+      
+      .colis-stats {
+        display: flex;
+        gap: 1rem;
+        margin-right: 1rem;
+        
+        .stat {
+          font-size: 0.8rem;
+          color: var(--logidoo-gray-600);
+          background: var(--logidoo-gray-100);
+          padding: 0.2rem 0.5rem;
+          border-radius: 4px;
+        }
+      }
+      
+      .colis-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        
+        .color-picker-mini {
+          width: 24px;
+          height: 24px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        
+        .delete-btn-mini {
+          background: none;
+          border: 1px solid var(--logidoo-gray-300);
+          border-radius: 4px;
+          width: 24px;
+          height: 24px;
+          cursor: pointer;
+          color: #dc2626;
+          font-size: 1rem;
+          line-height: 1;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            background: #fef2f2;
+            border-color: #dc2626;
+          }
+        }
+      }
+    }
+  }
 }
 
 .stepper-steps {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  position: relative;
-  margin: 0;
-  padding: 1.5rem 1rem;
-  
-  // Ligne de progression moderne
-  &::before {
-    content: '';
-    position: absolute;
-    top: 24px;
-    left: 12%;
-    right: 12%;
-    height: 3px;
-    background: var(--logidoo-gray-200);
-    border-radius: 2px;
-    z-index: 1;
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 24px;
-    left: 12%;
-    width: 0%;
-    height: 3px;
-    background: linear-gradient(90deg, var(--logidoo-blue), var(--logidoo-yellow));
-    border-radius: 2px;
-    z-index: 2;
-    transition: width 0.6s ease-in-out;
-  }
-  
-  // Animation de progression
-  &.step-1::after { width: 0%; }
-  &.step-2::after { width: 20%; }
-  &.step-3::after { width: 40%; }
-  &.step-4::after { width: 60%; }
-  &.step-5::after { width: 80%; }
-  &.step-6::after { width: 100%; }
+  // Ancien stepper - ne plus utiliser
+  display: none;
 }
 
 .step {

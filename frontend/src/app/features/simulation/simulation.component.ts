@@ -859,7 +859,7 @@ get pagedColis(): Colis[] {
   simulationName = '';
   dateAujourdhui = new Date();
   colisPerPage = 6;
-  viewMode: 'grid' | 'list' = 'grid';
+  viewMode: 'grid' | 'list' = 'list'; // Par défaut en mode liste compact
   
   // Méthodes de pagination améliorées
   getPaginatedColis(): Colis[] {
