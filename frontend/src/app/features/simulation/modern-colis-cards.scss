@@ -398,63 +398,142 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 2rem;
-  gap: 0.5rem;
+  margin: 2rem 0;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 16px;
+  border: 1px solid var(--logidoo-gray-100);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   
   .pagination-info {
-    color: var(--logidoo-gray-600);
+    color: var(--logidoo-gray-700);
     font-size: 0.875rem;
-    margin-right: 1rem;
-    font-weight: 500;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 20px;
+    border: 1px solid #bae6fd;
+    
+    .highlight {
+      color: var(--logidoo-primary);
+      font-weight: 700;
+    }
   }
   
   .pagination-controls {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.5rem;
     
     .pagination-btn {
-      min-width: 40px;
-      height: 40px;
-      border: 2px solid var(--logidoo-gray-200);
+      min-width: 44px;
+      height: 44px;
+      border: 2px solid transparent;
       background: white;
       color: var(--logidoo-gray-600);
-      border-radius: 8px;
-      font-weight: 600;
+      border-radius: 12px;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       
       &:hover:not(:disabled):not(.active) {
         border-color: var(--logidoo-primary);
         color: var(--logidoo-primary);
-        background: #f0f9ff;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(9, 43, 139, 0.2);
       }
       
       &:disabled {
-        opacity: 0.4;
+        opacity: 0.3;
         cursor: not-allowed;
         background: var(--logidoo-gray-50);
+        color: var(--logidoo-gray-400);
+        transform: none;
+        box-shadow: none;
       }
       
       &.active {
         background: linear-gradient(135deg, var(--logidoo-primary), #1e40af);
         color: white;
         border-color: var(--logidoo-primary);
-        box-shadow: 0 4px 12px rgba(9, 43, 139, 0.3);
+        box-shadow: 0 6px 20px rgba(9, 43, 139, 0.4);
+        transform: translateY(-1px);
+        
+        &::after {
+          content: '';
+          position: absolute;
+          inset: -2px;
+          border-radius: 14px;
+          background: linear-gradient(135deg, var(--logidoo-primary), #1e40af);
+          z-index: -1;
+          opacity: 0.2;
+          animation: pulse 2s ease-in-out infinite;
+        }
       }
       
       &.nav-btn {
-        padding: 0 0.75rem;
-        min-width: auto;
+        padding: 0 1rem;
+        min-width: 50px;
+        font-size: 0.875rem;
+        
+        .btn-arrow {
+          font-size: 1.1rem;
+          transition: transform 0.3s ease;
+        }
+        
+        &:hover .btn-arrow {
+          transform: scale(1.2);
+        }
+        
+        &.prev .btn-arrow {
+          margin-right: 4px;
+        }
+        
+        &.next .btn-arrow {
+          margin-left: 4px;
+        }
       }
       
-      .btn-arrow {
-        font-size: 1.25rem;
-        color: white;
-        transition: transform 0.3s ease;
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 0.2;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+  
+  // Responsive design
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    
+    .pagination-info {
+      order: 2;
+    }
+    
+    .pagination-controls {
+      order: 1;
+      
+      .pagination-btn {
+        min-width: 40px;
+        height: 40px;
+        
+        &.nav-btn {
+          min-width: 45px;
+        }
       }
     }
   }

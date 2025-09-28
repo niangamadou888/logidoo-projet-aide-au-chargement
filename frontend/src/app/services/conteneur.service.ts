@@ -14,7 +14,7 @@ export class ConteneurService {
 // private apiUrl = 'http://localhost:3000/api';
 
 //En production
- private apiUrl = 'https://logidoo.onrender.com/api';
+ private apiUrl = 'https://logidoo-projet-aide-au-chargement-7.onrender.com/api';
 
   constructor(private http: HttpClient) { }
 

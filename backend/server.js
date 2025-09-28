@@ -110,6 +110,10 @@ app.use('/uploads', express.static('uploads', {
   }
 }));
 
+// Route de santé simple pour Render
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: Date.now() });
+});
 
 // Route pour la surveillance du statut de l'API
 app.get('/api/health', (req, res) => {

@@ -53,11 +53,14 @@ export class SimulationComponent implements OnInit {
   
   // Variables pour la gestion des steppers
   currentStep = 1;
-  totalSteps = 6;
+  totalSteps = 2;
   showDestinataireForm = false;
   
   // Variables pour masquer/afficher les formulaires d'ajout
   showInputForms = true; // Affiche les formulaires au début
+  
+  // Variables pour le drag and drop
+  isDragOver = false;
   
   private isBrowser = true;
 
@@ -209,14 +212,16 @@ export class SimulationComponent implements OnInit {
     this.simulationEnCours = false;
   }
 
-  selectContainer(id: string | undefined) {
-    if (!id) return; // Guard against undefined IDs
+  // Méthode mise à jour pour la nouvelle interface
+  selectContainer(containerId: string): void {
+    if (!containerId) return;
+    
     // Si c'est le même conteneur déjà sélectionné, ne rien faire
-    if (this.selectedContainerId === id) return;
+    if (this.selectedContainerId === containerId) return;
 
-    this.selectedContainerId = id;
+    this.selectedContainerId = containerId;
     this.selectionAutoOptimal = false; // Désactive la sélection automatique
-    this.colisForm.patchValue({ container: id });
+    this.colisForm.patchValue({ container: containerId });
 
     // Réinitialiser les résultats de simulation quand on change de conteneur
     this.simulationResultats = null;
@@ -224,7 +229,9 @@ export class SimulationComponent implements OnInit {
     this.simulationEnCours = false;
 
     // Évaluer le conteneur sélectionné pour montrer ses statistiques
-    this.evaluateSelectedContainer();
+    if (this.listeColis.length > 0) {
+      this.evaluateSelectedContainer();
+    }
   }
 
   // Évaluer le conteneur sélectionné manuellement
@@ -615,6 +622,9 @@ export class SimulationComponent implements OnInit {
   nextStep() {
     if (this.currentStep < this.totalSteps) {
       this.currentStep++;
+    } else if (this.currentStep === 2) {
+      // Après l'étape 2, lancer la simulation et aller aux résultats
+      this.lancerSimulation();
     }
   }
 
@@ -631,15 +641,23 @@ export class SimulationComponent implements OnInit {
   }
 
   canProceedFromStep1(): boolean {
-    return this.simulationForm.valid;
-  }
-
-  canProceedFromStep2(): boolean {
     return this.listeColis.length > 0;
   }
 
-  canProceedFromStep3(): boolean {
+  canProceedFromStep2(): boolean {
     return this.listeColis.length > 0 && (!!this.selectedContainerId || this.selectionAutoOptimal);
+  }
+
+  getSelectedContainerType(): string {
+    if (!this.selectedContainerId) return '';
+    const container = this.containers.find(c => c._id === this.selectedContainerId);
+    return container ? container.type : '';
+  }
+
+  getSelectedContainerVolume(): number {
+    if (!this.selectedContainerId) return 0;
+    const container = this.containers.find(c => c._id === this.selectedContainerId);
+    return container?.volume || 0;
   }
 
   ngOnInit() {
@@ -915,11 +933,51 @@ get pagedColis(): Colis[] {
     return Math.ceil(this.listeColis.length / this.colisPerPage);
   }
   
-  // Méthodes pour les étapes 4, 5, 6
-  getSelectedContainerInfo(): string {
-    if (!this.selectedContainerId) return '';
-    const container = this.containers.find(c => c._id === this.selectedContainerId);
-    return container ? `${container.type} (${container.dimensions.longueur}×${container.dimensions.largeur}×${container.dimensions.hauteur}mm)` : '';
+  // Méthodes pour les étapes 4, 5, 6  
+  getSelectedContainerInfo(): any {
+    if (!this.selectedContainerId) return null;
+    
+    // Informations statiques basées sur l'ID du conteneur sélectionné
+    const containerInfo: { [key: string]: any } = {
+      'container-20ft': {
+        volume: '14 %',
+        weight: '1 %',
+        dimensions: '6058 × 2438 × 2591 mm',
+        capacity: '28 500 kg'
+      },
+      'container-40ft': {
+        volume: '67.5 m³',
+        weight: '26.7 t',
+        dimensions: 'VAN × 2327 × 2170 mm',
+        capacity: '26 700 kg'
+      },
+      'container-40ft-hc': {
+        volume: '76.3 m³',
+        weight: '26.7 t',
+        dimensions: '12024 × 2352 × 2698 mm',
+        capacity: '26 700 kg'
+      },
+      'camion-frigo': {
+        volume: '850 m³',
+        weight: '19 t',
+        dimensions: '800 × 244 × 260 mm',
+        capacity: '19 000 kg'
+      },
+      'camion-plateau': {
+        volume: '60 m³',
+        weight: '24 t',
+        dimensions: 'VAN × 247 × 250 mm',
+        capacity: '24 000 kg'
+      },
+      'camion-citerne': {
+        volume: '14.75 m³',
+        weight: '24 t',
+        dimensions: '548 × 254 × 800 mm',
+        capacity: '24 000 kg'
+      }
+    };
+    
+    return containerInfo[this.selectedContainerId] || null;
   }
   
   // Méthodes de visualisation 3D
@@ -1159,5 +1217,69 @@ get pagedColis(): Colis[] {
       duration: 2000,
       panelClass: ['info-snack']
     });
+  }
+
+  // ===== MÉTHODES DRAG AND DROP =====
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = true;
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+    
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      
+      // Vérifier que c'est un fichier Excel
+      const allowedExtensions = ['xlsx', 'xls'];
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      
+      if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
+        this.snackBar.open('Veuillez sélectionner un fichier Excel (.xlsx ou .xls)', 'OK', {
+          duration: 5000,
+          panelClass: ['error-snack']
+        });
+        return;
+      }
+      
+      // Traiter le fichier avec la même logique que l'import normal
+      this.excelService.importerDepuisExcel(file).subscribe({
+        next: (colisImportes) => {
+          const enriched = colisImportes.map((c) => ({
+            ...c,
+            fragile: c.fragile ?? false,
+            gerbable: c.gerbable ?? true,
+            couleur: c.couleur || this.getDistinctRandomColor()
+          }));
+          this.listeColis = this.listeColis.concat(enriched);
+          
+          // Masquer les formulaires d'entrée après l'import
+          this.showInputForms = false;
+          
+          this.snackBar.open(`${colisImportes.length} colis importés avec succès`, 'OK', { duration: 3000 });
+
+          if (this.selectionAutoOptimal && this.listeColis.length > 0) {
+            this.trouverConteneurOptimal();
+          } else if (this.selectedContainerId) {
+            this.evaluateSelectedContainer();
+          }
+        },
+        error: (err) => {
+          console.error('Erreur lors de l\'import Excel par drag and drop:', err);
+          this.snackBar.open('Erreur lors de l\'import du fichier Excel', 'OK', { duration: 5000 });
+        }
+      });
+    }
   }
 }

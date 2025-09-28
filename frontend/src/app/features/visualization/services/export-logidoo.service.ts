@@ -353,7 +353,7 @@ export class ExportLogidooService {
         fullImageUrl = imagePath;
       } else {
         // Sinon construire l'URL complète avec le serveur approprié
-        const baseUrl = 'https://logidoo.onrender.com'; // En production
+        const baseUrl = 'https://logidoo-projet-aide-au-chargement-7.onrender.com'; // En production
         // const baseUrl = 'http://localhost:3000'; // En local
         fullImageUrl = baseUrl + imagePath;
       }

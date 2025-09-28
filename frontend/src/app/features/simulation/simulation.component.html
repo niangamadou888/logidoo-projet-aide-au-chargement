@@ -43,67 +43,20 @@
     <div class="stepper-steps" [ngClass]="'step-' + currentStep">
       <div class="step" [class.active]="currentStep === 1" [class.completed]="currentStep > 1" (click)="goToStep(1)">
         <div class="step-circle">1</div>
-        <span class="step-label">Informations Simulation</span>
+        <span class="step-label">Ajout de Colis</span>
       </div>
       
       <div class="step" [class.active]="currentStep === 2" [class.completed]="currentStep > 2" 
            (click)="currentStep > 1 || canProceedFromStep1() ? goToStep(2) : null"
            [class.disabled]="currentStep === 1 && !canProceedFromStep1()">
         <div class="step-circle">2</div>
-        <span class="step-label">Ajout de Colis</span>
-      </div>
-      
-      <div class="step" [class.active]="currentStep === 3" [class.completed]="currentStep > 3"
-           (click)="currentStep > 2 || (canProceedFromStep1() && canProceedFromStep2()) ? goToStep(3) : null"
-           [class.disabled]="currentStep < 3 && (!canProceedFromStep1() || !canProceedFromStep2())">
-        <div class="step-circle">3</div>
         <span class="step-label">Choix de Contenant</span>
       </div>
-
-      <div class="step" [class.active]="currentStep === 4" [class.completed]="currentStep > 4"
-           (click)="currentStep > 3 || canProceedFromStep3() ? goToStep(4) : null"
-           [class.disabled]="currentStep < 4 && !canProceedFromStep3()">
-        <div class="step-circle">4</div>
-        <span class="step-label">Calcul & Simulation</span>
-      </div>
-
-      <div class="step" [class.active]="currentStep === 5" [class.completed]="currentStep > 5"
-           (click)="currentStep > 4 || simulationResultats ? goToStep(5) : null"
-           [class.disabled]="!simulationResultats">
-        <div class="step-circle">5</div>
-        <span class="step-label">Visualisation</span>
-      </div>
     </div>
   </div>
 
-  <!-- Step 1: Informations Simulation -->
+  <!-- Step 1: Ajout de Colis -->
   <div class="step-content" *ngIf="currentStep === 1">
-    <div class="simulation-info">
-      <form [formGroup]="simulationForm" class="simulation-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nom de la simulation *</label>
-            <input type="text" formControlName="nom" placeholder="Ex: Livraison Paris - Janvier 2025"
-              class="form-control">
-          </div>
-          <div class="form-group">
-            <label>Description (optionnel)</label>
-            <input type="text" formControlName="description" placeholder="Description de la simulation"
-              class="form-control">
-          </div>
-        </div>
-      </form>
-      
-      <div class="step-actions">
-        <button class="btn-primary" (click)="nextStep()" [disabled]="!canProceedFromStep1()">
-          Suivant : Ajouter des colis
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Step 2: Ajout de Colis -->
-  <div class="step-content" *ngIf="currentStep === 2">
     <!-- Layout en grid : Ajout manuel et Import Excel côte à côte -->
     <div class="dual-input-grid" *ngIf="showInputForms">
       <!-- Section Ajout Manuel -->
@@ -190,18 +143,19 @@
           </div>
           
           <div class="import-zone">
-            <input type="file" #fileInput accept=".xlsx,.xls" (change)="importerDepuisExcel($event)" class="file-input" id="excel-file">
+            <input type="file" #fileInput accept=".xlsx,.xls" (change)="importerDepuisExcel($event)" class="file-input" id="excel-file" style="display: none;">
             
-            <div class="drop-area">
+            <div class="drop-area" 
+                 (click)="fileInput.click()"
+                 (dragover)="onDragOver($event)" 
+                 (dragleave)="onDragLeave($event)" 
+                 (drop)="onDrop($event)"
+                 [class.dragover]="isDragOver">
               <div class="excel-icon">📄</div>
               <p class="drop-text">Glissez votre fichier Excel ici<br>ou cliquez pour choisir</p>
             </div>
             
             <div class="import-actions">
-              <label for="excel-file" class="btn-uniform btn-primary">
-                <span class="btn-icon">📁</span>
-                Choisir un fichier
-              </label>
               <button class="btn-uniform btn-secondary" (click)="telechargerModele()">
                 <span class="btn-icon">⬇️</span>
                 Télécharger modèle
@@ -214,13 +168,6 @@
 
     <!-- Actions après ajout de colis (manuel ou import) -->
     <div class="post-add-actions" *ngIf="listeColis.length > 0">
-      <div class="main-action">
-        <button class="btn-contenant-primary" (click)="nextStep()" [disabled]="!canProceedFromStep2()">
-          <span class="btn-icon">🧱</span>
-          Choix de contenant
-        </button>
-      </div>
-      
       <div class="secondary-actions">
         <button class="btn-secondary-action" (click)="viderTousLesColis()">
           <span class="btn-icon">🗑️</span>
@@ -377,187 +324,156 @@
     </div>
 
     <div class="step-actions" *ngIf="listeColis.length === 0">
-      <button class="btn-secondary" (click)="prevStep()">Précédent</button>
       <p class="no-colis-message">Ajoutez au moins un colis pour continuer</p>
     </div>
     
     <div class="step-actions" *ngIf="listeColis.length > 0">
-      <button class="btn-secondary" (click)="prevStep()">Précédent</button>
+      <button class="btn-primary" (click)="nextStep()" [disabled]="!canProceedFromStep1()">
+        <span class="btn-icon">🧱</span>
+        Choix de contenant
+      </button>
     </div>
   </div>
 
-  <!-- Step 3: Choix de Contenant -->
-  <div class="step-content" *ngIf="currentStep === 3">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-icon">🧱</div>
-        <h2>Sélection du contenant</h2>
-        <div class="selection-mode-toggle">
-          <label [class.active]="selectionAutoOptimal">
-            <input type="checkbox" [checked]="selectionAutoOptimal" (change)="toggleSelectionMode()">
-            Sélection automatique
-          </label>
-        </div>
-      </div>
-
-      <!-- Message explicatif pour le mode de sélection -->
-      <div class="selection-mode-explanation">
-        <p *ngIf="selectionAutoOptimal">
-          Mode <strong>automatique</strong> activé : le conteneur le plus optimal sera sélectionné pour vos colis
-        </p>
-        <p *ngIf="!selectionAutoOptimal">
-          Mode <strong>manuel</strong> activé : sélectionnez le conteneur de votre choix
-        </p>
-      </div>
-
-      <!-- Affichage du conteneur optimal -->
-      <div *ngIf="selectionAutoOptimal && optimalContainer" class="optimal-container-info">
-        <div class="optimal-container-card">
-          <div class="optimal-badge">
-            <span>Recommandé</span>
-          </div>
-
-          <div class="container-header">
-            <strong>{{ optimalContainer.containerType }}</strong>
-            <span class="container-category">{{ optimalContainer.containerCategory }}</span>
-          </div>
-
-          <div class="container-stats">
-            <div class="stat">
-              <div class="progress-bar">
-                <div class="progress" [style.width]="(optimalContainer.volumeUtilization * 100) + '%'"></div>
+  <!-- Step 2: Choix de Contenant - Style Figma -->
+  <div class="step-content" *ngIf="currentStep === 2">
+    <div class="figma-container-selection">
+      <!-- Layout principal : conteneurs à gauche, résultats à droite -->
+      <div class="figma-main-layout">
+        
+        <!-- Section gauche : Grille des conteneurs -->
+        <div class="figma-containers-section">
+          <h3 class="figma-section-title">
+            <span class="step-number">2</span>
+            Choix du contenant
+          </h3>
+          
+          <!-- Grille des conteneurs style Figma -->
+          <div class="figma-containers-grid">
+            <div *ngFor="let c of containers; let i = index" 
+                 class="figma-container-card" 
+                 [class.selected]="c._id === selectedContainerId"
+                 [class.recommended]="optimalContainer && c._id === optimalContainer.containerId"
+                 (click)="c._id && selectContainer(c._id)">
+              
+              <!-- Image du conteneur -->
+              <div class="figma-container-image">
+                <img *ngIf="c.images && c.images.length > 0" 
+                     [src]="'https://logidoo-projet-aide-au-chargement-7.onrender.com' + c.images[0]"
+                     [alt]="c.type">
+                <div *ngIf="!c.images || c.images.length === 0" class="figma-placeholder-image">
+                  <span class="container-icon">📦</span>
+                </div>
               </div>
-              <div class="stat-label">
-                <span>Volume: {{ optimalContainer.volumeUtilization | percent:'1.0-0' }}</span>
+              
+              <!-- Badge recommandé -->
+              <div *ngIf="optimalContainer && c._id === optimalContainer.containerId" 
+                   class="figma-recommended-badge">
+                Recommandé
               </div>
-            </div>
-
-            <div class="stat">
-              <div class="progress-bar">
-                <div class="progress" [style.width]="(optimalContainer.weightUtilization * 100) + '%'"></div>
-              </div>
-              <div class="stat-label">
-                <span>Poids: {{ optimalContainer.weightUtilization | percent:'1.0-0' }}</span>
+              
+              <!-- Informations du conteneur -->
+              <div class="figma-container-info">
+                <h4 class="figma-container-title">{{ c.type }}</h4>
+                <div class="figma-container-category">{{ c.categorie }}</div>
+                <div class="figma-container-dimensions">
+                  {{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm
+                </div>
+                <div class="figma-container-specs">
+                  <span>Volume: {{ c.volume }} m³</span>
+                  <span>Max: {{ c.capacitePoids }} kg</span>
+                </div>
               </div>
             </div>
-
-            <div class="placement-info">
-              <strong>{{ optimalContainer.placedItems }}</strong> / {{ optimalContainer.totalItems }} colis placés
-            </div>
-          </div>
-
-          <div class="container-dimensions">
-            <span>{{ optimalContainer.dimensions.longueur }} × {{ optimalContainer.dimensions.largeur }} × {{
-              optimalContainer.dimensions.hauteur }} mm</span>
-            <span>Volume: {{ optimalContainer.volume }} m³</span>
-            <span>Capacité: {{ optimalContainer.capacitePoids }} kg max</span>
           </div>
         </div>
-      </div>
-
-      <!-- Affichage des stats du conteneur sélectionné manuellement -->
-      <div *ngIf="!selectionAutoOptimal && selectedContainerStats" class="selected-container-info">
-        <div class="selected-container-card">
-          <div class="container-header">
-            <strong>{{ selectedContainerStats.containerType }}</strong>
-            <span class="container-category">{{ selectedContainerStats.containerCategory }}</span>
+        
+        <!-- Section droite : Résultats de simulation (style Figma) -->
+        <div class="figma-results-panel" *ngIf="selectedContainerStats || optimalContainer">
+          <div class="figma-results-header">
+            <h3>Résultats de la simulation</h3>
+            <div class="figma-results-number">1</div>
           </div>
-
-          <div class="container-stats">
-            <div class="stat">
-              <div class="progress-bar">
-                <div class="progress" [style.width]="(selectedContainerStats.volumeUtilization * 100) + '%'"></div>
-              </div>
-              <div class="stat-label">
-                <span>Volume: {{ selectedContainerStats.volumeUtilization | percent:'1.0-0' }}</span>
-              </div>
-            </div>
-
-            <div class="stat">
-              <div class="progress-bar">
-                <div class="progress" [style.width]="(selectedContainerStats.weightUtilization * 100) + '%'"></div>
-              </div>
-              <div class="stat-label">
-                <span>Poids: {{ selectedContainerStats.weightUtilization | percent:'1.0-0' }}</span>
-              </div>
+          
+          <!-- Stats principales -->
+          <div class="figma-main-stats">
+            <div class="figma-stat-row">
+              <span class="figma-stat-label">Conteneurs utilisés</span>
+              <span class="figma-stat-value">{{ (selectedContainerStats?.volumeUtilization || optimalContainer?.volumeUtilization || 0) | percent:'1.0-0' }}</span>
+              <span class="figma-stat-unit">Volume d'utilisation</span>
+              <span class="figma-stat-detail">{{ (selectedContainerStats?.weightUtilization || optimalContainer?.weightUtilization || 0) | percent:'1.0-0' }}</span>
+              <span class="figma-stat-unit2">Utilisation poids</span>
+              <span class="figma-placed-items">{{ (selectedContainerStats?.placedItems || optimalContainer?.placedItems || 0) }} / {{ (selectedContainerStats?.totalItems || optimalContainer?.totalItems || calculerNombreColisTotal()) }}</span>
+              <span class="figma-placed-label">Colis placés</span>
             </div>
           </div>
-
-          <div class="placement-stats">
-            <span class="placement-info">
-              <strong>{{ selectedContainerStats.placedItems }}</strong> / {{ selectedContainerStats.totalItems }}
-              colis placés
-            </span>
-            <span class="score-info" [class.good-score]="selectedContainerStats.optimalityScore > 0.7"
-              [class.medium-score]="selectedContainerStats.optimalityScore > 0.4 && selectedContainerStats.optimalityScore <= 0.7"
-              [class.low-score]="selectedContainerStats.optimalityScore <= 0.4">
-              Score d'optimalité: {{ selectedContainerStats.optimalityScore | percent:'1.0-0' }}
-            </span>
+          
+          <!-- Conteneurs utilisés -->
+          <div class="figma-containers-used">
+            <h4>Conteneurs utilisés</h4>
+            <div class="figma-used-container">
+              <span class="figma-container-name">{{ getSelectedContainerType() }}</span>
+              <div class="figma-container-utilization">
+                <span class="figma-utilization-label">Volume : {{ (selectedContainerStats?.volumeUtilization || optimalContainer?.volumeUtilization || 0) | percent:'1.0-0' }}</span>
+                <span class="figma-utilization-detail">{{ calculerVolumeTotal() | number:'1.2-2' }} m³ / {{ getSelectedContainerVolume() | number:'1.2-2' }} m³</span>
+              </div>
+            </div>
           </div>
-
-          <div class="container-dimensions">
-            <span>{{ selectedContainerStats.dimensions.longueur }} × {{ selectedContainerStats.dimensions.largeur }} ×
-              {{ selectedContainerStats.dimensions.hauteur }} mm</span>
-            <span>Volume: {{ selectedContainerStats.volume }} m³</span>
-            <span>Capacité: {{ selectedContainerStats.capacitePoids }} kg max</span>
+          
+          <!-- Barres de progression style Figma -->
+          <div class="figma-progress-section">
+            <div class="figma-progress-item">
+              <div class="figma-progress-header">
+                <span class="figma-progress-label">Volume - {{ (selectedContainerStats?.volumeUtilization || optimalContainer?.volumeUtilization || 0) * 100 | number:'1.0-0' }}%</span>
+              </div>
+              <div class="figma-progress-bar">
+                <div class="figma-progress-fill volume" 
+                     [style.width]="((selectedContainerStats?.volumeUtilization || optimalContainer?.volumeUtilization || 0) * 100) + '%'"></div>
+              </div>
+            </div>
+            
+            <div class="figma-progress-item">
+              <div class="figma-progress-header">
+                <span class="figma-progress-label">Poids - {{ (selectedContainerStats?.weightUtilization || optimalContainer?.weightUtilization || 0) * 100 | number:'1.0-0' }}%</span>
+              </div>
+              <div class="figma-progress-bar">
+                <div class="figma-progress-fill weight" 
+                     [style.width]="((selectedContainerStats?.weightUtilization || optimalContainer?.weightUtilization || 0) * 100) + '%'"></div>
+              </div>
+            </div>
+            
+            <!-- Informations sur les colis placés -->
+            <div class="figma-placement-info">
+              <span class="figma-placement-text">{{ (selectedContainerStats?.placedItems || optimalContainer?.placedItems || 0) }} / {{ calculerNombreColisTotal() }} colis placés</span>
+              <div class="figma-placement-dimensions">
+                {{ calculerNombreColisTotal() > 0 ? '600 x 2400 x 2600 mm' : '- x - x - mm' }}
+              </div>
+              <div class="figma-placement-specs">
+                Volume : {{ calculerVolumeTotal() | number:'1.2-2' }} m³
+                <br>
+                Capacité : {{ calculerPoidsTotal() | number:'1.2-2' }} kg max
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Indicateur de chargement pour l'évaluation du conteneur -->
-      <div *ngIf="evaluatingContainer" class="container-loading">
-        <div class="loading-spinner"></div>
-        <span>Évaluation du conteneur en cours...</span>
-      </div>
-
-      <!-- Liste des conteneurs disponibles -->
-      <div class="contenants-grid" [class.dimmed]="selectionAutoOptimal && optimalContainer">
-        <div *ngFor="let c of containers" class="conteneur-card" [class.selected]="c._id === selectedContainerId"
-          [class.optimal]="optimalContainer && c._id === optimalContainer.containerId"
-          (click)="selectContainer(c._id)">
-          <img *ngIf="c.images && c.images.length > 0" [src]="'https://logidoo.onrender.com' + c.images[0]"
-            [alt]="c.type" width="100">
-          <div class="conteneur-title">Type: {{ c.type }}</div>
-          <div class="conteneur-dimensions">
-            {{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm
-          </div>
-          <div class="conteneur-volume">Volume: {{ c.volume }} m³</div>
-          <div class="conteneur-poids">Capacité: {{ c.capacitePoids }} kg max</div>
-          <span class="conteneur-badge" *ngIf="c.categorie === 'conteneur'">Conteneurs</span>
-          <span class="conteneur-badge camion" *ngIf="c.categorie === 'camion'">Camions</span>
-          <div *ngIf="optimalContainer && c._id === optimalContainer.containerId" class="optimal-marker">
-            <span>Optimal</span>
+          
+          <!-- Bouton de lancement de visualisation -->
+          <div class="figma-action-button">
+            <button class="figma-launch-btn" (click)="nextStep()" 
+                    [disabled]="!canProceedFromStep2()">
+              Lancer la visualisation
+            </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Résumé moderne des totaux comme dans le Figma -->
-    <div *ngIf="listeColis.length > 0" class="modern-summary-section">
-      <div class="summary-cards-horizontal">
-        <div class="summary-card-modern total-colis">
-          <div class="summary-value">{{ calculerNombreColisTotal() }}</div>
-          <div class="summary-label">Total colis</div>
-        </div>
-        
-        <div class="summary-card-modern volume-total">
-          <div class="summary-value">{{ calculerVolumeTotal() | number:'1.2-2' }} m³</div>
-          <div class="summary-label">Volume total</div>
-        </div>
-        
-        <div class="summary-card-modern poids-total">
-          <div class="summary-value">{{ calculerPoidsTotal() | number:'1.2-2' }} kg</div>
-          <div class="summary-label">Poids total</div>
-        </div>
-      </div>
-    </div>
-
+    <!-- Actions en bas -->
     <div class="step-actions">
       <button class="btn-secondary" (click)="prevStep()">Précédent</button>
-      <button (click)="goToStep(4)" class="btn-primary"
+      <button (click)="nextStep()" class="btn-primary"
         *ngIf="listeColis.length > 0 && (selectedContainerId || selectionAutoOptimal)"
         [disabled]="findingOptimal">
-        Continuer vers le calcul
+        Lancer la simulation
       </button>
     </div>
   </div>
