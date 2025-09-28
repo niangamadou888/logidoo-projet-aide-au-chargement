@@ -790,18 +790,31 @@
   margin-top: 2rem;
   padding-top: 1rem;
   border-top: 1px solid #e5e7eb;
+
+  .action-buttons-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
   
-  .btn-primary, .btn-secondary {
+  .btn-primary, .btn-secondary, .btn-success {
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
     border: none;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+    }
+
+    .btn-icon {
+      font-size: 1.1rem;
     }
   }
   
@@ -813,6 +826,17 @@
       background: #082169;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(9, 43, 139, 0.3);
+    }
+  }
+
+  .btn-success {
+    background: #10b981;
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
     }
   }
   

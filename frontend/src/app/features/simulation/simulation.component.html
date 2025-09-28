@@ -408,11 +408,16 @@
     <!-- Actions en bas -->
     <div class="step-actions">
       <button class="btn-secondary" (click)="prevStep()">Précédent</button>
-      <button (click)="nextStep()" class="btn-primary"
-        *ngIf="listeColis.length > 0 && (selectedContainerId || selectionAutoOptimal)"
-        [disabled]="findingOptimal">
-        Lancer la simulation
-      </button>
+      <div class="action-buttons-group" *ngIf="listeColis.length > 0 && (selectedContainerId || selectionAutoOptimal)">
+        <button class="btn-success" (click)="validerSimulation()" [disabled]="findingOptimal">
+          <span class="btn-icon">💾</span>
+          Valider la simulation
+        </button>
+        <button class="btn-primary" (click)="ouvrirVisualisationComplete()" [disabled]="findingOptimal">
+          <span class="btn-icon">🎯</span>
+          Lancer la visualisation
+        </button>
+      </div>
     </div>
   </div>
 
