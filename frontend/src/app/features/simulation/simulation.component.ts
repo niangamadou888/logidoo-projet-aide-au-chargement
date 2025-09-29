@@ -111,7 +111,7 @@ export class SimulationComponent implements OnInit {
             ...c,
             fragile: c.fragile ?? false,
             gerbable: c.gerbable ?? true,
-            couleur: c.couleur || this.getDistinctRandomColor()
+            couleur: c.couleur // Preserve Excel import colors
           }));
           this.listeColis = this.listeColis.concat(enriched);
           
@@ -1257,7 +1257,7 @@ export class SimulationComponent implements OnInit {
             ...c,
             fragile: c.fragile ?? false,
             gerbable: c.gerbable ?? true,
-            couleur: c.couleur || this.getDistinctRandomColor()
+            couleur: c.couleur // Preserve Excel import colors
           }));
           this.listeColis = this.listeColis.concat(enriched);
           

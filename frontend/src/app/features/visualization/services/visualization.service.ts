@@ -230,7 +230,7 @@ export class VisualizationService {
         hauteur: item.hauteur || 20
       },
       position: { x: 0, y: 0, z: 0 }, // Sera calculé plus tard
-      color: item.couleur || ColorUtils.getColorByType(item.type || 'default'),
+      color: item.couleur || '#999999', // Use Excel import color or gray as fallback
       poids: item.poids || 0,
       quantite: item.quantite || 1,
       fragile: item.fragile || false,
