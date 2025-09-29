@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="50" viewBox="0 0 180 50">
+  <style>
+    .logo-text { fill: #3f51b5; font-family: 'Arial Black', Gadget, sans-serif; font-weight: bold; }
+    .logo-icon { fill: #ff4081; }
+  </style>
+  <g>
+    <rect class="logo-icon" x="10" y="12" width="26" height="26" rx="4" />
+    <text class="logo-text" x="45" y="35" font-size="26">Logidoo</text>
+  </g>
+</svg> 
