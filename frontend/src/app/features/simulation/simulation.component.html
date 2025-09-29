@@ -374,11 +374,21 @@
         </div>
         
         <!-- Section droite : Résultats de simulation (style Figma) -->
-        <div class="figma-results-panel" *ngIf="selectedContainerId || selectedContainerStats || optimalContainer">
-          <div class="figma-results-header">
-            <h3>Résultats de la simulation</h3>
-            <div class="figma-results-number">1</div>
+        <div class="figma-results-panel" *ngIf="selectedContainerId || selectedContainerStats || optimalContainer || findingOptimal">
+
+          <!-- Indicateur de chargement pendant la recherche -->
+          <div *ngIf="findingOptimal" class="figma-loading-state">
+            <div class="figma-spinner"></div>
+            <h3>Recherche du conteneur optimal...</h3>
+            <p>Analyse des colis et calcul de la meilleure solution</p>
           </div>
+
+          <!-- Résultats normaux -->
+          <div *ngIf="!findingOptimal && (selectedContainerId || selectedContainerStats || optimalContainer)" class="figma-results-content">
+            <div class="figma-results-header">
+              <h3>Résultats de la simulation</h3>
+              <div class="figma-results-number">1</div>
+            </div>
           
           <!-- Informations du contenant sélectionné -->
           <div class="figma-container-info">
@@ -461,6 +471,7 @@
                 Capacité : {{ calculerPoidsTotal() | number:'1.2-2' }} kg max
               </div>
             </div>
+          </div>
           </div>
         </div>
       </div>

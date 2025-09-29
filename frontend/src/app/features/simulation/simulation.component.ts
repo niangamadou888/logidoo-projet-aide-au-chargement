@@ -486,6 +486,15 @@ export class SimulationComponent implements OnInit {
           // Sélectionner automatiquement le conteneur optimal
           this.selectedContainerId = this.optimalContainer.containerId;
           this.selectedContainerStats = null; // Réinitialiser les stats manuelles
+
+          console.log('✅ Conteneur optimal trouvé:', this.optimalContainer);
+          console.log('🎯 Conteneur sélectionné automatiquement:', this.selectedContainerId);
+
+          // Déclencher immédiatement l'évaluation pour afficher les statistiques
+          // Petit délai pour laisser le temps à l'UI de se mettre à jour
+          setTimeout(() => {
+            this.evaluateSelectedContainer();
+          }, 100);
         } else {
           this.snackBar.open('Aucun conteneur optimal trouvé', 'OK', {
             duration: 3000
@@ -692,8 +701,19 @@ export class SimulationComponent implements OnInit {
   nextStep() {
     if (this.currentStep < this.totalSteps) {
       this.currentStep++;
+      // Automatiser la recherche du conteneur optimal et l'affichage des calculs
+      // lors du passage à l'étape 2 (conteneur)
+      if (this.currentStep === 2 && this.listeColis.length > 0) {
+        console.log('🚀 Passage à l\'étape 2 - Choix du contenant');
+
+        // Scroll automatique vers le haut pour voir les conteneurs
+        this.scrollToTop();
+
+        this.automateContainerSelection();
+      }
     } else if (this.currentStep === 2) {
       // Après l'étape 2, lancer la simulation et aller aux résultats
+      console.log('🚀 Lancement de la simulation depuis nextStep()');
       this.lancerSimulation();
     }
   }
@@ -707,6 +727,57 @@ export class SimulationComponent implements OnInit {
   goToStep(step: number) {
     if (step >= 1 && step <= this.totalSteps) {
       this.currentStep = step;
+      // Automatiser la recherche du conteneur optimal et l'affichage des calculs
+      // lors du passage à l'étape 2 (conteneur)
+      if (step === 2 && this.listeColis.length > 0) {
+        // Scroll automatique vers le haut pour voir les conteneurs
+        this.scrollToTop();
+
+        this.automateContainerSelection();
+      }
+    }
+  }
+
+  /**
+   * Scroll automatique vers le haut de la page de manière fluide
+   */
+  private scrollToTop(): void {
+    if (this.isBrowser && typeof window !== 'undefined') {
+      try {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
+        console.log('🔝 Scroll automatique vers le haut effectué');
+      } catch (error) {
+        // Fallback pour les navigateurs plus anciens
+        window.scrollTo(0, 0);
+        console.log('🔝 Scroll automatique vers le haut effectué (fallback)');
+      }
+    }
+  }
+
+  /**
+   * Automatise la sélection du conteneur et l'affichage des calculs
+   * lors du passage à l'étape 2 (conteneur)
+   */
+  private automateContainerSelection(): void {
+    console.log('🤖 Automatisation de la sélection de conteneur déclenchée');
+
+    // Forcer le mode automatique pour garantir l'affichage du conteneur optimal
+    if (!this.selectionAutoOptimal) {
+      console.log('🔄 Activation automatique du mode optimal');
+      this.selectionAutoOptimal = true;
+    }
+
+    // Réinitialiser les résultats précédents pour une nouvelle recherche
+    this.resetResultats();
+
+    // Si on est déjà en mode automatique et qu'on a des colis, chercher le conteneur optimal
+    if (this.selectionAutoOptimal && this.listeColis.length > 0) {
+      console.log('🔍 Recherche automatique du conteneur optimal...');
+      this.trouverConteneurOptimal();
     }
   }
 
