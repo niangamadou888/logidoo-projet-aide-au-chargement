@@ -142,7 +142,7 @@ This project supports SSR via Angular Universal:
 
 * **Backend**: Deploy to any Node.js host (Heroku, AWS, DigitalOcean) with environment variables set.
 
-  * **API URL**: [https://logidoo.onrender.com](https://logidoo.onrender.com)
+  * **API URL**: [https://logidoo-projet-aide-au-chargement-7.onrender.com](https://logidoo-projet-aide-au-chargement-7.onrender.com)
 * **Frontend (Static)**: Build with `ng build --prod` and serve via CDN or static host (Netlify, Vercel).
 
   * **App URL**: [https://logidoo.netlify.app/](https://logidoo.netlify.app/)

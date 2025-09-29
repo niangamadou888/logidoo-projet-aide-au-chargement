@@ -1,4 +1,23 @@
 {
+  "name": "logidoo-aide-au-chargement",
+  "version": "1.0.0",
+  "description": "Application d'aide au chargement Logidoo",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "install": "cd backend && npm install",
+    "build": "cd backend && npm install",
+    "dev": "cd backend && npm run dev",
+    "seed:admin": "cd backend && npm run seed:admin",
+    "cleanup:db": "cd backend && npm run cleanup:db"
+  },
+  "keywords": ["logidoo", "chargement", "simulation", "angular", "nodejs"],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
   "dependencies": {
     "dotenv": "^17.2.0",
     "express": "^5.1.0",

@@ -1,3 +1,1017 @@
+// Variables CSS pour le thème Logidoo
+@use './ultra-compact-form.scss';
+@use './modern-colis-cards.scss';
+
+:host {
+  --logidoo-primary: #092B8B;
+  --logidoo-blue: #092B8B;
+  --logidoo-yellow: #FFD700;
+  --logidoo-gray-50: #f9fafb;
+  --logidoo-gray-100: #f3f4f6;
+  --logidoo-gray-200: #e5e7eb;
+  --logidoo-gray-300: #d1d5db;
+  --logidoo-gray-400: #9ca3af;
+  --logidoo-gray-600: #4b5563;
+  --logidoo-gray-700: #374151;
+  --logidoo-gray-800: #1f2937;
+  --logidoo-success: #10b981;
+}
+
+// ===== HEADER COMPACT =====
+.compact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: white;
+  border-bottom: 1px solid var(--logidoo-gray-200);
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    
+    .back-btn {
+      background: none;
+      border: 1px solid var(--logidoo-gray-300);
+      border-radius: 8px;
+      padding: 0.5rem;
+      cursor: pointer;
+      color: var(--logidoo-gray-600);
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: var(--logidoo-gray-50);
+        border-color: var(--logidoo-blue);
+        color: var(--logidoo-blue);
+      }
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      
+      .logo-image {
+        height: 32px;
+        width: auto;
+        max-width: 120px;
+      }
+    }
+  }
+  
+  // Stepper compact à droite - Style uniforme
+  .compact-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      min-height: 44px;
+      font-weight: 500;
+      
+      &:hover:not(.disabled) {
+        background: rgba(37, 99, 235, 0.1);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
+      }
+      
+      &.active {
+        background: linear-gradient(135deg, var(--logidoo-blue), #1d4ed8);
+        color: white;
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        transform: translateY(-1px);
+        
+        .step-circle {
+          background: white;
+          color: var(--logidoo-blue);
+          font-weight: 700;
+        }
+        
+        .step-text {
+          font-weight: 600;
+        }
+      }
+      
+      &.completed:not(.active) {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        
+        .step-circle {
+          background: white;
+          color: #10b981;
+          font-weight: 700;
+        }
+        
+        .step-text {
+          font-weight: 600;
+        }
+        
+        &:hover {
+          background: linear-gradient(135deg, #059669, #047857);
+        }
+      }
+      
+      &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #f3f4f6;
+        
+        &:hover {
+          background: #f3f4f6;
+          transform: none;
+          box-shadow: none;
+        }
+        
+        .step-circle {
+          background: var(--logidoo-gray-200);
+          color: var(--logidoo-gray-400);
+        }
+        
+        .step-text {
+          color: var(--logidoo-gray-400);
+        }
+      }
+
+      // Style pour le stepper cliquable
+      &:not(.active):not(.completed):not(.disabled) {
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          .step-circle {
+            background: var(--logidoo-blue-50);
+            border-color: var(--logidoo-blue);
+            color: var(--logidoo-blue);
+            transform: scale(1.05);
+          }
+          
+          .step-text {
+            color: var(--logidoo-blue);
+          }
+        }
+      }
+      
+      .step-circle {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--logidoo-gray-200);
+        color: var(--logidoo-gray-600);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: 700;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+      }
+      
+      .step-text {
+        font-size: 0.9rem;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+    }
+    
+    .step-connector {
+      width: 32px;
+      height: 2px;
+      background: linear-gradient(90deg, #e5e7eb, #d1d5db);
+      margin: 0 4px;
+      border-radius: 1px;
+      transition: all 0.3s ease;
+      
+      &.completed {
+        background: linear-gradient(90deg, #10b981, #059669);
+        box-shadow: 0 1px 3px rgba(16, 185, 129, 0.3);
+      }
+    }
+  }
+}
+
+// ===== LISTE COMPACTE DES COLIS =====
+.compact-colis-container {
+  margin: 1.5rem 0;
+  
+  .compact-colis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    
+    h3 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--logidoo-gray-800);
+      
+      .package-icon {
+        font-size: 1.2rem;
+      }
+    }
+    
+    .compact-actions {
+      display: flex;
+      gap: 0.5rem;
+      
+      .btn-icon {
+        background: none;
+        border: 1px solid var(--logidoo-gray-300);
+        border-radius: 6px;
+        padding: 0.5rem;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background: var(--logidoo-gray-50);
+          border-color: var(--logidoo-blue);
+        }
+      }
+    }
+  }
+  
+  .compact-colis-list {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid var(--logidoo-gray-200);
+    overflow: hidden;
+    
+    .compact-colis-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--logidoo-gray-100);
+      transition: background 0.2s ease;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      &:hover {
+        background: var(--logidoo-gray-50);
+      }
+      
+      .color-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 0.75rem;
+        border: 2px solid white;
+        box-shadow: 0 0 0 1px var(--logidoo-gray-300);
+      }
+      
+      .colis-main-info {
+        flex: 1;
+        
+        .colis-title {
+          font-weight: 600;
+          color: var(--logidoo-gray-800);
+          font-size: 0.9rem;
+        }
+        
+        .colis-dimensions {
+          font-size: 0.8rem;
+          color: var(--logidoo-gray-600);
+          margin-top: 0.1rem;
+        }
+      }
+      
+      .colis-stats {
+        display: flex;
+        gap: 1rem;
+        margin-right: 1rem;
+        
+        .stat {
+          font-size: 0.8rem;
+          color: var(--logidoo-gray-600);
+          background: var(--logidoo-gray-100);
+          padding: 0.2rem 0.5rem;
+          border-radius: 4px;
+        }
+      }
+
+      .colis-badges {
+        display: inline-flex;
+        gap: 0.4rem;
+        margin-left: 0.6rem;
+        vertical-align: middle;
+      }
+
+      .badge {
+        font-size: 0.65rem;
+        padding: 0.14rem 0.4rem;
+        border-radius: 999px;
+        font-weight: 600;
+        color: white;
+        display: inline-block;
+      }
+
+      .badge-fragile {
+        background: linear-gradient(90deg, #ef4444, #dc2626);
+      }
+
+      .badge-gerbable {
+        background: linear-gradient(90deg, #06b6d4, #0ea5b8);
+      }
+      
+      .colis-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        /* Brand-aligned checkboxes for fragile/empilable */
+        .checkbox-mini.inline {
+          display: flex;
+          align-items: center;
+          gap: 0.35rem;
+          font-size: 0.85rem;
+          color: var(--logidoo-gray-700);
+
+          input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            /* Use Logidoo brand color */
+            accent-color: var(--logidoo-blue);
+          }
+
+          .check-label {
+            margin-left: 2px;
+            user-select: none;
+          }
+        }
+
+        .color-picker-mini {
+          width: 24px;
+          height: 24px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+
+        .delete-btn-mini {
+          background: none;
+          border: 1px solid var(--logidoo-gray-300);
+          border-radius: 4px;
+          width: 24px;
+          height: 24px;
+          cursor: pointer;
+          color: #dc2626;
+          font-size: 1rem;
+          line-height: 1;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            background: #fef2f2;
+            border-color: #dc2626;
+          }
+        }
+      }
+    }
+  }
+}
+
+.stepper-steps {
+  // Ancien stepper - ne plus utiliser
+  display: none;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  z-index: 3;
+  flex: 1;
+  max-width: 160px;
+  padding: 0 0.5rem;
+  transition: all 0.3s ease;
+  
+  &:hover:not(.disabled) {
+    transform: translateY(-2px);
+    
+    .step-circle {
+      box-shadow: 0 4px 12px rgba(9, 43, 139, 0.15);
+    }
+  }
+  
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+    
+    .step-circle {
+      background: var(--logidoo-gray-100);
+      border-color: var(--logidoo-gray-200);
+      color: var(--logidoo-gray-400);
+    }
+    
+    .step-label {
+      color: var(--logidoo-gray-400);
+    }
+  }
+  
+  &.active {
+    .step-circle {
+      background: var(--logidoo-blue);
+      color: white;
+      border-color: var(--logidoo-blue);
+      box-shadow: 0 0 0 6px rgba(9, 43, 139, 0.1);
+      transform: scale(1.1);
+    }
+    
+    .step-label {
+      color: var(--logidoo-blue);
+      font-weight: 700;
+    }
+    
+    // Pulsation subtile
+    .step-circle {
+      animation: pulse 2s infinite;
+    }
+  }
+  
+  &.completed {
+    .step-circle {
+      background: var(--logidoo-success);
+      color: white;
+      border-color: var(--logidoo-success);
+      transform: scale(1.05);
+      
+      // Icône de validation
+      &::before {
+        content: '✓';
+        font-weight: bold;
+        font-size: 18px;
+      }
+    }
+    
+    .step-label {
+      color: var(--logidoo-success);
+      font-weight: 600;
+    }
+  }
+}
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--logidoo-gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 0.5rem;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  
+  // Gradient subtil pour les étapes actives
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, var(--logidoo-blue), var(--logidoo-yellow));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+}
+
+.step-label {
+  font-size: 0.85rem;
+  color: var(--logidoo-gray-600);
+  text-align: center;
+  font-weight: 500;
+  line-height: 1.3;
+  transition: all 0.3s ease;
+  min-height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Animation de pulsation
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 6px rgba(9, 43, 139, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(9, 43, 139, 0.05);
+  }
+}
+
+// Responsive design pour les steppers
+@media (max-width: 768px) {
+  .stepper-container {
+    padding: 0 1rem;
+    margin: 2rem auto 3rem;
+  }
+  
+  .stepper-steps {
+    flex-direction: column;
+    gap: 2rem;
+    
+    &::before, &::after {
+      display: none;
+    }
+  }
+  
+  .step {
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+    max-width: none;
+    width: 100%;
+    padding: 1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 2px solid var(--logidoo-gray-100);
+    
+    &.active {
+      border-color: var(--logidoo-blue);
+      background: linear-gradient(135deg, rgba(9, 43, 139, 0.02), rgba(248, 203, 14, 0.02));
+    }
+    
+    &.completed {
+      border-color: var(--logidoo-success);
+      background: rgba(16, 185, 129, 0.02);
+    }
+  }
+  
+  .step-circle {
+    width: 50px;
+    height: 50px;
+    margin-right: 1rem;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  
+  .step-label {
+    text-align: left;
+    font-size: 1rem;
+    min-height: auto;
+  }
+}
+
+// Styles pour le contenu des steps
+.step-content {
+  min-height: 400px;
+  animation: fadeIn 0.3s ease-in;
+  padding: 1rem 0;
+}
+
+// Layout compact pour le step 2
+.compact-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.colis-form-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--logidoo-gray-100);
+  overflow: hidden;
+}
+
+.form-header {
+  background: linear-gradient(135deg, var(--logidoo-blue), #1e40af);
+  color: white;
+  padding: 1.5rem;
+  
+  h2 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    
+    .icon {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+.compact-form {
+  padding: 1.5rem;
+  
+  .form-row-compact {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    
+    .form-group {
+      flex: 1;
+      
+      &.flex-2 { flex: 2; }
+      &.flex-1 { flex: 1; }
+    }
+  }
+  
+  .form-group {
+    label {
+      display: block;
+      font-weight: 600;
+      color: var(--logidoo-gray-700);
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--logidoo-gray-200);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      
+      &:focus {
+        outline: none;
+        border-color: var(--logidoo-blue);
+        box-shadow: 0 0 0 3px rgba(9, 43, 139, 0.1);
+      }
+      
+      &::placeholder {
+        color: var(--logidoo-gray-400);
+      }
+    }
+    
+    small {
+      display: block;
+      color: var(--logidoo-gray-600);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      text-align: center;
+    }
+  }
+}
+
+.dimensions-group {
+  margin-bottom: 1.5rem;
+  
+  .group-label {
+    display: block;
+    font-weight: 600;
+    color: var(--logidoo-gray-700);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+.options-group {
+  margin-bottom: 1.5rem;
+  
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: var(--logidoo-gray-700);
+    cursor: pointer;
+    
+    input[type="checkbox"] {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--logidoo-gray-300);
+      border-radius: 4px;
+      position: relative;
+      cursor: pointer;
+      
+      &:checked {
+        background: var(--logidoo-blue);
+        border-color: var(--logidoo-blue);
+        
+        &::after {
+          content: '✓';
+          position: absolute;
+          top: -2px;
+          left: 2px;
+          color: white;
+          font-size: 12px;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+  
+  .color-picker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    
+    label {
+      font-weight: 500;
+      color: var(--logidoo-gray-700);
+      font-size: 0.9rem;
+    }
+    
+    .color-input {
+      width: 50px;
+      height: 35px;
+      border: 2px solid var(--logidoo-gray-200);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  }
+}
+
+.collapsible-section {
+  margin-bottom: 1.5rem;
+  
+  .toggle-btn {
+    width: 100%;
+    background: var(--logidoo-gray-50);
+    border: 1px solid var(--logidoo-gray-200);
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    color: var(--logidoo-gray-700);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: var(--logidoo-gray-100);
+    }
+    
+    span {
+      font-size: 0.8rem;
+      transition: transform 0.3s ease;
+      
+      &.rotated {
+        transform: rotate(90deg);
+      }
+    }
+  }
+  
+  .collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    
+    &.expanded {
+      max-height: 200px;
+      padding-top: 1rem;
+    }
+  }
+}
+
+.btn-add-colis {
+  width: 100%;
+  background: linear-gradient(135deg, var(--logidoo-blue), #1e40af);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(9, 43, 139, 0.3);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .btn-icon {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+}
+
+.import-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--logidoo-gray-100);
+  padding: 1.5rem;
+  height: fit-content;
+  
+  .import-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    
+    .icon {
+      font-size: 1.5rem;
+    }
+    
+    span:last-child {
+      font-weight: 600;
+      color: var(--logidoo-gray-700);
+      font-size: 1.1rem;
+    }
+  }
+  
+  .file-input {
+    display: none;
+  }
+  
+  .btn-import, .btn-template {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 0.75rem;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .btn-import {
+    background: var(--logidoo-yellow);
+    color: var(--logidoo-gray-800);
+    border: 2px solid var(--logidoo-yellow);
+    
+    &:hover {
+      background: #e6b800;
+      border-color: #e6b800;
+    }
+  }
+  
+  .btn-template {
+    background: white;
+    color: var(--logidoo-blue);
+    border: 2px solid var(--logidoo-blue);
+    
+    &:hover {
+      background: var(--logidoo-blue);
+      color: white;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// Actions des steps
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+
+  /* Defensive: ensure step-actions takes full width so children can align properly */
+  width: 100%;
+
+  /* If only a right-side actions container exists, force it to the right */
+  .actions-right {
+    margin-left: auto;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  .action-buttons-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .btn-primary, .btn-secondary, .btn-success {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-icon {
+      font-size: 1.1rem;
+    }
+  }
+  
+  .btn-primary {
+    background: var(--logidoo-blue);
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background: #082169;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(9, 43, 139, 0.3);
+    }
+  }
+
+  .btn-success {
+    background: #10b981;
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+    }
+  }
+  
+  .btn-secondary {
+    background: var(--logidoo-gray-100);
+    color: var(--logidoo-gray-700);
+    border: 1px solid #d1d5db;
+    
+    &:hover:not(:disabled) {
+      background: #e5e7eb;
+    }
+  }
+}
+
+// Responsive design pour les steppers
+@media (max-width: 768px) {
+  .stepper-steps {
+    flex-direction: column;
+    gap: 1rem;
+    
+    &::before {
+      display: none;
+    }
+  }
+  
+  .step {
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+    
+    .step-circle {
+      margin-right: 1rem;
+      margin-bottom: 0;
+    }
+    
+    .step-label {
+      text-align: left;
+    }
+  }
+  
+  .step-actions {
+    flex-direction: column;
+    gap: 1rem;
+    
+    .btn-primary, .btn-secondary {
+      width: 100%;
+    }
+  }
+}
+
 .colis-summary {
   display: flex;
   justify-content: space-around;
@@ -237,29 +1251,90 @@
 }
 
 .selection-mode-toggle {
-  margin-left: auto;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   display: flex;
+  gap: 2rem;
   align-items: center;
-}
 
-.selection-mode-toggle label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  background-color: #f3f4f6;
-  font-size: 0.85rem;
-  transition: background-color 0.2s;
-}
+  .mode-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    flex: 1;
 
-.selection-mode-toggle label.active {
-  background-color: #d1fae5;
-  color: #047857;
-}
+    &:hover {
+      transform: translateY(-1px);
+    }
 
-.selection-mode-toggle input {
-  margin-right: 6px;
+    input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .radio-custom {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #cbd5e1;
+      border-radius: 50%;
+      margin-right: 12px;
+      position: relative;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        width: 8px;
+        height: 8px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        border-radius: 50%;
+        transition: transform 0.2s ease;
+      }
+    }
+
+    input[type="radio"]:checked + .radio-custom {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+
+      &::after {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .mode-text {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+
+      strong {
+        color: #1e293b;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      small {
+        color: #64748b;
+        font-size: 0.8rem;
+        font-weight: 400;
+      }
+    }
+
+    input[type="radio"]:checked ~ .mode-text strong {
+      color: #2563eb;
+    }
+  }
 }
 
 .selection-mode-explanation {
@@ -477,8 +1552,8 @@
   background: white;
   border-radius: 1rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  margin-bottom: 2rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
   
   .simulation-form {
     .form-row {
@@ -788,7 +1863,7 @@
   text-align: center;
   
   .status-icon {
-    font-size: 4rem;
+    font-size: 2.5rem;
     margin-bottom: 0.5rem;
     opacity: 0.3;
   }
@@ -800,55 +1875,445 @@
   }
 }
 
+// Design moderne pour la liste des colis
 .colis-list {
+  margin-top: 2rem;
+  
   h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--logidoo-gray-800);
     margin-bottom: 1.5rem;
-  }
-  
-  .colis-items {
-    margin-bottom: 1.5rem;
-  }
-  
-  .colis-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    background: #f9fafb;
-    border-radius: 0.5rem;
-    margin-bottom: 0.75rem;
     
-    .colis-info {
+    &::before {
+      content: '📦';
+      margin-right: 0.5rem;
+    }
+  }
+  
+  .colis-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--logidoo-gray-50), white);
+    border-radius: 12px;
+    border: 1px solid var(--logidoo-gray-100);
+    
+    .stat-item {
+      text-align: center;
       flex: 1;
       
-      .colis-type {
-        font-weight: 600;
-        margin-right: 0.5rem;
+      .stat-number {
+        display: block;
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--logidoo-blue);
       }
       
-      .colis-dimensions {
-        color: #6b7280;
-        margin-right: 0.5rem;
-      }
-      
-      .colis-quantity {
+      .stat-label {
         font-size: 0.875rem;
-        background: #dbeafe;
-        color: #1e40af;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-      }
-      
-      .colis-destinataire {
-        font-size: 0.875rem;
-        color: #6b7280;
+        color: var(--logidoo-gray-600);
         margin-top: 0.25rem;
       }
     }
   }
 }
+
+.colis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.colis-item {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--logidoo-gray-100);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--logidoo-blue);
+  }
+}
+
+.colis-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, var(--logidoo-gray-50), white);
+  border-bottom: 1px solid var(--logidoo-gray-100);
+  
+  .colis-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+  }
+  
+  .colis-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+  }
+  
+  .colis-type {
+    font-weight: 600;
+    color: var(--logidoo-gray-800);
+    font-size: 0.95rem;
+  }
+  
+  .colis-quantity {
+    background: var(--logidoo-yellow);
+    color: var(--logidoo-gray-800);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: auto;
+    margin-right: 0.5rem;
+  }
+  
+  .delete-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: #fee2e2;
+    color: #dc2626;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: #fecaca;
+      transform: scale(1.1);
+    }
+  }
+}
+
+.colis-details {
+  padding: 1.25rem;
+}
+
+.dimension-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.dimension-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--logidoo-gray-50);
+  border-radius: 8px;
+  
+  .label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--logidoo-gray-600);
+    min-width: 35px;
+  }
+  
+  .value {
+    font-weight: 600;
+    color: var(--logidoo-gray-800);
+    font-size: 0.875rem;
+  }
+}
+
+.colis-properties {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.property-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  
+  &.fragile {
+    background: #fef3c7;
+    color: #92400e;
+    
+    &::before {
+      content: '⚠️ ';
+    }
+  }
+  
+  &.gerbable {
+    background: #dcfce7;
+    color: #166534;
+    
+    &::before {
+      content: '📚 ';
+    }
+  }
+  
+  &.non-gerbable {
+    background: #fee2e2;
+    color: #991b1b;
+    
+    &::before {
+      content: '🚫 ';
+    }
+  }
+}
+
+.colis-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--logidoo-gray-100);
+  
+  .color-input {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--logidoo-gray-600);
+    
+    input[type="color"] {
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      
+      &::-webkit-color-swatch-wrapper {
+        padding: 0;
+      }
+      
+      &::-webkit-color-swatch {
+        border: 1px solid var(--logidoo-gray-200);
+        border-radius: 4px;
+      }
+    }
+  }
+  
+  .checkbox-input {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--logidoo-gray-600);
+    cursor: pointer;
+    
+    input[type="checkbox"] {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--logidoo-gray-300);
+      border-radius: 3px;
+      position: relative;
+      cursor: pointer;
+      
+      &:checked {
+        background: var(--logidoo-blue);
+        border-color: var(--logidoo-blue);
+        
+        &::after {
+          content: '✓';
+          position: absolute;
+          top: -2px;
+          left: 2px;
+          color: white;
+          font-size: 10px;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
+
+// Design moderne pour la section d'import Excel
+.import-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--logidoo-gray-100);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  height: fit-content;
+  
+  .import-header {
+    background: linear-gradient(135deg, var(--logidoo-yellow), #f59e0b);
+    color: var(--logidoo-gray-800);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    
+    .import-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    
+    .import-title {
+      h3 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+      
+      p {
+        margin: 0;
+        font-size: 0.875rem;
+        opacity: 0.8;
+      }
+    }
+  }
+  
+  .import-content {
+    padding: 1.5rem;
+  }
+  
+  .drag-drop-zone {
+    border: 2px dashed var(--logidoo-gray-300);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    background: var(--logidoo-gray-50);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 1.5rem;
+    
+    &:hover, &.drag-over {
+      border-color: var(--logidoo-blue);
+      background: rgba(9, 43, 139, 0.05);
+      transform: translateY(-2px);
+    }
+    
+    .drag-drop-content {
+      pointer-events: none;
+      
+      .upload-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+      
+      h4 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--logidoo-gray-800);
+      }
+      
+      p {
+        margin: 0;
+        color: var(--logidoo-gray-600);
+        font-size: 0.875rem;
+      }
+    }
+    
+    .file-input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+  }
+  
+  .import-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    
+    .btn-import, .btn-template {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      
+      .btn-icon {
+        font-size: 1rem;
+      }
+    }
+    
+    .btn-import {
+      background: var(--logidoo-blue);
+      color: white;
+      
+      &:hover {
+        background: #082169;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(9, 43, 139, 0.3);
+      }
+    }
+    
+    .btn-template {
+      background: var(--logidoo-gray-100);
+      color: var(--logidoo-gray-700);
+      border: 1px solid var(--logidoo-gray-200);
+      
+      &:hover {
+        background: var(--logidoo-gray-200);
+        transform: translateY(-1px);
+      }
+    }
+  }
+  
+  .import-help {
+    h5 {
+      margin: 0 0 0.75rem 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--logidoo-gray-700);
+    }
+    
+    .columns-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      
+      .column-tag {
+        background: var(--logidoo-blue);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -887,3 +2352,2974 @@
   font-weight: 600;
 }
 
+// === STYLES POUR LA PAGINATION AMÉLIORÉE ===
+
+.colis-header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  
+  h3 {
+    margin: 0;
+    color: var(--logidoo-gray-800);
+    font-weight: 600;
+  }
+}
+
+.pagination-controls-top,
+.pagination-controls-bottom {
+  margin-top: 1.5rem;
+}
+
+.page-size-selector {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--logidoo-gray-300);
+  border-radius: 8px;
+  background: white;
+  color: var(--logidoo-gray-700);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: var(--logidoo-blue);
+    box-shadow: 0 0 0 3px rgba(9, 43, 139, 0.1);
+  }
+}
+
+.pagination-controls-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--logidoo-gray-200);
+  margin-top: 2rem;
+}
+
+.pagination-info {
+  color: var(--logidoo-gray-600);
+  font-size: 0.875rem;
+}
+
+.pagination-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--logidoo-gray-300);
+  background: white;
+  color: var(--logidoo-gray-600);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background: var(--logidoo-gray-50);
+    border-color: var(--logidoo-blue);
+    color: var(--logidoo-blue);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--logidoo-gray-100);
+  }
+}
+
+.pagination-numbers {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0 0.5rem;
+}
+
+.btn-page-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--logidoo-gray-300);
+  background: white;
+  color: var(--logidoo-gray-600);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: var(--logidoo-gray-50);
+    border-color: var(--logidoo-blue);
+    color: var(--logidoo-blue);
+  }
+  
+  &.active {
+    background: var(--logidoo-blue);
+    border-color: var(--logidoo-blue);
+    color: white;
+    font-weight: 600;
+  }
+}
+
+// === STYLES POUR LES NOUVELLES ÉTAPES ===
+
+// Étape 4: Calcul & Simulation
+.simulation-launch {
+  text-align: center;
+  padding: 2rem;
+  
+  p {
+    font-size: 1.1rem;
+    color: var(--logidoo-gray-700);
+    margin-bottom: 2rem;
+  }
+}
+
+.simulation-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--logidoo-gray-50);
+  border-radius: 12px;
+}
+
+.preview-item {
+  text-align: left;
+  
+  strong {
+    color: var(--logidoo-blue);
+    font-weight: 600;
+  }
+}
+
+.btn-large {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  min-width: 200px;
+}
+
+.simulation-progress {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.progress-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--logidoo-gray-200);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--logidoo-blue), var(--logidoo-yellow));
+  border-radius: 4px;
+  animation: progressAnimation 2s ease-in-out infinite;
+}
+
+@keyframes progressAnimation {
+  0% { width: 10%; }
+  50% { width: 90%; }
+  100% { width: 10%; }
+}
+
+.simulation-results {
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  
+  .result-card {
+    background: white;
+    border: 1px solid var(--logidoo-gray-200);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    h5 {
+      margin: 0 0 1rem;
+      color: var(--logidoo-gray-600);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .result-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--logidoo-blue);
+      margin: 0;
+    }
+  }
+}
+
+// Étape 5: Visualisation 3D
+.visualization-container {
+  .visualization-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    
+    h4 {
+      margin: 0;
+      color: var(--logidoo-gray-800);
+    }
+  }
+  
+  .visualization-controls {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--logidoo-gray-300);
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: var(--logidoo-gray-50);
+      border-color: var(--logidoo-blue);
+    }
+  }
+}
+
+.visualization-3d {
+  background: var(--logidoo-gray-100);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem 0;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container-3d {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  background: #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transform: perspective(1000px) rotateX(15deg) rotateY(-15deg);
+}
+
+.container-walls {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  
+  .wall {
+    position: absolute;
+    background: rgba(148, 163, 184, 0.3);
+    border: 1px solid #94a3b8;
+    
+    &.front {
+      width: 100%;
+      height: 100%;
+      transform: translateZ(50px);
+    }
+    
+    &.back {
+      width: 100%;
+      height: 100%;
+      transform: translateZ(-50px);
+    }
+    
+    &.left {
+      width: 100px;
+      height: 100%;
+      transform: rotateY(90deg) translateZ(50px);
+    }
+    
+    &.right {
+      width: 100px;
+      height: 100%;
+      transform: rotateY(-90deg) translateZ(250px);
+    }
+    
+    &.bottom {
+      width: 100%;
+      height: 100px;
+      transform: rotateX(90deg) translateZ(150px);
+    }
+  }
+}
+
+.colis-3d {
+  position: absolute;
+  
+  .colis-box {
+    background: var(--logidoo-blue);
+    border: 1px solid var(--logidoo-yellow);
+    border-radius: 4px;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+    
+    &:hover {
+      opacity: 1;
+      box-shadow: 0 4px 12px rgba(9, 43, 139, 0.3);
+    }
+  }
+}
+
+.visualization-info {
+  .info-panel {
+    background: white;
+    border: 1px solid var(--logidoo-gray-200);
+    border-radius: 12px;
+    padding: 1.5rem;
+    
+    h5 {
+      margin: 0 0 1rem;
+      color: var(--logidoo-gray-800);
+      font-weight: 600;
+    }
+    
+    .placement-stats {
+      display: grid;
+      gap: 0.75rem;
+    }
+    
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .stat-label {
+        color: var(--logidoo-gray-600);
+      }
+      
+      .stat-value {
+        font-weight: 600;
+        color: var(--logidoo-blue);
+      }
+    }
+  }
+}
+
+// Étape 6: Export
+.export-options {
+  .export-section {
+    margin-bottom: 2.5rem;
+    
+    h4 {
+      margin: 0 0 1.5rem;
+      color: var(--logidoo-gray-800);
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+  }
+  
+  .export-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .export-card {
+    background: white;
+    border: 1px solid var(--logidoo-gray-200);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .export-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    h5 {
+      margin: 0 0 0.5rem;
+      color: var(--logidoo-gray-800);
+      font-weight: 600;
+    }
+    
+    p {
+      color: var(--logidoo-gray-600);
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+  }
+  
+  .share-options,
+  .save-options {
+    background: var(--logidoo-gray-50);
+    border-radius: 12px;
+    padding: 1.5rem;
+    
+    .form-group {
+      margin-bottom: 1rem;
+      
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--logidoo-gray-700);
+        font-weight: 500;
+      }
+      
+      .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--logidoo-gray-300);
+        border-radius: 8px;
+        font-size: 0.875rem;
+        transition: border-color 0.2s ease;
+        
+        &:focus {
+          outline: none;
+          border-color: var(--logidoo-blue);
+          box-shadow: 0 0 0 3px rgba(9, 43, 139, 0.1);
+        }
+      }
+    }
+    
+    .email-input {
+      display: flex;
+      gap: 0.5rem;
+      
+      input {
+        flex: 1;
+      }
+    }
+  }
+}
+
+// === DESIGN MODERNE POUR L'ÉTAPE 4 ===
+
+.modern-step-4 {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8fafc, #ffffff);
+  border-radius: 20px;
+  border: 1px solid var(--logidoo-gray-200);
+  
+  .step-icon {
+    margin-right: 1.5rem;
+    padding: 1rem;
+    background: rgba(9, 43, 139, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .step-title {
+    h2 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--logidoo-gray-800);
+    }
+    
+    p {
+      margin: 0;
+      color: var(--logidoo-gray-600);
+      font-size: 1.1rem;
+    }
+  }
+}
+
+.pre-simulation {
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .summary-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--logidoo-gray-100);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    }
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--logidoo-blue), var(--logidoo-yellow));
+    }
+    
+    &.gradient-blue::before {
+      background: linear-gradient(90deg, #092B8B, #1e40af);
+    }
+    
+    &.gradient-orange::before {
+      background: linear-gradient(90deg, #f97316, #ea580c);
+    }
+    
+    &.gradient-green::before {
+      background: linear-gradient(90deg, #16a34a, #15803d);
+    }
+    
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    
+    .card-content {
+      h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--logidoo-gray-800);
+        line-height: 1;
+      }
+      
+      p {
+        margin: 0;
+        color: var(--logidoo-gray-600);
+        font-size: 1rem;
+        font-weight: 500;
+      }
+    }
+  }
+  
+  .selected-container-info {
+    margin: 2rem 0;
+    
+    .container-badge {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: linear-gradient(135deg, var(--logidoo-blue), #1e40af);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 500;
+      
+      .badge-icon {
+        font-size: 1.5rem;
+      }
+      
+      .badge-text {
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  .launch-simulation {
+    text-align: center;
+    margin-top: 3rem;
+    
+    .btn-launch {
+      background: linear-gradient(135deg, var(--logidoo-blue), #1e40af);
+      color: white;
+      border: none;
+      padding: 1.5rem 3rem;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(9, 43, 139, 0.3);
+      position: relative;
+      overflow: hidden;
+      
+      &:hover:not(:disabled) {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(9, 43, 139, 0.4);
+      }
+      
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+      }
+      
+      .btn-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        
+        svg {
+          transition: transform 0.3s ease;
+        }
+        
+        .spinner {
+          width: 20px;
+          height: 20px;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-top: 2px solid white;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+      }
+      
+      &:hover:not(:disabled) svg {
+        transform: translateX(3px);
+      }
+    }
+  }
+}
+
+.simulation-progress {
+  padding: 3rem 2rem;
+  text-align: center;
+  
+  .progress-header {
+    margin-bottom: 3rem;
+    
+    h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--logidoo-gray-800);
+    }
+    
+    p {
+      margin: 0;
+      color: var(--logidoo-gray-600);
+      font-size: 1.1rem;
+    }
+  }
+  
+  .progress-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    
+    .progress-ring {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      
+      .progress-circle {
+        width: 100%;
+        height: 100%;
+        border: 8px solid var(--logidoo-gray-200);
+        border-top: 8px solid var(--logidoo-blue);
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 80px;
+          height: 80px;
+          background: linear-gradient(135deg, rgba(9, 43, 139, 0.1), rgba(248, 203, 14, 0.1));
+          border-radius: 50%;
+        }
+      }
+    }
+    
+    .progress-steps {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      
+      .progress-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        opacity: 0.3;
+        transition: opacity 0.3s ease;
+        
+        &.active {
+          opacity: 1;
+        }
+        
+        .step-dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: var(--logidoo-gray-300);
+          transition: background 0.3s ease;
+        }
+        
+        &.active .step-dot {
+          background: var(--logidoo-blue);
+          animation: pulse 2s infinite;
+        }
+        
+        span {
+          font-size: 0.875rem;
+          color: var(--logidoo-gray-600);
+          font-weight: 500;
+        }
+        
+        &.active span {
+          color: var(--logidoo-blue);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.simulation-results {
+  .results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f0fdf4, #ffffff);
+    border-radius: 16px;
+    border: 1px solid #bbf7d0;
+    
+    .success-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #166534;
+      font-weight: 600;
+      font-size: 1.1rem;
+      
+      svg {
+        color: #16a34a;
+      }
+    }
+    
+    .execution-time {
+      color: var(--logidoo-gray-600);
+      font-size: 0.875rem;
+      background: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      border: 1px solid var(--logidoo-gray-200);
+    }
+  }
+  
+  .results-dashboard {
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .kpi-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--logidoo-gray-100);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+      }
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+      }
+      
+      &.efficiency::before {
+        background: linear-gradient(90deg, #16a34a, #15803d);
+      }
+      
+      &.volume::before {
+        background: linear-gradient(90deg, #0ea5e9, #0284c7);
+      }
+      
+      &.placement::before {
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+      }
+      
+      &.containers::before {
+        background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+      }
+      
+      .kpi-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        
+        .kpi-icon {
+          font-size: 1.5rem;
+        }
+        
+        .kpi-label {
+          color: var(--logidoo-gray-600);
+          font-weight: 500;
+          font-size: 0.9rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+      
+      .kpi-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--logidoo-gray-800);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+        
+        .kpi-total {
+          font-size: 1.5rem;
+          color: var(--logidoo-gray-500);
+          font-weight: 500;
+        }
+      }
+      
+      .kpi-subtitle {
+        color: var(--logidoo-gray-600);
+        font-size: 0.875rem;
+        margin-bottom: 1rem;
+      }
+      
+      .kpi-progress {
+        .progress-bar-bg {
+          height: 8px;
+          background: var(--logidoo-gray-200);
+          border-radius: 4px;
+          overflow: hidden;
+          
+          .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--logidoo-blue), var(--logidoo-yellow));
+            border-radius: 4px;
+            transition: width 0.8s ease-in-out;
+          }
+        }
+      }
+    }
+    
+    .additional-stats {
+      margin-top: 2rem;
+      
+      .warning-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        background: #fefce8;
+        border: 1px solid #fde047;
+        border-left: 4px solid #eab308;
+        border-radius: 12px;
+        padding: 1.5rem;
+        
+        .warning-icon {
+          font-size: 1.5rem;
+          flex-shrink: 0;
+        }
+        
+        .warning-content {
+          h4 {
+            margin: 0 0 0.5rem 0;
+            color: #92400e;
+            font-size: 1rem;
+            font-weight: 600;
+          }
+          
+          p {
+            margin: 0;
+            color: #a16207;
+            font-size: 0.9rem;
+            line-height: 1.5;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Animations d'amélioration
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(9, 43, 139, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(9, 43, 139, 0);
+  }
+}
+
+// Améliorations responsives pour l'étape 4
+@media (max-width: 768px) {
+  .modern-step-4 {
+    .step-header {
+      flex-direction: column;
+      text-align: center;
+      padding: 1.5rem;
+      
+      .step-icon {
+        margin-right: 0;
+        margin-bottom: 1rem;
+      }
+      
+      .step-title h2 {
+        font-size: 1.5rem;
+      }
+    }
+    
+    .pre-simulation .summary-cards {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .pre-simulation .launch-simulation .btn-launch {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+    }
+    
+    .simulation-progress .progress-visual .progress-steps {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .results-dashboard .kpi-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// Animations pour les nouvelles étapes
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.step-content {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+// === RÉSUMÉ MODERNE INSPIRÉ DU FIGMA ===
+
+.modern-summary-section {
+  margin: 2rem 0;
+  padding: 0;
+}
+
+.summary-cards-horizontal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+.summary-card-modern {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 120px;
+  
+  .summary-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f97316; // Orange comme dans le Figma
+    line-height: 1;
+    margin: 0;
+  }
+  
+  .summary-label {
+    font-size: 0.875rem;
+    color: var(--logidoo-gray-600);
+    font-weight: 500;
+    margin: 0;
+    white-space: nowrap;
+  }
+  
+  &.total-colis .summary-value {
+    color: #f97316;
+  }
+  
+  &.volume-total .summary-value {
+    color: #f97316;
+  }
+  
+  &.poids-total .summary-value {
+    color: #f97316;
+  }
+}
+
+// === AMÉLIORATION DES STYLES RESPONSIFS ===
+
+@media (max-width: 768px) {
+  .summary-cards-horizontal {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem 1rem;
+  }
+  
+  .summary-card-modern {
+    min-width: 100px;
+    
+    .summary-value {
+      font-size: 1.3rem;
+    }
+    
+    .summary-label {
+      font-size: 0.8rem;
+    }
+  }
+}
+
+// === NOUVELLES CARTES COLIS STYLE FIGMA ===
+
+.figma-colis-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.figma-colis-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #d1d5db;
+  }
+}
+
+.figma-card-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
+  gap: 1rem;
+}
+
+.figma-colis-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  
+  .figma-color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .figma-colis-number {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--logidoo-gray-700);
+    min-width: 20px;
+  }
+}
+
+.figma-colis-main-info {
+  flex: 1;
+  
+  .figma-colis-type {
+    font-weight: 600;
+    color: var(--logidoo-gray-800);
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .figma-colis-quantity {
+    font-size: 0.875rem;
+    color: var(--logidoo-gray-600);
+  }
+}
+
+.figma-colis-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.figma-color-selector {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  position: relative;
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+  
+  .figma-color-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+  }
+}
+
+.figma-delete-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.figma-card-body {
+  padding: 1rem 1.5rem;
+  background: white;
+}
+
+.figma-destinataire-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.figma-destinataire-line {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  font-size: 0.875rem;
+  
+  .figma-label {
+    font-weight: 500;
+    color: var(--logidoo-gray-600);
+    min-width: 80px;
+    text-align: right;
+  }
+  
+  .figma-value {
+    color: var(--logidoo-gray-800);
+    font-weight: 500;
+    flex: 1;
+  }
+}
+
+// Responsive pour les cartes Figma
+@media (max-width: 768px) {
+  .figma-card-header {
+    flex-wrap: wrap;
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+  
+  .figma-colis-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .figma-card-body {
+    padding: 1rem;
+  }
+  
+  .figma-destinataire-line {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    
+    .figma-label {
+      min-width: auto;
+      text-align: left;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+// Styles modernes pour la pré-simulation
+.pre-simulation-modern {
+  .pre-simulation-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--logidoo-primary);
+      margin: 0 0 0.5rem 0;
+    }
+    
+    p {
+      color: var(--logidoo-gray-600);
+      margin: 0;
+      font-size: 0.95rem;
+    }
+  }
+
+  .pre-simulation-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .kpi-card-pre {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--logidoo-gray-200);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      transition: background 0.3s ease;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    &.primary {
+      &:before {
+        background: var(--logidoo-primary);
+      }
+      
+      .kpi-icon-modern {
+        background: rgba(9, 43, 139, 0.1);
+        color: var(--logidoo-primary);
+      }
+    }
+
+    &.secondary {
+      &:before {
+        background: #f97316;
+      }
+      
+      .kpi-icon-modern {
+        background: rgba(249, 115, 22, 0.1);
+        color: #f97316;
+      }
+    }
+
+    &.tertiary {
+      &:before {
+        background: #10b981;
+      }
+      
+      .kpi-icon-modern {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+      }
+    }
+
+    .kpi-icon-modern {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .kpi-content-pre {
+      flex: 1;
+
+      .kpi-value-pre {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--logidoo-gray-800);
+        line-height: 1;
+        margin-bottom: 0.25rem;
+      }
+
+      .kpi-label-pre {
+        font-size: 0.875rem;
+        color: var(--logidoo-gray-600);
+        font-weight: 500;
+      }
+    }
+  }
+
+  .selected-container-modern {
+    margin-bottom: 2rem;
+
+    .container-info-card {
+      background: linear-gradient(135deg, var(--logidoo-primary) 0%, #1e40af 100%);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+
+      &:before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20px;
+        width: 100px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50px;
+        transform: rotate(45deg);
+      }
+
+      .container-icon {
+        width: 56px;
+        height: 56px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .container-details {
+        flex: 1;
+        
+        h4 {
+          font-size: 1.125rem;
+          font-weight: 600;
+          margin: 0 0 0.25rem 0;
+        }
+        
+        p {
+          margin: 0;
+          opacity: 0.9;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  .launch-simulation-modern {
+    text-align: center;
+    margin-top: 2rem;
+
+    .btn-launch-modern {
+      background: linear-gradient(135deg, var(--logidoo-primary) 0%, #1e40af 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(9, 43, 139, 0.3);
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(9, 43, 139, 0.4);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      .btn-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .spinner-modern {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+      }
+    }
+  }
+}
+
+// Styles modernes pour l'étape de visualisation
+.visualization-container-modern {
+  .visualization-header-modern {
+    margin-bottom: 2rem;
+
+    .viz-intro {
+      text-align: center;
+      margin-bottom: 2rem;
+      
+      h4 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--logidoo-primary);
+        margin: 0 0 0.5rem 0;
+      }
+      
+      p {
+        color: var(--logidoo-gray-600);
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+    }
+
+    .viz-modes-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      max-width: 600px;
+      margin: 0 auto;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+
+      .mode-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--logidoo-gray-50);
+        border-radius: 12px;
+        border: 1px solid var(--logidoo-gray-200);
+
+        .mode-icon {
+          font-size: 1.5rem;
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: white;
+          border-radius: 12px;
+          flex-shrink: 0;
+        }
+
+        .mode-details {
+          h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--logidoo-gray-800);
+            margin: 0 0 0.25rem 0;
+          }
+
+          p {
+            font-size: 0.875rem;
+            color: var(--logidoo-gray-600);
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+
+  .viz-results-summary {
+    margin-bottom: 2rem;
+
+    .summary-cards-viz {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+
+      .viz-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--logidoo-gray-200);
+        position: relative;
+        overflow: hidden;
+
+        &:before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 3px;
+        }
+
+        &.efficiency:before {
+          background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        &.placement:before {
+          background: linear-gradient(135deg, var(--logidoo-primary), #1e40af);
+        }
+
+        &.containers:before {
+          background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        &.volume:before {
+          background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .viz-card-icon {
+          font-size: 1.5rem;
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--logidoo-gray-50);
+          border-radius: 12px;
+          flex-shrink: 0;
+        }
+
+        .viz-card-content {
+          flex: 1;
+
+          .viz-card-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--logidoo-gray-800);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+
+            .total-suffix {
+              font-size: 1rem;
+              color: var(--logidoo-gray-600);
+              font-weight: 500;
+            }
+          }
+
+          .viz-card-label {
+            font-size: 0.875rem;
+            color: var(--logidoo-gray-600);
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+
+  .viz-actions-modern {
+    text-align: center;
+
+    .main-action {
+      margin-bottom: 2rem;
+
+      .btn-viz-launch {
+        background: linear-gradient(135deg, var(--logidoo-primary) 0%, #1e40af 100%);
+        color: white;
+        border: none;
+        border-radius: 1rem;
+        padding: 1.5rem 2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(9, 43, 139, 0.3);
+        width: 100%;
+        max-width: 500px;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 25px rgba(9, 43, 139, 0.4);
+        }
+
+        .btn-viz-content {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+
+          .btn-viz-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+          }
+
+          .btn-viz-text {
+            flex: 1;
+            text-align: left;
+
+            .btn-title {
+              display: block;
+              font-size: 1.125rem;
+              font-weight: 600;
+              margin-bottom: 0.25rem;
+            }
+
+            .btn-subtitle {
+              display: block;
+              font-size: 0.875rem;
+              opacity: 0.9;
+            }
+          }
+        }
+      }
+    }
+
+    .viz-features-info {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      max-width: 600px;
+      margin: 0 auto;
+
+      @media (max-width: 768px) {
+        gap: 1rem;
+      }
+
+      .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--logidoo-gray-600);
+
+        .feature-icon {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+// Styles modernes pour la pré-simulation
+.pre-simulation-modern {
+  .pre-simulation-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--logidoo-primary);
+      margin: 0 0 0.5rem 0;
+    }
+    
+    p {
+      color: var(--logidoo-gray-600);
+      margin: 0;
+      font-size: 0.95rem;
+    }
+  }
+
+  .pre-simulation-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .kpi-card-pre {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--logidoo-gray-200);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      transition: background 0.3s ease;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    &.primary {
+      &:before {
+        background: var(--logidoo-primary);
+      }
+      
+      .kpi-icon-modern {
+        background: rgba(9, 43, 139, 0.1);
+        color: var(--logidoo-primary);
+      }
+    }
+
+    &.secondary {
+      &:before {
+        background: #f97316;
+      }
+      
+      .kpi-icon-modern {
+        background: rgba(249, 115, 22, 0.1);
+        color: #f97316;
+      }
+    }
+
+    &.tertiary {
+      &:before {
+        background: #10b981;
+      }
+      
+      .kpi-icon-modern {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+      }
+    }
+
+    .kpi-icon-modern {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .kpi-content-pre {
+      flex: 1;
+
+      .kpi-value-pre {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--logidoo-gray-800);
+        line-height: 1;
+        margin-bottom: 0.25rem;
+      }
+
+      .kpi-label-pre {
+        font-size: 0.875rem;
+        color: var(--logidoo-gray-600);
+        font-weight: 500;
+      }
+    }
+  }
+
+  .selected-container-modern {
+    margin-bottom: 2rem;
+
+    .container-info-card {
+      background: linear-gradient(135deg, var(--logidoo-primary) 0%, #1e40af 100%);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+
+      &:before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20px;
+        width: 100px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50px;
+        transform: rotate(45deg);
+      }
+
+      .container-icon {
+        width: 56px;
+        height: 56px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .container-details {
+        flex: 1;
+        
+        h4 {
+          font-size: 1.125rem;
+          font-weight: 600;
+          margin: 0 0 0.25rem 0;
+        }
+        
+        p {
+          margin: 0;
+          opacity: 0.9;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  .launch-simulation-modern {
+    text-align: center;
+    margin-top: 2rem;
+
+    .btn-launch-modern {
+      background: linear-gradient(135deg, var(--logidoo-primary) 0%, #1e40af 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(9, 43, 139, 0.3);
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(9, 43, 139, 0.4);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      .btn-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .spinner-modern {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// Bouton direct vers les schémas
+.direct-schema-action {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  
+  .schema-preview-card {
+    background: linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 2px solid #3b82f6;
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+    transition: all 0.3s ease;
+    max-width: 500px;
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(59, 130, 246, 0.2);
+      border-color: #1e40af;
+    }
+    
+    .schema-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+      
+      .schema-icon {
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, #3b82f6, #1e40af);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      
+      .schema-text {
+        h4 {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: #1e40af;
+          margin: 0 0 0.25rem 0;
+        }
+        
+        p {
+          font-size: 0.9rem;
+          color: #64748b;
+          margin: 0;
+        }
+      }
+    }
+    
+    .btn-direct-schema {
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      
+      &:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        
+        .btn-arrow {
+          transform: rotate(15deg);
+        }
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
+      
+      .btn-text {
+        font-weight: 700;
+        color: white;
+      }
+      
+      .btn-arrow {
+        font-size: 1.25rem;
+        transition: transform 0.3s ease;
+      }
+    }
+  }
+}
+
+// Amélioration de la visibilité du texte des boutons
+.btn-launch-modern .btn-text {
+  color: white !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+  font-weight: 600 !important;
+}
+
+.btn-launch-modern {
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%) !important;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  }
+}
+
+// Correction des débordements
+:host {
+  overflow-x: hidden;
+}
+
+.step-content {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+.card, .colis-form-card-compact, .import-card-mini {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .form-row-primary, .form-row-secondary {
+    flex-direction: column;
+    gap: 0.75rem;
+    
+    .form-group-mini, .checkbox-mini, .color-mini {
+      width: 100%;
+    }
+  }
+  .dimensions-inputs {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .btn-import, .btn-template {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+}
+
+// ===== STYLE FIGMA POUR SELECTION CONTENANT =====
+.figma-container-selection {
+  background: #F8F9FA;
+  padding: 1rem;
+
+  .figma-main-layout {
+    display: flex;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+
+    .figma-containers-section {
+      flex: 2;
+      
+      .figma-section-title {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--logidoo-blue);
+
+        .step-number {
+          background: var(--logidoo-blue);
+          color: white;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          font-size: 1.1rem;
+        }
+      }
+
+      .figma-containers-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        
+        .figma-container-card {
+          background: white;
+          border: 2px solid #E5E7EB;
+          border-radius: 12px;
+          padding: 1rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          position: relative;
+          min-height: 200px;
+
+          &:hover {
+            border-color: var(--logidoo-blue);
+            box-shadow: 0 4px 12px rgba(9, 43, 139, 0.1);
+          }
+
+          &.selected {
+            border-color: var(--logidoo-blue);
+            background: #F0F4FF;
+            box-shadow: 0 4px 12px rgba(9, 43, 139, 0.15);
+          }
+
+          &.recommended {
+            border-color: var(--logidoo-yellow);
+            background: #FFFBF0;
+            
+            .figma-recommended-badge {
+              position: absolute;
+              top: -8px;
+              right: 12px;
+              background: var(--logidoo-yellow);
+              color: var(--logidoo-blue);
+              padding: 4px 12px;
+              border-radius: 12px;
+              font-size: 0.75rem;
+              font-weight: 600;
+              text-transform: uppercase;
+            }
+          }
+
+          .figma-container-image {
+            text-align: center;
+            margin-bottom: 1rem;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img {
+              max-width: 100%;
+              max-height: 80px;
+              object-fit: contain;
+            }
+
+            .figma-placeholder-image {
+              color: #6B7280;
+              font-size: 2rem;
+            }
+          }
+
+          .figma-container-info {
+            text-align: center;
+
+            .figma-container-title {
+              font-size: 0.9rem;
+              font-weight: 600;
+              color: var(--logidoo-blue);
+              margin-bottom: 0.25rem;
+            }
+
+            .figma-container-category {
+              font-size: 0.75rem;
+              color: #6B7280;
+              text-transform: uppercase;
+              margin-bottom: 0.5rem;
+            }
+
+            .figma-container-dimensions {
+              font-size: 0.8rem;
+              color: #374151;
+              margin-bottom: 0.5rem;
+            }
+
+            .figma-container-specs {
+              font-size: 0.75rem;
+              color: #6B7280;
+              display: flex;
+              justify-content: space-between;
+              gap: 0.5rem;
+            }
+          }
+        }
+      }
+    }
+
+    .figma-results-panel {
+      flex: 1;
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      height: fit-content;
+      
+      .figma-results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #E5E7EB;
+
+        h3 {
+          color: var(--logidoo-blue);
+          font-size: 1.1rem;
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .figma-results-number {
+          background: var(--logidoo-blue);
+          color: white;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.9rem;
+          font-weight: 600;
+        }
+      }
+
+      .figma-main-stats {
+        margin-bottom: 1.5rem;
+        
+        .figma-stat-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 0.5rem;
+          align-items: center;
+          text-align: center;
+
+          .figma-stat-label {
+            font-size: 0.75rem;
+            color: #6B7280;
+            text-transform: uppercase;
+          }
+
+          .figma-stat-value, .figma-stat-detail, .figma-placed-items {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--logidoo-blue);
+          }
+
+          .figma-stat-unit, .figma-stat-unit2, .figma-placed-label {
+            font-size: 0.7rem;
+            color: #6B7280;
+          }
+        }
+      }
+
+      .figma-containers-used {
+        margin-bottom: 1.5rem;
+
+        h4 {
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: var(--logidoo-blue);
+          margin-bottom: 0.75rem;
+        }
+
+        .figma-used-container {
+          background: #F8F9FA;
+          padding: 0.75rem;
+          border-radius: 8px;
+          
+          .figma-container-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1F2937;
+            display: block;
+            margin-bottom: 0.5rem;
+          }
+
+          .figma-container-utilization {
+            .figma-utilization-label {
+              font-size: 0.75rem;
+              color: #6B7280;
+              display: block;
+            }
+
+            .figma-utilization-detail {
+              font-size: 0.7rem;
+              color: #6B7280;
+            }
+          }
+        }
+      }
+
+      .figma-progress-section {
+        .figma-progress-item {
+          margin-bottom: 1rem;
+
+          .figma-progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+
+            .figma-progress-label {
+              font-size: 0.8rem;
+              font-weight: 600;
+              color: #374151;
+            }
+          }
+
+          .figma-progress-bar {
+            height: 20px;
+            background: #E5E7EB;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+
+            .figma-progress-fill {
+              height: 100%;
+              border-radius: 10px;
+              transition: width 0.3s ease;
+
+              &.volume {
+                background: linear-gradient(135deg, #FFD700, #FFA500);
+              }
+
+              &.weight {
+                background: linear-gradient(135deg, var(--logidoo-blue), #3B67C6);
+              }
+            }
+          }
+        }
+
+        .figma-placement-info {
+          margin-top: 1.5rem;
+          padding-top: 1rem;
+          border-top: 1px solid #E5E7EB;
+
+          .figma-placement-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--logidoo-blue);
+            display: block;
+            margin-bottom: 0.5rem;
+          }
+
+          .figma-placement-dimensions {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-bottom: 0.25rem;
+          }
+
+          .figma-placement-specs {
+            font-size: 0.7rem;
+            color: #6B7280;
+            line-height: 1.4;
+          }
+        }
+      }
+
+      .figma-action-button {
+        margin-top: 1.5rem;
+        
+        .figma-launch-btn {
+          width: 100%;
+          background: var(--logidoo-blue);
+          color: white;
+          border: none;
+          padding: 0.75rem 1.5rem;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:hover:not(:disabled) {
+            background: #3B67C6;
+            transform: translateY(-1px);
+          }
+
+          &:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .figma-main-layout {
+      flex-direction: column;
+      
+      .figma-containers-section .figma-containers-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .figma-containers-section .figma-containers-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// Styles pour la pagination et le mode de sélection
+.compact-colis-list {
+  .colis-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.875rem;
+
+    .colis-count {
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .view-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .items-per-page {
+        color: #64748b;
+        font-size: 0.8rem;
+      }
+
+      select {
+        padding: 4px 8px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        background: white;
+      }
+    }
+  }
+
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    background: #f8fafc;
+    gap: 8px;
+
+    .page-btn {
+      padding: 6px 12px;
+      border: 1px solid #d1d5db;
+      background: white;
+      color: #374151;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.15s ease;
+
+      &:hover:not(:disabled) {
+        background: #f3f4f6;
+        border-color: #9ca3af;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    .page-numbers {
+      display: flex;
+      gap: 4px;
+
+      .page-number {
+        width: 36px;
+        height: 36px;
+        border: 1px solid #d1d5db;
+        background: white;
+        color: #374151;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+
+        &:hover:not(:disabled):not(.ellipsis) {
+          background: #f3f4f6;
+          border-color: #9ca3af;
+        }
+
+        &.active {
+          background: #2563eb;
+          border-color: #2563eb;
+          color: white;
+        }
+
+        &.ellipsis {
+          border: none;
+          background: transparent;
+          cursor: default;
+        }
+      }
+    }
+  }
+}
+
+// Style pour le mode de sélection COMPACT
+.selection-mode-toggle-compact {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+
+  .mode-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+
+    input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .radio-custom {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #d1d5db;
+      border-radius: 50%;
+      margin-right: 8px;
+      position: relative;
+      transition: all 0.15s ease;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        width: 6px;
+        height: 6px;
+        background: #2563eb;
+        border-radius: 50%;
+        transition: transform 0.15s ease;
+      }
+    }
+
+    input[type="radio"]:checked + .radio-custom {
+      border-color: #2563eb;
+
+      &::after {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .mode-text {
+      display: flex;
+      flex-direction: column;
+
+      strong {
+        color: #1e293b;
+        font-weight: 600;
+        font-size: 0.85rem;
+        line-height: 1.1;
+      }
+
+      small {
+        color: #64748b;
+        font-size: 0.7rem;
+        line-height: 1;
+        margin-top: 1px;
+      }
+    }
+  }
+}
+
+// Modification pour les conteneurs avec mode de sélection
+.figma-container-card {
+  &.dimmed {
+    opacity: 0.5;
+    transform: scale(0.98);
+    pointer-events: none;
+  }
+}
+
+// Section informations de la simulation
+.simulation-info-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--logidoo-gray-50);
+  border: 1px solid var(--logidoo-gray-200);
+  border-radius: 8px;
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: var(--logidoo-gray-800);
+    font-size: 1.1rem;
+    font-weight: 600;
+
+    .icon {
+      margin-right: 0.5rem;
+      font-size: 1.2rem;
+    }
+  }
+
+  .simulation-inputs {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+
+      label {
+        font-weight: 500;
+        color: var(--logidoo-gray-700);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .form-input, .form-textarea {
+        padding: 0.75rem;
+        border: 1px solid var(--logidoo-gray-300);
+        border-radius: 6px;
+        font-size: 0.9rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+        &:focus {
+          outline: none;
+          border-color: var(--logidoo-blue);
+          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        &::placeholder {
+          color: var(--logidoo-gray-400);
+        }
+      }
+
+      .form-textarea {
+        resize: vertical;
+        min-height: 60px;
+      }
+    }
+  }
+}
+
+// Bouton d'action principal - Style stepper cohérent
+.btn-primary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, var(--logidoo-blue), #1d4ed8);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  text-decoration: none;
+  min-height: 44px;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.25);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: #6b7280;
+  }
+
+  .btn-icon {
+    font-size: 1.2rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  }
+
+  .btn-subtitle {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 400;
+    opacity: 0.9;
+    margin-top: 2px;
+  }
+
+  // Assurer la cohérence avec les autres boutons d'action
+  &.secondary {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #4b5563, #374151);
+    }
+  }
+
+  &.success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+  }
+}
+
+// Animation pour le bouton de simulation
+.btn-pulse {
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  }
+  50% {
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    transform: translateY(-1px);
+  }
+  100% {
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  }
+}
+
+// Style pour la section qui indique qu'une simulation est requise
+.simulation-required {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// Groupement des boutons d'action
+.action-buttons-group {
+  display: flex;
+  gap: 1rem;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    width: 100%;
+    
+    button {
+      width: 100%;
+    }
+  }
+}
+
+// Alignement des actions
+.actions-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-right: 0;
+  
+  button {
+    background: linear-gradient(135deg, var(--logidoo-blue) 0%, #1a56db 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-icon {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.actions-center {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+// Styles pour la réorganisation des résultats
+.figma-container-info {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+
+  h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--logidoo-dark);
+  }
+
+  .figma-container-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--logidoo-blue);
+    margin-bottom: 0.5rem;
+  }
+
+  .figma-container-dims {
+    font-size: 0.85rem;
+    color: var(--logidoo-gray-600);
+    margin-bottom: 0.75rem;
+  }
+
+  .figma-container-capacity {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--logidoo-gray-700);
+
+    span {
+      background: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+    }
+  }
+}
+
+.figma-utilization-stats {
+  h4 {
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--logidoo-dark);
+  }
+}
+
+.figma-stat-item {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+
+  .figma-stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+
+    .figma-stat-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--logidoo-gray-700);
+    }
+
+    .figma-stat-value {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--logidoo-blue);
+    }
+  }
+
+  .figma-stat-details {
+    font-size: 0.8rem;
+    color: var(--logidoo-gray-600);
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--logidoo-blue-100);
+  }
+}
