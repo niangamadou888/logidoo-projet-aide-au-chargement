@@ -311,17 +311,46 @@
       
       .colis-main-info {
         flex: 1;
-        
+
         .colis-title {
           font-weight: 600;
           color: var(--logidoo-gray-800);
           font-size: 0.9rem;
         }
-        
+
         .colis-dimensions {
           font-size: 0.8rem;
           color: var(--logidoo-gray-600);
           margin-top: 0.1rem;
+        }
+
+        .colis-owner-info {
+          margin-top: 0.3rem;
+
+          .owner-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+
+            small {
+              font-size: 0.75rem;
+              color: var(--logidoo-gray-500);
+              line-height: 1.2;
+
+              &.owner-name {
+                color: var(--logidoo-blue);
+                font-weight: 500;
+              }
+
+              &.owner-address {
+                color: var(--logidoo-gray-600);
+              }
+
+              &.owner-phone {
+                color: var(--logidoo-gray-600);
+              }
+            }
+          }
         }
       }
       

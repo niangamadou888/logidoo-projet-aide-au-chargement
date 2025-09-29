@@ -114,31 +114,31 @@
               </div>
             </div>
 
+            <!-- Section destinataire repliable (plus discrète) -->
+            <div class="collapsible-mini" *ngIf="!showDestinataireForm">
+              <button type="button" class="toggle-mini" (click)="showDestinataireForm = true">
+                + Infos destinataire (optionnel)
+              </button>
+            </div>
+
+            <div class="destinataire-section" *ngIf="showDestinataireForm">
+              <div class="destinataire-header">
+                <span>Informations destinataire</span>
+                <button type="button" class="close-mini" (click)="showDestinataireForm = false">×</button>
+              </div>
+              <div class="destinataire-form">
+                <input type="text" formControlName="nomDestinataire" placeholder="Nom" class="form-control-mini">
+                <input type="text" formControlName="adresse" placeholder="Adresse complète" class="form-control-mini">
+                <input type="tel" formControlName="telephone" placeholder="Téléphone" class="form-control-mini">
+              </div>
+            </div>
+
             <!-- Bouton d'ajout -->
             <button type="button" (click)="ajouterColis()" class="btn-add-compact" [disabled]="!colisForm.valid">
               <span class="plus-icon">+</span>
               Ajouter
             </button>
           </form>
-
-          <!-- Section destinataire repliable (plus discrète) -->
-          <div class="collapsible-mini" *ngIf="!showDestinataireForm">
-            <button type="button" class="toggle-mini" (click)="showDestinataireForm = true">
-              + Infos destinataire (optionnel)
-            </button>
-          </div>
-          
-          <div class="destinataire-section" *ngIf="showDestinataireForm">
-            <div class="destinataire-header">
-              <span>Informations destinataire</span>
-              <button type="button" class="close-mini" (click)="showDestinataireForm = false">×</button>
-            </div>
-            <div class="destinataire-form">
-              <input type="text" formControlName="nomDestinataire" placeholder="Nom" class="form-control-mini">
-              <input type="text" formControlName="adresse" placeholder="Adresse complète" class="form-control-mini">
-              <input type="tel" formControlName="telephone" placeholder="Téléphone" class="form-control-mini">
-            </div>
-          </div>
         </div>
       </div>
 
@@ -230,6 +230,15 @@
               </span>
             </div>
             <div class="colis-dimensions">{{ colis.longueur }}×{{ colis.largeur }}×{{ colis.hauteur }} cm</div>
+
+            <!-- Informations destinataire -->
+            <div class="colis-owner-info" *ngIf="colis.nomDestinataire || colis.adresse || colis.telephone">
+              <div class="owner-details">
+                <small *ngIf="colis.nomDestinataire" class="owner-name">👤 {{ colis.nomDestinataire }}</small>
+                <small *ngIf="colis.adresse" class="owner-address">📍 {{ colis.adresse }}</small>
+                <small *ngIf="colis.telephone" class="owner-phone">📞 {{ colis.telephone }}</small>
+              </div>
+            </div>
           </div>
           
           <!-- Stats -->
