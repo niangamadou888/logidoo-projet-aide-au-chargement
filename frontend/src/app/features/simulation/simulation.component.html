@@ -115,10 +115,12 @@
             </div>
 
             <!-- Bouton d'ajout -->
-            <button type="button" (click)="ajouterColis()" class="btn-add-compact" [disabled]="!colisForm.valid">
-              <span class="plus-icon">+</span>
-              Ajouter
-            </button>
+              <div class="ajouter-btn-center">
+                <button type="button" (click)="ajouterColis()" class="btn-uniform btn-logidoo-blue" [disabled]="!colisForm.valid">
+                  <span class="btn-icon plus-icon">+</span>
+                  Ajouter
+                </button>
+              </div>
           </form>
 
           <!-- Section destinataire repliable (plus discrète) -->
@@ -146,12 +148,13 @@
       <div class="excel-section">
         <div class="import-card-enhanced">
           <div class="form-header-compact">
-            <!-- <h3>
-              <img src="assets/images/excel-icon.png" alt="Excel" class="excel-header-img" />
-              Import Excel
-            </h3> -->
-            <h3><span class="icon"><img src="assets\images\excel-icon.png" alt="Excel" class="excel-header-img" /></span> Import Excel</h3>
-            <p class="subtitle">Importez plusieurs colis en une fois</p>
+                      <h3 class="excel-header-centered">
+                        <span class="icon">
+                          <img src="assets/images/excel-icon.png" alt="Excel" class="excel-header-img" />
+                        </span>
+                        <span class="excel-header-title">Import Excel</span>
+                      </h3>
+                      <p class="subtitle excel-header-subtitle">Importez plusieurs colis en une fois</p>
           </div>
           
           <div class="import-zone">

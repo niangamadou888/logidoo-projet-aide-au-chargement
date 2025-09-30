@@ -1,3 +1,24 @@
+// Centrage du bouton Ajouter
+.ajouter-btn-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+// Bouton couleur Logidoo
+.btn-logidoo-blue {
+  background: #092B8B;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(9,43,139,0.08);
+  transition: background 0.2s;
+}
+.btn-logidoo-blue:hover:not(:disabled) {
+  background: #0a1e5e;
+}
 // Correction ciblée pour l'image Excel dans le header import
 .form-header-compact .icon .excel-header-img {
   width: 2.25rem;
@@ -647,6 +668,31 @@
       margin-right: 0.5rem;
       display: inline-block;
     }
+
+      .excel-header-centered {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .excel-header-title {
+        color: #092B8B;
+        font-weight: 700;
+        font-size: 1.25rem;
+        letter-spacing: 0.01em;
+        font-family: inherit;
+      }
+
+      .excel-header-subtitle {
+        color: #092B8B;
+        text-align: center;
+        font-size: 1rem;
+        font-weight: 500;
+        margin-top: 0.1rem;
+        margin-bottom: 0.5rem;
+      }
 
     .drop-area {
       padding: 2.5rem 1.5rem;
