@@ -40,7 +40,7 @@
     <!-- Informations de la simulation -->
     <div class="simulation-info-section">
       <h3 class="section-title">
-        <span class="icon">📝</span> 
+        <mat-icon class="icon">edit_note</mat-icon>
         Informations de la simulation
       </h3>
       <div class="simulation-inputs">
@@ -71,7 +71,7 @@
       <div class="manual-section">
         <div class="colis-form-card-compact">
           <div class="form-header-compact">
-            <h3><span class="icon">📦</span> Ajout manuel</h3>
+            <h3><mat-icon class="icon">inventory_2</mat-icon> Ajout manuel</h3>
             <p class="subtitle">Saisissez les informations de votre colis</p>
           </div>
 
@@ -115,7 +115,7 @@
             </div>
 
             <!-- Section destinataire repliable (plus discrète) -->
-            <div class="collapsible-mini" *ngIf="!showDestinataireForm">
+            <div class="collapsible-mini mb-2" *ngIf="!showDestinataireForm">
               <button type="button" class="toggle-mini" (click)="showDestinataireForm = true">
                 + Infos destinataire (optionnel)
               </button>
@@ -135,7 +135,7 @@
 
             <!-- Bouton d'ajout -->
             <button type="button" (click)="ajouterColis()" class="btn-add-compact" [disabled]="!colisForm.valid">
-              <span class="plus-icon">+</span>
+              <mat-icon class="plus-icon">add_circle</mat-icon>
               Ajouter
             </button>
           </form>
@@ -146,7 +146,7 @@
       <div class="excel-section">
         <div class="import-card-enhanced">
           <div class="form-header-compact">
-            <h3><span class="icon">📊</span> Import Excel</h3>
+            <h3><mat-icon class="icon">upload_file</mat-icon> Import Excel</h3>
             <p class="subtitle">Importez plusieurs colis en une fois</p>
           </div>
           
@@ -159,13 +159,13 @@
                  (dragleave)="onDragLeave($event)" 
                  (drop)="onDrop($event)"
                  [class.dragover]="isDragOver">
-              <div class="excel-icon">📄</div>
+              <mat-icon class="excel-icon">description</mat-icon>
               <p class="drop-text">Glissez votre fichier Excel ici<br>ou cliquez pour choisir</p>
             </div>
             
             <div class="import-actions">
               <button class="btn-uniform btn-secondary" (click)="telechargerModele()">
-                <span class="btn-icon">⬇️</span>
+                <mat-icon class="btn-icon">download</mat-icon>
                 Télécharger modèle
               </button>
             </div>
@@ -178,11 +178,11 @@
     <div class="post-add-actions" *ngIf="listeColis.length > 0">
       <div class="secondary-actions">
         <button class="btn-secondary-action" (click)="viderTousLesColis()">
-          <span class="btn-icon">🗑️</span>
+          <mat-icon class="btn-icon">delete_sweep</mat-icon>
           Vider tout
         </button>
         <button class="btn-secondary-action" (click)="ajouterAutresColis()">
-          <span class="btn-icon">➕</span>
+          <mat-icon class="btn-icon">add_circle</mat-icon>
           Ajouter un autre colis
         </button>
       </div>
@@ -192,7 +192,7 @@
     <div class="compact-colis-container" *ngIf="listeColis.length > 0">
       <div class="compact-colis-header">
         <h3>
-          <span class="package-icon">📦</span>
+          <mat-icon class="package-icon">inventory_2</mat-icon>
           {{ listeColis.length }} colis
         </h3>
       </div>
@@ -263,7 +263,7 @@
                    (change)="updateColisCouleur(getActualIndex(i), $any($event.target).value)"
                    class="color-picker-mini">
             <button class="delete-btn-mini" (click)="supprimerColis(getActualIndex(i))" title="Supprimer">
-              <span>🗑️</span>
+              <mat-icon>delete</mat-icon>
             </button>
           </div>
         </div>
@@ -305,7 +305,7 @@
       <!-- Pagination ici -->
       <div class="actions-right">
         <button class="btn-primary" (click)="nextStep()" [disabled]="!canProceedFromStep1()">
-          <span class="btn-icon">🧱</span>
+          <mat-icon class="btn-icon">view_in_ar</mat-icon>
           Choix de contenant
         </button>
       </div>
@@ -355,7 +355,7 @@
                      [src]="'https://logidoo-projet-aide-au-chargement-7.onrender.com' + c.images[0]"
                      [alt]="c.type">
                 <div *ngIf="!c.images || c.images.length === 0" class="figma-placeholder-image">
-                  <span class="container-icon">📦</span>
+                  <mat-icon class="container-icon">inbox</mat-icon>
                 </div>
               </div>
               
@@ -493,7 +493,7 @@
       <!-- Si on n'a pas encore de résultats, proposer de lancer la simulation -->
       <div *ngIf="listeColis.length > 0 && (selectedContainerId || selectionAutoOptimal) && !simulationResultats" class="simulation-required">
         <button class="btn-primary btn-pulse" (click)="nextStep()" [disabled]="findingOptimal">
-          <span class="btn-icon">🚀</span>
+          <mat-icon class="btn-icon">rocket_launch</mat-icon>
           Lancer la simulation
           <small class="btn-subtitle">Calculer l'optimisation</small>
         </button>
@@ -502,12 +502,12 @@
       <!-- Si on a des résultats, proposer validation et visualisation -->
       <div class="action-buttons-group" *ngIf="listeColis.length > 0 && (selectedContainerId || selectionAutoOptimal) && simulationResultats">
         <button class="btn-success" (click)="validerSimulation()" [disabled]="findingOptimal">
-          <span class="btn-icon">💾</span>
+          <mat-icon class="btn-icon">save</mat-icon>
           Valider la simulation
         </button>
-        
+
         <button class="btn-primary" (click)="ouvrirVisualisationComplete()" [disabled]="findingOptimal">
-          <span class="btn-icon">🎯</span>
+          <mat-icon class="btn-icon">3d_rotation</mat-icon>
           Lancer la visualisation
         </button>
       </div>
@@ -517,7 +517,7 @@
   <!-- Résultats de la simulation -->
   <div *ngIf="simulationResultats" class="card simulation-results">
     <div class="card-header">
-      <div class="card-icon">📈</div>
+      <mat-icon class="card-icon">analytics</mat-icon>
       <h2>Résultats de la simulation</h2>
       <div class="execution-time" *ngIf="previewTime">
         Temps d'exécution: {{ previewTime | number:'1.0-0' }}ms

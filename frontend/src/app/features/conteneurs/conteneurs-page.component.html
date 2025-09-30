@@ -7,24 +7,24 @@
     
     <nav class="navigation">
       <a class="nav-item" [routerLink]="['/dashboard/admin']">
-        <span class="nav-icon">📊</span>
+        <mat-icon class="nav-icon">dashboard</mat-icon>
         <span class="nav-text">Dashboard Admin</span>
       </a>
       <a class="nav-item">
-        <span class="nav-icon">👥</span>
+        <mat-icon class="nav-icon">group</mat-icon>
         <span class="nav-text">Utilisateurs</span>
       </a>
       <a class="nav-item active" [routerLink]="['/dashboard/admin/conteneurs']">
-        <span class="nav-icon">📦</span>
+        <mat-icon class="nav-icon">inventory_2</mat-icon>
         <span class="nav-text">Conteneurs</span>
       </a>
       <div class="nav-section-title">ADMINISTRATION</div>
       <a class="nav-item" [routerLink]="['/dashboard/admin/profile']">
-        <span class="nav-icon">👤</span>
+        <mat-icon class="nav-icon">person</mat-icon>
         <span class="nav-text">Profil</span>
       </a>
       <a class="nav-item">
-        <span class="nav-icon">⚙️</span>
+        <mat-icon class="nav-icon">settings</mat-icon>
         <span class="nav-text">Paramètres</span>
       </a>
     </nav>
@@ -42,12 +42,12 @@
     <!-- Header -->
     <header class="welcome-header">
       <div class="avatar-section">
-        <div class="avatar">📦</div>
+        <mat-icon class="avatar">inventory_2</mat-icon>
         <span class="welcome-text">Gestion des conteneurs</span>
       </div>
       <div class="user-menu">
         <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
-          <span class="user-avatar">👤</span>
+          <mat-icon class="user-avatar">account_circle</mat-icon>
         </button>
         <mat-menu #userMenu="matMenu">
           <a mat-menu-item [routerLink]="['/dashboard/admin']">
@@ -77,7 +77,7 @@
 
         <!-- Empty State -->
         <div *ngIf="!loading && contenants.length === 0" class="empty-state">
-          <div class="empty-icon">📦</div>
+          <mat-icon class="empty-icon">inbox</mat-icon>
           <div class="empty-title">Aucun conteneur trouvé</div>
           <div class="empty-description">Commencez par ajouter votre premier conteneur</div>
         </div>
@@ -102,19 +102,19 @@
 
               <div class="card-details">
                 <div class="detail-row">
-                  <span class="detail-icon">🏷️</span>
+                  <mat-icon class="detail-icon">label</mat-icon>
                   <span class="detail-text">Matricule: {{ c.matricule || 'Non défini' }}</span>
                 </div>
                 <div class="detail-row">
-                  <span class="detail-icon">📏</span>
+                  <mat-icon class="detail-icon">straighten</mat-icon>
                   <span class="detail-text">{{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm</span>
                 </div>
                 <div class="detail-row">
-                  <span class="detail-icon">📊</span>
+                  <mat-icon class="detail-icon">view_in_ar</mat-icon>
                   <span class="detail-text">Volume: {{ c.volume ?? ((c.dimensions.longueur*c.dimensions.largeur*c.dimensions.hauteur)/1000000) | number:'1.2-2' }} m³</span>
                 </div>
                 <div class="detail-row">
-                  <span class="detail-icon">⚖️</span>
+                  <mat-icon class="detail-icon">scale</mat-icon>
                   <span class="detail-text">Capacité: {{ c.capacitePoids }} kg</span>
                 </div>
               </div>

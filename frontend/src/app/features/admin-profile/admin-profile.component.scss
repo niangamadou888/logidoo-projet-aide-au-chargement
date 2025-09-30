@@ -64,9 +64,12 @@
   }
   
   .nav-icon {
-    font-size: 16px;
-    width: 20px;
-    text-align: center;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .nav-text {
@@ -100,7 +103,9 @@
   }
   
   .logout-icon {
-    font-size: 18px;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
   }
 }
 
@@ -129,6 +134,8 @@
   .avatar {
     width: 40px;
     height: 40px;
+    font-size: 28px;
+    color: white;
     background: #fbbf24;
     border-radius: 50%;
     display: flex;
@@ -156,7 +163,7 @@
     justify-content: center;
     
     .user-avatar {
-      font-size: 20px;
+      font-size: 24px;
     }
   }
 }
@@ -200,7 +207,10 @@
   justify-content: center;
   
   .avatar-icon {
-    font-size: 36px;
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: white;
   }
 }
 
@@ -257,6 +267,8 @@
 .detail-icon {
   width: 40px;
   height: 40px;
+  font-size: 24px;
+  color: #dc2626;
   background: #fee2e2;
   border-radius: 50%;
   display: flex;
@@ -346,9 +358,12 @@
 }
 
 .no-user-icon {
-  font-size: 64px;
+  font-size: 80px;
+  width: 80px;
+  height: 80px;
   margin-bottom: 16px;
   opacity: 0.6;
+  color: #6b7280;
 }
 
 .no-user-title {

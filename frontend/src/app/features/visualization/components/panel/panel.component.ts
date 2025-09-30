@@ -2,8 +2,9 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { 
-  VisualizationScene, 
+import { MatIconModule } from '@angular/material/icon';
+import {
+  VisualizationScene,
   VisualizationConfig,
   VisualizationContainer,
   VisualizationItem
@@ -13,7 +14,7 @@ import { VisualizationService } from '../../services/visualization.service';
 @Component({
   selector: 'app-panel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './panel.component.html',
   styleUrls: ['./panel.component.scss']
 })

@@ -7,24 +7,24 @@
     
     <nav class="navigation">
       <a class="nav-item" routerLink="/dashboard/user">
-        <span class="nav-icon">📊</span>
+        <mat-icon class="nav-icon">dashboard</mat-icon>
         <span class="nav-text">Dashboard</span>
       </a>
       <a class="nav-item" routerLink="/simulation">
-        <span class="nav-icon">➕</span>
+        <mat-icon class="nav-icon">add_box</mat-icon>
         <span class="nav-text">Nouvelle simulation</span>
       </a>
       <a class="nav-item active" routerLink="/history">
-        <span class="nav-icon">🕒</span>
+        <mat-icon class="nav-icon">history</mat-icon>
         <span class="nav-text">Historique</span>
       </a>
       <div class="nav-section-title">ADMINISTRATION</div>
       <a class="nav-item" routerLink="/dashboard/user/profile">
-        <span class="nav-icon">👤</span>
+        <mat-icon class="nav-icon">person</mat-icon>
         <span class="nav-text">Profil</span>
       </a>
       <a class="nav-item">
-        <span class="nav-icon">⚙️</span>
+        <mat-icon class="nav-icon">settings</mat-icon>
         <span class="nav-text">Paramètres</span>
       </a>
     </nav>
@@ -42,12 +42,12 @@
     <!-- Header -->
     <header class="welcome-header">
       <div class="avatar-section">
-        <div class="avatar">🕒</div>
+        <mat-icon class="avatar">history</mat-icon>
         <span class="welcome-text">Historique des simulations</span>
       </div>
       <div class="user-menu">
         <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
-          <span class="user-avatar">👤</span>
+          <mat-icon class="user-avatar">account_circle</mat-icon>
         </button>
         <mat-menu #userMenu="matMenu">
           <button mat-menu-item (click)="logout()">
@@ -118,10 +118,11 @@
         </div>
 
         <div *ngIf="!loading && !simulations.length" class="empty-state">
-          <div class="empty-icon">📭</div>
+          <mat-icon class="empty-icon">inbox</mat-icon>
           <div class="empty-title">Aucune simulation trouvée</div>
           <div class="empty-description">Créez votre première simulation pour commencer</div>
           <button class="empty-action-btn" routerLink="/simulation">
+            <mat-icon>add_box</mat-icon>
             Nouvelle simulation
           </button>
         </div>

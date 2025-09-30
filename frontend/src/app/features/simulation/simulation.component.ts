@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { ConteneurService } from '../../services/conteneur.service';
 import { SimulationService, SimulationResult, OptimalContainerResult } from '../../services/simulation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 import { Contenant } from '../../core/models/contenant.model';
 import { Simulation, Colis, ContainerStats } from '../../models/simulation.model';
 import { ExcelService } from '../../services/excelService';
@@ -25,7 +26,8 @@ import { PLATFORM_ID } from '@angular/core';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    RouterModule
+    RouterModule,
+    MatIconModule
   ]
 })
 

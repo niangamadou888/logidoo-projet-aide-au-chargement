@@ -7,24 +7,24 @@
     
     <nav class="navigation">
       <a class="nav-item active" [routerLink]="['/dashboard/admin']">
-        <span class="nav-icon">📊</span>
+        <mat-icon class="nav-icon">dashboard</mat-icon>
         <span class="nav-text">Dashboard Admin</span>
       </a>
       <a class="nav-item" [routerLink]="['/dashboard/admin/users']">
-        <span class="nav-icon">👥</span>
+        <mat-icon class="nav-icon">group</mat-icon>
         <span class="nav-text">Utilisateurs</span>
       </a>
       <a class="nav-item" [routerLink]="['/dashboard/admin/conteneurs']">
-        <span class="nav-icon">📦</span>
+        <mat-icon class="nav-icon">inventory_2</mat-icon>
         <span class="nav-text">Conteneurs</span>
       </a>
       <div class="nav-section-title">ADMINISTRATION</div>
       <a class="nav-item" [routerLink]="['/dashboard/admin/profile']">
-        <span class="nav-icon">👤</span>
+        <mat-icon class="nav-icon">person</mat-icon>
         <span class="nav-text">Profil</span>
       </a>
       <a class="nav-item">
-        <span class="nav-icon">⚙️</span>
+        <mat-icon class="nav-icon">settings</mat-icon>
         <span class="nav-text">Paramètres</span>
       </a>
     </nav>
@@ -42,12 +42,12 @@
     <!-- Header -->
     <header class="welcome-header">
       <div class="avatar-section">
-        <div class="avatar">🔧</div>
+        <mat-icon class="avatar">admin_panel_settings</mat-icon>
         <span class="welcome-text">Bienvenue, Admin {{ currentUser?.username || 'Administrateur' }}</span>
       </div>
       <div class="user-menu">
         <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
-          <span class="user-avatar">👤</span>
+          <mat-icon class="user-avatar">account_circle</mat-icon>
         </button>
         <mat-menu #userMenu="matMenu">
           <button mat-menu-item (click)="logout()">
@@ -68,31 +68,31 @@
       <!-- Key Metrics Cards -->
       <div *ngIf="!isLoading" class="metrics-row">
         <div class="metric-card">
-          <div class="metric-icon">👥</div>
+          <mat-icon class="metric-icon">group</mat-icon>
           <div class="metric-content">
             <div class="metric-value">{{ dashboardStats.totalUsers }}</div>
             <div class="metric-label">Utilisateurs totaux</div>
           </div>
         </div>
-        
+
         <div class="metric-card">
-          <div class="metric-icon">📊</div>
+          <mat-icon class="metric-icon">assessment</mat-icon>
           <div class="metric-content">
             <div class="metric-value">{{ dashboardStats.totalSimulations }}</div>
             <div class="metric-label">Simulations totales</div>
           </div>
         </div>
-        
+
         <div class="metric-card">
-          <div class="metric-icon">📈</div>
+          <mat-icon class="metric-icon">trending_up</mat-icon>
           <div class="metric-content">
             <div class="metric-value">{{ dashboardStats.avgFillRate.volume }}%</div>
             <div class="metric-label">Taux moyen (Volume)</div>
           </div>
         </div>
-        
+
         <div class="metric-card">
-          <div class="metric-icon">⚖️</div>
+          <mat-icon class="metric-icon">balance</mat-icon>
           <div class="metric-content">
             <div class="metric-value">{{ dashboardStats.avgFillRate.weight }}%</div>
             <div class="metric-label">Taux moyen (Poids)</div>
