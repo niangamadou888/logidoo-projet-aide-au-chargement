@@ -1,3 +1,17 @@
+// Correction ciblée pour l'image Excel dans le header import
+.form-header-compact .icon .excel-header-img {
+  width: 2.25rem;
+  height: auto;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+  display: inline-block;
+}
+
+@media (max-width: 480px) {
+  .form-header-compact .icon .excel-header-img {
+    width: 1.6rem;
+  }
+}
 // ===== FORMULAIRE ULTRA-COMPACT =====
 .colis-form-card-compact {
   background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
@@ -625,6 +639,15 @@
   .import-zone {
     text-align: center;
 
+    // Excel images
+    .excel-header-img {
+      width: 2.25rem; // ~36px for better visibility in the header
+      height: auto;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+      display: inline-block;
+    }
+
     .drop-area {
       padding: 2.5rem 1.5rem;
       border: 2px dashed var(--logidoo-gray-300);
@@ -662,6 +685,21 @@
         margin-bottom: 1rem;
         filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
         transition: all 0.3s ease;
+
+        .excel-img {
+          width: 4.5rem;
+          height: auto;
+          object-fit: contain;
+          display: inline-block;
+          margin-bottom: 0.25rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .excel-icon {
+          .excel-img { width: 3rem; }
+        }
+        .excel-header-img { width: 1.6rem; height: auto; }
       }
 
       .drop-text {
