@@ -505,13 +505,37 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Texte (si assez de place) - Afficher la référence au lieu du type
-    if (width > 40 && height > 20) {
+    if (width > 15 && height > 15) {
       ctx.fillStyle = '#ffffff';
-      ctx.font = '10px Arial';
       ctx.textAlign = 'center';
+
       // Priorité : référence > ID > type
-      const displayText = item.reference || item.id || item.type;
-      ctx.fillText(displayText, x + width / 2, y + height / 2);
+      let displayText = item.reference || item.id || item.type;
+
+      // Adapter la taille de police et le texte selon l'espace disponible
+      let fontSize = 10;
+      let maxChars = Math.floor(width / 6); // Approximation: 6px par caractère
+
+      if (width < 40 || height < 20) {
+        // Petit package: réduire la taille de police et tronquer le texte
+        fontSize = Math.max(7, Math.min(10, Math.floor(height / 2.5)));
+        maxChars = Math.max(3, Math.floor(width / (fontSize * 0.6)));
+
+        // Tronquer le texte si trop long
+        if (displayText.length > maxChars) {
+          if (maxChars <= 4) {
+            // Très petit: prendre seulement les premiers caractères
+            displayText = displayText.substring(0, maxChars);
+          } else {
+            // Moyen: prendre début et fin avec "..."
+            const keepChars = Math.max(1, Math.floor((maxChars - 3) / 2));
+            displayText = displayText.substring(0, keepChars) + '...' + displayText.substring(displayText.length - keepChars);
+          }
+        }
+      }
+
+      ctx.font = `${fontSize}px Arial`;
+      ctx.fillText(displayText, x + width / 2, y + height / 2 + fontSize / 3);
     }
   }
 
