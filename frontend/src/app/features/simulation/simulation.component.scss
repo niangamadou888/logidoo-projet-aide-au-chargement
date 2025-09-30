@@ -435,15 +435,25 @@
           border-radius: 4px;
           width: 24px;
           height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          margin-top: 2px;
           cursor: pointer;
           color: #dc2626;
           font-size: 1rem;
           line-height: 1;
           transition: all 0.2s ease;
-          
+
           &:hover {
             background: #fef2f2;
             border-color: #dc2626;
+          }
+          
+          mat-icon {
+            font-size: 18px;
+            line-height: 1;
           }
         }
       }
