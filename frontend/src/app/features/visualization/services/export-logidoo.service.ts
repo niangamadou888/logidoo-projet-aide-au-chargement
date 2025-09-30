@@ -594,7 +594,7 @@ export class ExportLogidooService {
   }
 
   /**
-   * Tableau des colis avec encodage UTF-8 amélioré
+   * Tableau des colis avec encodage UTF-8 amélioré - VERSION GROUPÉE PAR QUANTITÉ
    */
   private addLogidooItemsTableWithUTF8(pdf: any, colors: any, scene: VisualizationScene): void {
     // En-tête
@@ -602,36 +602,38 @@ export class ExportLogidooService {
     pdf.rect(0, 20, 210, 12, 'F');
     pdf.setFillColor(colors.yellow);
     pdf.rect(0, 32, 210, 3, 'F');
-    
+
     pdf.setTextColor(colors.white);
     pdf.setFontSize(18);
     pdf.setFont('helvetica', 'bold');
     const headerText = 'DÉTAIL DES COLIS';
     pdf.text(headerText, 20, 29);
-    
+
     let yPos = 55;
-    const itemColors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'];
 
     if (scene.containers && scene.containers.length > 0) {
       scene.containers.forEach((container, containerIndex) => {
         // Titre du contenant
         this.drawContainerTableHeader(pdf, colors, container, containerIndex, yPos);
         yPos += 18;
-        
+
         if (container.items && container.items.length > 0) {
+          // Grouper les items par référence/type/dimensions/destinataire
+          const groupedItems = this.groupItemsByType(container.items);
+
           // En-têtes du tableau
           yPos = this.drawTableHeaders(pdf, colors, yPos);
-          
-          // Lignes du tableau
-          container.items.forEach((item, itemIndex) => {
+
+          // Lignes du tableau (une par groupe avec quantité)
+          groupedItems.forEach((group, groupIndex) => {
             if (yPos > 270) {
               pdf.addPage();
               yPos = 30;
             }
-            
-            yPos = this.drawItemRow(pdf, colors, item, itemIndex, containerIndex, itemColors, yPos);
+
+            yPos = this.drawGroupedItemRow(pdf, colors, group, groupIndex, containerIndex, yPos);
           });
-          
+
           yPos += 15;
         } else {
           pdf.setFontSize(10);
@@ -643,6 +645,36 @@ export class ExportLogidooService {
         }
       });
     }
+  }
+
+  /**
+   * Groupe les items par référence, type, dimensions et destinataire
+   */
+  private groupItemsByType(items: any[]): any[] {
+    const grouped = new Map<string, any>();
+
+    items.forEach((item) => {
+      // Clé unique basée sur les propriétés principales
+      const key = `${item.reference || 'NO-REF'}_${this.getItemRealType(item)}_${item.nomDestinataire || 'N/A'}_${item.dimensions.longueur}x${item.dimensions.largeur}x${item.dimensions.hauteur}_${item.poids || 0}_${item.gerbable !== false ? 'E' : 'NE'}_${item.color || ''}`;
+
+      if (grouped.has(key)) {
+        // Incrémenter la quantité
+        const existing = grouped.get(key);
+        existing.quantity += 1;
+        existing.totalVolume += (item.dimensions.longueur * item.dimensions.largeur * item.dimensions.hauteur / 1000000);
+        existing.totalPoids += (item.poids || 0);
+      } else {
+        // Nouveau groupe
+        grouped.set(key, {
+          ...item,
+          quantity: 1,
+          totalVolume: (item.dimensions.longueur * item.dimensions.largeur * item.dimensions.hauteur / 1000000),
+          totalPoids: (item.poids || 0)
+        });
+      }
+    });
+
+    return Array.from(grouped.values());
   }
 
   /**
@@ -971,18 +1003,18 @@ export class ExportLogidooService {
    * Dessine les en-têtes du tableau
    */
   private drawTableHeaders(pdf: any, colors: any, yPos: number): number {
-    const headers = ['Couleur', 'Référence', 'Type', 'Destinataire', 'Dimensions (L×l×h)', 'Volume', 'Poids', 'Empilable', 'Fragile'];
-    const colWidths = [12, 20, 18, 26, 28, 16, 14, 16, 15];
+    const headers = ['Couleur', 'Référence', 'Type', 'Destinataire', 'Dimensions (L×l×h)', 'Volume', 'Poids', 'Qté', 'Empilable'];
+    const colWidths = [12, 20, 18, 26, 28, 16, 14, 12, 16];
     let xPos = 15;
-    
+
     // Fond d'en-tête
     pdf.setFillColor(colors.blue);
     pdf.rect(15, yPos - 3, 180, 10, 'F');
-    
+
     pdf.setFontSize(8);
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(colors.white);
-    
+
     headers.forEach((header, i) => {
       if (header !== 'Couleur') {
         pdf.text(header, xPos + 2, yPos + 2);
@@ -991,26 +1023,25 @@ export class ExportLogidooService {
       }
       xPos += colWidths[i];
     });
-    
+
     return yPos + 12;
   }
 
   /**
-   * Dessine une ligne d'item dans le tableau
+   * Dessine une ligne groupée d'items dans le tableau avec quantité
    */
-  private drawItemRow(pdf: any, colors: any, item: any, itemIndex: number, containerIndex: number, 
-                      itemColors: string[], yPos: number): number {
-    const colWidths = [12, 20, 18, 26, 28, 16, 14, 16, 15];
+  private drawGroupedItemRow(pdf: any, colors: any, group: any, groupIndex: number, containerIndex: number, yPos: number): number {
+    const colWidths = [12, 20, 18, 26, 28, 16, 14, 12, 16];
     let xPos = 15;
-    
+
     // Alternance de couleur
-    if (itemIndex % 2 === 0) {
+    if (groupIndex % 2 === 0) {
       pdf.setFillColor(colors.lightBlue);
       pdf.rect(15, yPos - 3, 180, 9, 'F');
     }
-    
-    // Couleur du colis
-    const itemColor = itemColors[itemIndex % itemColors.length];
+
+    // Couleur RÉELLE du colis depuis la visualisation
+    const itemColor = group.color || '#4ECDC4'; // Utiliser la couleur du groupe ou une par défaut
     const rgb = this.hexToRgb(itemColor);
     pdf.setFillColor(rgb.r, rgb.g, rgb.b);
     pdf.circle(xPos + 7, yPos + 1, 3, 'F');
@@ -1018,25 +1049,25 @@ export class ExportLogidooService {
     pdf.setLineWidth(0.5);
     pdf.circle(xPos + 7, yPos + 1, 3, 'D');
     xPos += colWidths[0];
-    
+
     pdf.setTextColor(colors.black);
     pdf.setFontSize(8);
-    
-    // Données du tableau avec nouvelles colonnes
+
+    // Données du tableau avec colonne quantité
     const rowData = [
-      item.reference || item.id || `C${containerIndex + 1}-${itemIndex + 1}`,
-      this.getItemRealType(item), // Type physique (carton, palette, etc.)
-      item.nomDestinataire || 'N/A',
-      `${item.dimensions.longueur}×${item.dimensions.largeur}×${item.dimensions.hauteur}`,
-      `${(item.dimensions.longueur * item.dimensions.largeur * item.dimensions.hauteur / 1000000).toFixed(3)}m³`,
-      item.poids ? `${item.poids}kg` : 'N/A',
-      item.gerbable !== false ? 'Oui' : 'Non', // Empilable
-      'Non' // Fragile
+      group.reference || group.id || `C${containerIndex + 1}-${groupIndex + 1}`,
+      this.getItemRealType(group), // Type physique (carton, palette, etc.)
+      group.nomDestinataire || 'N/A',
+      `${group.dimensions.longueur}×${group.dimensions.largeur}×${group.dimensions.hauteur}`,
+      `${group.totalVolume.toFixed(3)}m³`, // Volume total pour la quantité
+      group.totalPoids > 0 ? `${group.totalPoids.toFixed(1)}kg` : 'N/A', // Poids total
+      `${group.quantity}`, // Quantité
+      group.gerbable !== false ? 'Oui' : 'Non' // Empilable
     ];
-    
+
     rowData.forEach((data, i) => {
       // Coloration spéciale pour certaines colonnes
-      if (i === 6) { // Colonne Empilable
+      if (i === 7) { // Colonne Empilable (maintenant à la position 7)
         if (data === 'Non') {
           pdf.setTextColor(colors.error);
           pdf.text('⚠ ' + data, xPos + 1, yPos + 2);
@@ -1046,26 +1077,26 @@ export class ExportLogidooService {
           pdf.text('✓ ' + data, xPos + 1, yPos + 2);
           pdf.setTextColor(colors.black);
         }
-      } else if (i === 7) { // Colonne Fragile
-        if (data === 'Oui') {
-          pdf.setTextColor(colors.error);
-          pdf.text('⚠ ' + data, xPos + 1, yPos + 2);
-          pdf.setTextColor(colors.black);
-        } else {
-          pdf.setTextColor(colors.mediumGray);
-          pdf.text(data, xPos + 1, yPos + 2);
-          pdf.setTextColor(colors.black);
-        }
       } else if (i === 1) { // Colonne Type
         pdf.setTextColor(this.getTypeColor(data, colors));
         pdf.text(data, xPos + 1, yPos + 2);
         pdf.setTextColor(colors.black);
+      } else if (i === 6) { // Colonne Quantité - en gras si > 1
+        if (group.quantity > 1) {
+          pdf.setFont('helvetica', 'bold');
+          pdf.setTextColor(colors.blue);
+          pdf.text(data, xPos + 1, yPos + 2);
+          pdf.setFont('helvetica', 'normal');
+          pdf.setTextColor(colors.black);
+        } else {
+          pdf.text(data, xPos + 1, yPos + 2);
+        }
       } else {
         pdf.text(data, xPos + 1, yPos + 2);
       }
       xPos += colWidths[i + 1];
     });
-    
+
     return yPos + 9;
   }
 
