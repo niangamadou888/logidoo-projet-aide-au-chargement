@@ -10,7 +10,7 @@
         <span class="nav-icon">📊</span>
         <span class="nav-text">Dashboard Admin</span>
       </a>
-      <a class="nav-item">
+      <a class="nav-item" [routerLink]="['/dashboard/admin/users']">
         <span class="nav-icon">👥</span>
         <span class="nav-text">Utilisateurs</span>
       </a>
@@ -60,8 +60,13 @@
 
     <!-- Dashboard Grid -->
     <div class="dashboard-grid">
+      <!-- Loading Indicator -->
+      <div *ngIf="isLoading" class="loading-container">
+        <div class="loading-spinner">Chargement des statistiques...</div>
+      </div>
+
       <!-- Key Metrics Cards -->
-      <div class="metrics-row">
+      <div *ngIf="!isLoading" class="metrics-row">
         <div class="metric-card">
           <div class="metric-icon">👥</div>
           <div class="metric-content">
@@ -96,7 +101,7 @@
       </div>
 
       <!-- Statistics Cards -->
-      <div class="statistics-row">
+      <div *ngIf="!isLoading" class="statistics-row">
         <!-- Simulations by Period -->
         <div class="stats-card">
           <h3>Simulations par période</h3>
@@ -119,23 +124,29 @@
         <!-- Top Active Users -->
         <div class="stats-card">
           <h3>Utilisateurs les plus actifs</h3>
-          <div class="users-list">
+          <div class="users-list" *ngIf="dashboardStats.topUsers && dashboardStats.topUsers.length > 0">
             <div *ngFor="let user of dashboardStats.topUsers; let i = index" class="user-item">
               <div class="user-rank">{{ i + 1 }}</div>
               <div class="user-name">{{ user.name }}</div>
               <div class="user-count">{{ user.simulations }}</div>
             </div>
           </div>
+          <div class="empty-state" *ngIf="!dashboardStats.topUsers || dashboardStats.topUsers.length === 0">
+            Aucun utilisateur actif pour le moment
+          </div>
         </div>
 
         <!-- Container Usage -->
         <div class="stats-card">
           <h3>Utilisation des conteneurs</h3>
-          <div class="container-stats">
+          <div class="container-stats" *ngIf="dashboardStats.mostUsedContainers && dashboardStats.mostUsedContainers.length > 0">
             <div *ngFor="let container of dashboardStats.mostUsedContainers" class="container-item">
               <div class="container-label">{{ container.type }}</div>
               <div class="container-value">{{ container.percentage }}%</div>
             </div>
+          </div>
+          <div class="empty-state" *ngIf="!dashboardStats.mostUsedContainers || dashboardStats.mostUsedContainers.length === 0">
+            Aucune donnée sur l'utilisation des conteneurs
           </div>
         </div>
       </div>

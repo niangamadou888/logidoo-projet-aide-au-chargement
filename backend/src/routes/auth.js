@@ -1,5 +1,5 @@
 const express = require('express');
-const { register, login, getCurrentUser, forgotPassword, resetPassword } = require('../controllers/authController');
+const { register, login, getCurrentUser, getAllUsers, forgotPassword, resetPassword } = require('../controllers/authController');
 const { authenticate } = require('../middleware/auth');
 
 const router = express.Router();
@@ -16,5 +16,8 @@ router.post('/reset-password', resetPassword);
 
 // Route to get current user (protected)
 router.get('/me', authenticate, getCurrentUser);
+
+// Route to get all users (admin only, protected)
+router.get('/users', authenticate, getAllUsers);
 
 module.exports = router; 

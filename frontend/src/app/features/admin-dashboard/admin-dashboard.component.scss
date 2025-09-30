@@ -346,6 +346,40 @@
   color: #1e40af;
 }
 
+// Loading Container
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  width: 100%;
+}
+
+.loading-spinner {
+  font-size: 18px;
+  color: #1e40af;
+  font-weight: 500;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// Empty State
+.empty-state {
+  text-align: center;
+  padding: 20px;
+  color: #9ca3af;
+  font-size: 14px;
+  font-style: italic;
+}
+
 // Responsive Design
 @media (max-width: 1200px) {
   .metrics-row {

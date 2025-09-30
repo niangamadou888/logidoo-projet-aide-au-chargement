@@ -1,6 +1,7 @@
 const express = require('express');
 const authRoutes = require('./auth');
 const colisRoutes = require('./colisRoutes');
+const adminRoutes = require('./adminRoutes');
 
 const router = express.Router();
 
@@ -11,6 +12,7 @@ router.get('/ping', (req, res) => {
 
 // Use auth routes
 router.use('/auth', authRoutes);
+router.use('/admin', adminRoutes);
 router.use('/', colisRoutes);
 
 // Export router

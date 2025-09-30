@@ -1,0 +1,122 @@
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo-section">
+      <img src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo">
+    </div>
+
+    <nav class="navigation">
+      <a class="nav-item" [routerLink]="['/dashboard/admin']">
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">Dashboard Admin</span>
+      </a>
+      <a class="nav-item active" [routerLink]="['/dashboard/admin/users']">
+        <span class="nav-icon">👥</span>
+        <span class="nav-text">Utilisateurs</span>
+      </a>
+      <a class="nav-item" [routerLink]="['/dashboard/admin/conteneurs']">
+        <span class="nav-icon">📦</span>
+        <span class="nav-text">Conteneurs</span>
+      </a>
+      <div class="nav-section-title">ADMINISTRATION</div>
+      <a class="nav-item" [routerLink]="['/dashboard/admin/profile']">
+        <span class="nav-icon">👤</span>
+        <span class="nav-text">Profil</span>
+      </a>
+      <a class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-text">Paramètres</span>
+      </a>
+    </nav>
+
+    <div class="logout-section">
+      <button class="logout-btn" (click)="logout()">
+        <mat-icon class="logout-icon">power_settings_new</mat-icon>
+        <span class="logout-text">Log Out</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="welcome-header">
+      <div class="avatar-section">
+        <div class="avatar">👥</div>
+        <span class="welcome-text">Gestion des Utilisateurs</span>
+      </div>
+      <div class="user-menu">
+        <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
+          <span class="user-avatar">👤</span>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+    </header>
+
+    <!-- Users Table -->
+    <div class="users-container">
+      <div class="users-header">
+        <h2>Liste des Utilisateurs</h2>
+        <div class="users-count">Total: {{ users.length }}</div>
+      </div>
+
+      <div class="table-container" *ngIf="!isLoading">
+        <table mat-table [dataSource]="users" class="users-table">
+          <!-- Username Column -->
+          <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef>Nom d'utilisateur</th>
+            <td mat-cell *matCellDef="let user">{{ user.username }}</td>
+          </ng-container>
+
+          <!-- Email Column -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+          </ng-container>
+
+          <!-- Role Column -->
+          <ng-container matColumnDef="role">
+            <th mat-header-cell *matHeaderCellDef>Rôle</th>
+            <td mat-cell *matCellDef="let user">
+              <mat-chip [class.admin-chip]="user.role === 'admin'" [class.user-chip]="user.role === 'user'">
+                {{ user.role === 'admin' ? 'Administrateur' : 'Utilisateur' }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let user">
+              <mat-chip [class.active-chip]="user.active !== false" [class.inactive-chip]="user.active === false">
+                {{ user.active !== false ? 'Actif' : 'Inactif' }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Created At Column -->
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef>Date de création</th>
+            <td mat-cell *matCellDef="let user">{{ formatDate(user.createdAt) }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+
+      <div class="loading-container" *ngIf="isLoading">
+        <div class="loading-spinner">Chargement...</div>
+      </div>
+
+      <div class="empty-state" *ngIf="!isLoading && users.length === 0">
+        <p>Aucun utilisateur trouvé</p>
+      </div>
+    </div>
+  </main>
+</div>

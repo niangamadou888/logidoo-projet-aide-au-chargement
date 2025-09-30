@@ -6,6 +6,7 @@ import { ConteneursPageComponent } from './conteneurs/conteneurs-page.component'
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AdminProfileComponent } from './admin-profile/admin-profile.component';
 import { HistoryComponent } from './history/history.component';
+import { AdminUsersComponent } from './admin-users/admin-users.component';
 
 export const DASHBOARD_ROUTES: Routes = [
   {
@@ -17,6 +18,12 @@ export const DASHBOARD_ROUTES: Routes = [
   {
     path: 'admin/profile',
     component: AdminProfileComponent,
+    canActivate: [userRoleGuard],
+    data: { requiredRole: 'admin' }
+  },
+  {
+    path: 'admin/users',
+    component: AdminUsersComponent,
     canActivate: [userRoleGuard],
     data: { requiredRole: 'admin' }
   },
