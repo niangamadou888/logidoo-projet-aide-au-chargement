@@ -67,12 +67,15 @@
 
     <!-- Layout en grid : Ajout manuel et Import Excel côte à côte -->
     <div class="dual-input-grid" *ngIf="showInputForms">
-      <!-- Section Ajout Manuel -->
-      <div class="manual-section">
+  <!-- Section Ajout Manuel -->
+  <div class="manual-section logidoo-blue-form">
         <div class="colis-form-card-compact">
           <div class="form-header-compact">
-            <h3><span class="icon">📦</span> Ajout manuel</h3>
-            <p class="subtitle">Saisissez les informations de votre colis</p>
+              <h3 class="ajout-manuel-header logidoo-blue-text">
+                <span class="icon">📦</span>
+                <span class="ajout-manuel-title logidoo-blue-text">Ajout manuel</span>
+              </h3>
+              <p class="subtitle ajout-manuel-subtitle section-subtitle logidoo-blue-text">Saisissez les informations de votre colis</p>
           </div>
 
           <form [formGroup]="colisForm" class="ultra-compact-form">
@@ -86,6 +89,10 @@
                 <label>Qté</label>
                 <input type="number" formControlName="quantite" class="form-control-mini" min="1" value="1">
               </div>
+               <div class="color-mini">
+                <label>Couleur</label>
+                <input type="color" formControlName="couleur" class="color-input-mini">
+              </div>
               <label class="checkbox-mini">
                 <input type="checkbox" formControlName="fragile" />
                 <span class="check-text">Fragile</span>
@@ -94,10 +101,6 @@
                 <input type="checkbox" formControlName="gerbable" />
                 <span class="check-text">Empilable</span>
               </label>
-              <div class="color-mini">
-                <label>Couleur</label>
-                <input type="color" formControlName="couleur" class="color-input-mini">
-              </div>
             </div>
 
             <!-- Ligne 2: Dimensions -->
@@ -117,8 +120,13 @@
             <!-- Bouton d'ajout -->
               <div class="ajouter-btn-center">
                 <button type="button" (click)="ajouterColis()" class="btn-uniform btn-logidoo-blue" [disabled]="!colisForm.valid">
-                  <span class="btn-icon plus-icon">+</span>
-                  Ajouter
+                  <span class="btn-icon">
+                    <!-- plus SVG -->
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                  <span class="btn-text">Ajouter</span>
                 </button>
               </div>
           </form>
@@ -148,13 +156,13 @@
       <div class="excel-section">
         <div class="import-card-enhanced">
           <div class="form-header-compact">
-                      <h3 class="excel-header-centered">
+                      <h3 class="excel-header-centered logidoo-blue-text">
                         <span class="icon">
                           <img src="assets/images/excel-icon.png" alt="Excel" class="excel-header-img" />
                         </span>
-                        <span class="excel-header-title">Import Excel</span>
+                        <span class="excel-header-title logidoo-blue-text">Import Excel</span>
                       </h3>
-                      <p class="subtitle excel-header-subtitle">Importez plusieurs colis en une fois</p>
+                      <p class="subtitle excel-header-subtitle section-subtitle logidoo-blue-text">Importez plusieurs colis en une fois</p>
           </div>
           
           <div class="import-zone">
@@ -172,8 +180,15 @@
             
             <div class="import-actions">
               <button class="btn-uniform btn-secondary" (click)="telechargerModele()">
-                <span class="btn-icon">⬇️</span>
-                Télécharger modèle
+                <span class="btn-icon">
+                  <!-- download SVG -->
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="btn-text">Télécharger modèle</span>
               </button>
             </div>
           </div>

@@ -1,3 +1,288 @@
+.colis-form-card-compact {
+  background: #f6f8fc;
+  border: 2px solid #092B8B;
+  border-radius: 22px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: none;
+  backdrop-filter: none;
+  transition: none;
+}
+.colis-form-card-compact:hover {
+  box-shadow: none;
+  transform: none;
+}
+.colis-form-card-compact::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 7px;
+  background: #092B8B;
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
+  z-index: 1;
+  animation: borderPulse 2.5s infinite alternate;
+}
+@keyframes borderPulse {
+  0% { filter: brightness(1); }
+  100% { filter: brightness(1.15); }
+}
+.form-header-compact {
+  padding-top: 1.2rem;
+  padding-bottom: 0.7rem;
+}
+
+/* Force consistent typography for manual and import headers/subtitles */
+.manual-section .ajout-manuel-title,
+.manual-section .ajout-manuel-subtitle,
+.import-card-enhanced .excel-header-title,
+.import-card-enhanced .excel-header-subtitle {
+  font-family: 'Segoe UI', 'Montserrat', 'Arial', sans-serif !important;
+  color: #092B8B !important;
+}
+
+/* Align header blocks in the dual-input grid so titles and subtitles share exact horizontal lines */
+.dual-input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+
+  .form-header-compact {
+    /* identical header box for both columns */
+    min-height: 76px; /* controls vertical rhythm so title and subtitle lines match */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 12px;
+    padding-bottom: 8px;
+    box-sizing: border-box;
+  }
+
+  .ajout-manuel-title, .excel-header-title {
+    font-size: 1.25rem;
+    line-height: 1.1;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .ajout-manuel-subtitle, .excel-header-subtitle {
+    font-size: 1rem;
+    line-height: 1.2;
+    margin: 4px 0 0.5rem 0;
+    padding: 0;
+    text-align: center;
+    max-width: 100%;
+  }
+}
+.ajout-manuel-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-bottom: 0.25rem;
+  font-size: 1.35rem;
+}
+.ajout-manuel-title {
+  color: #092B8B;
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: 0.01em;
+  font-family: 'Segoe UI', 'Montserrat', 'Arial', sans-serif;
+  text-shadow: none;
+}
+.ajout-manuel-subtitle {
+  color: #092B8B;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-top: 0.1rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.section-subtitle {
+  color: #092B8B;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-top: 0.1rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.form-row-primary, .form-row-secondary {
+  margin-bottom: 1.1rem;
+}
+.form-row-primary .form-control-mini,
+.form-row-secondary .dimension-input,
+.form-row-secondary .weight {
+  border: 2px solid #b3c2e6;
+  border-radius: 8px;
+  background: #fff;
+  transition: border-color 0.2s;
+  font-size: 1rem;
+  padding: 0.45rem 0.7rem;
+  margin-right: 0.5rem;
+  box-shadow: none;
+}
+.form-row-primary .form-control-mini:focus,
+.form-row-secondary .dimension-input:focus,
+.form-row-secondary .weight:focus {
+  border-color: #092B8B;
+  box-shadow: none;
+}
+.form-group-mini label,
+.dimensions-label {
+  color: #092B8B;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+.checkbox-mini .check-text {
+  color: #10b981;
+  font-weight: 500;
+  font-size: 0.98rem;
+}
+.color-mini label {
+  color: #092B8B;
+  font-weight: 600;
+}
+.ajouter-btn-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.2rem;
+  margin-bottom: 0.7rem;
+}
+.btn-logidoo-blue {
+  background: #092B8B;
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  font-size: 1.08rem;
+  border-radius: 8px;
+  box-shadow: none;
+  transition: background 0.2s;
+  padding: 0.7rem 2.2rem;
+  letter-spacing: 0.01em;
+}
+.btn-logidoo-blue:hover:not(:disabled) {
+  background: #0a1e5e;
+  box-shadow: none;
+  transform: none;
+}
+.colis-form-card-compact {
+  background: linear-gradient(135deg, #f6f8fc 0%, #e3eafc 100%);
+  border: 1.5px solid #092B8B;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(9,43,139,0.08);
+  position: relative;
+  overflow: hidden;
+}
+.colis-form-card-compact::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #092B8B 0%, #10b981 100%);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  z-index: 1;
+}
+.form-row-primary .form-control-mini,
+.form-row-secondary .dimension-input,
+.form-row-secondary .weight {
+  border: 2px solid #092B8B;
+  border-radius: 6px;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+.form-row-primary .form-control-mini:focus,
+.form-row-secondary .dimension-input:focus,
+.form-row-secondary .weight:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16,185,129,0.12);
+}
+.form-group-mini label,
+.dimensions-label {
+  color: #092B8B;
+  font-weight: 600;
+}
+.checkbox-mini .check-text {
+  color: #092B8B;
+  font-weight: 500;
+}
+.color-mini label {
+  color: #092B8B;
+  font-weight: 600;
+}
+// Harmonisation couleurs Logidoo pour le formulaire manuel
+.colis-form-card-compact {
+  background: #f6f8fc;
+  border: 1.5px solid #092B8B;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(9,43,139,0.08);
+}
+
+.form-row-primary .form-control-mini,
+.form-row-secondary .dimension-input,
+.form-row-secondary .weight {
+  border: 1.5px solid #b3c2e6;
+  border-radius: 6px;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+.form-row-primary .form-control-mini:focus,
+.form-row-secondary .dimension-input:focus,
+.form-row-secondary .weight:focus {
+  border-color: #092B8B;
+  box-shadow: 0 0 0 2px rgba(9,43,139,0.12);
+}
+
+.form-group-mini label,
+.dimensions-label {
+  color: #092B8B;
+  font-weight: 600;
+}
+
+.checkbox-mini .check-text {
+  color: #092B8B;
+  font-weight: 500;
+}
+
+.color-mini label {
+  color: #092B8B;
+  font-weight: 600;
+}
+// Header Ajout Manuel couleurs Logidoo
+.ajout-manuel-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+.ajout-manuel-title {
+  color: #092B8B;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.01em;
+  font-family: inherit;
+}
+.ajout-manuel-subtitle {
+  color: #092B8B;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 0.1rem;
+  margin-bottom: 0.5rem;
+}
 // Centrage du bouton Ajouter
 .ajouter-btn-center {
   display: flex;
@@ -28,11 +313,155 @@
   display: inline-block;
 }
 
+/* Button icon sizing & spacing for consistency */
+.btn-uniform .btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.6rem;
+}
+.btn-uniform .btn-icon svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+.btn-uniform .btn-text {
+  vertical-align: middle;
+}
+
+/* Apply the shared subtitle class to ensure manual and excel subtitles match */
+.ajout-manuel-subtitle, .excel-header-subtitle {
+  @extend .section-subtitle;
+}
+
 @media (max-width: 480px) {
   .form-header-compact .icon .excel-header-img {
     width: 1.6rem;
   }
 }
+
+/* ===== MANUAL FORM - FORCE LOGIDOO BLUE & FLAT ===== */
+/* This block scopes visual overrides to the manual section only so other components keep their styles */
+.manual-section .colis-form-card-compact {
+  background: #f6f8fc; /* light neutral */
+  border: 1.5px solid #092B8B; /* Logidoo blue */
+  border-radius: 16px;
+  box-shadow: none !important;
+  overflow: visible;
+}
+.manual-section .colis-form-card-compact::before {
+  background: #092B8B !important; /* top accent bar in blue */
+}
+
+.manual-section .ajout-manuel-header,
+.manual-section .ajout-manuel-title,
+.manual-section .ajout-manuel-subtitle,
+.manual-section .form-group-mini label,
+.manual-section .dimensions-label,
+.manual-section .color-mini label,
+.manual-section .checkbox-mini .check-text {
+  color: #092B8B !important;
+}
+
+.manual-section .form-row-primary .form-control-mini,
+.manual-section .form-row-secondary .dimension-input,
+.manual-section .form-row-secondary .weight {
+  border: 1.5px solid rgba(9,43,139,0.12);
+  box-shadow: none !important;
+  background: #fff;
+}
+
+.manual-section .form-row-primary .form-control-mini:focus,
+.manual-section .form-row-secondary .dimension-input:focus,
+.manual-section .form-row-secondary .weight:focus {
+  border-color: #092B8B !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Ensure placeholders, input text color and label weights are identical for both rows */
+.manual-section .form-row-primary .form-control-mini,
+.manual-section .form-row-secondary .dimension-input,
+.manual-section .form-row-secondary .weight {
+  color: #0b2b7a; /* slightly darker logidoo blue for text */
+}
+
+.manual-section .form-row-primary .form-control-mini::placeholder,
+.manual-section .form-row-secondary .dimension-input::placeholder,
+.manual-section .form-row-secondary .weight::placeholder {
+  color: rgba(9,43,139,0.35);
+  opacity: 1;
+}
+
+.manual-section .form-group-mini label,
+.manual-section .dimensions-label {
+  color: #092B8B !important;
+  font-weight: 600;
+}
+
+/* Make sure checkboxes/mini controls also align */
+.manual-section .checkbox-mini .check-text {
+  color: #092B8B !important;
+}
+
+
+.manual-section .btn-uniform {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+.manual-section .btn-logidoo-blue {
+  background: #092B8B !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.manual-section .toggle-mini,
+.manual-section .close-mini {
+  color: #092B8B;
+  border: 1px solid rgba(9,43,139,0.12);
+  background: transparent;
+}
+
+/* reduce visual noise for inputs/checks */
+.manual-section .checkbox-mini input,
+.manual-section .color-input-mini,
+.manual-section .dimension-input {
+  box-shadow: none !important;
+}
+
+/* ensure buttons don't use green gradients inside manual form */
+.manual-section .btn-uniform.btn-secondary,
+.manual-section .btn-template,
+.manual-section .btn-uniform.btn-primary {
+  background: #092B8B !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+/* Final safeguard: make sure no later rules reintroduce a blue->yellow/green gradient
+   for the manual add card top accent. This sits at the end to win against later
+   re-definitions. */
+.manual-section .colis-form-card-compact::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 6px !important;
+  background: linear-gradient(90deg, #092B8B 0%, #1e40af 100%) !important; /* blue -> slightly lighter blue */
+  border-top-left-radius: 16px !important;
+  border-top-right-radius: 16px !important;
+  z-index: 2 !important;
+}
+
+/* Also ensure the import card next to it doesn't visually leak a yellow strip into the manual card area */
+.manual-section + .excel-section .import-card-enhanced::before,
+.manual-section ~ .excel-section .import-card-enhanced::before {
+  /* keep import card as-is; make sure spacing doesn't show between cards */
+  margin-left: 0 !important;
+}
+
 // ===== FORMULAIRE ULTRA-COMPACT =====
 .colis-form-card-compact {
   background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
@@ -621,7 +1050,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 7rem;
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
@@ -634,6 +1063,9 @@
   display: flex;
   flex-direction: column;
 }
+
+/* Ensure both columns align their cards centrally in the dual grid */
+// Note: removed dual-column centering — keeping only header/title centering per UX request
 
 // ===== IMPORT EXCEL ENHANCED =====
 .import-card-enhanced {
@@ -669,12 +1101,15 @@
       display: inline-block;
     }
 
+      // keep this for fallback, but the actual h3 lives in .form-header-compact
       .excel-header-centered {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
         margin-bottom: 0.25rem;
+        width: 100%;
+        text-align: center !important;
       }
 
       .excel-header-title {
@@ -895,5 +1330,52 @@
   padding: 8px 16px;
   background: var(--logidoo-gray-50);
   border-radius: 8px;
+  text-align: center;
+}
+/* Theme utilities: default blue or alternate accent (green/yellow) */
+.logidoo-blue-form .colis-form-card-compact {
+  --logidoo-primary: #092B8B; /* blue */
+  --logidoo-accent: #10b981;  /* accent/green kept for optional use */
+}
+.logidoo-accent-form .colis-form-card-compact {
+  --logidoo-primary: #10b981; /* alternate accent (user requested 'jaune/logidoo') */
+  --logidoo-accent: #092B8B;
+}
+
+/* Apply variables to key manual form elements to allow single-class theme switch */
+.logidoo-blue-form .ajout-manuel-title,
+.logidoo-accent-form .ajout-manuel-title {
+  color: var(--logidoo-primary);
+}
+.logidoo-blue-form .ajout-manuel-subtitle,
+.logidoo-accent-form .ajout-manuel-subtitle {
+  color: var(--logidoo-primary);
+}
+.logidoo-blue-form .form-group-mini label,
+.logidoo-accent-form .form-group-mini label,
+.logidoo-blue-form .dimensions-label,
+.logidoo-accent-form .dimensions-label {
+  color: var(--logidoo-primary);
+}
+.logidoo-blue-form .form-row-primary .form-control-mini:focus,
+.logidoo-accent-form .form-row-primary .form-control-mini:focus,
+.logidoo-blue-form .form-row-secondary .dimension-input:focus,
+.logidoo-accent-form .form-row-secondary .dimension-input:focus,
+.logidoo-blue-form .form-row-secondary .weight:focus,
+.logidoo-accent-form .form-row-secondary .weight:focus {
+  border-color: var(--logidoo-primary);
+  box-shadow: none;
+}
+.logidoo-blue-form .btn-logidoo-blue,
+.logidoo-accent-form .btn-logidoo-blue {
+  background: var(--logidoo-primary);
+}
+.form-header-compact h3.excel-header-centered,
+.import-card-enhanced .form-header-compact h3.excel-header-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
   text-align: center;
 }
