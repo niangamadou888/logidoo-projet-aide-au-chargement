@@ -78,25 +78,18 @@
           </mat-form-field>
         </div>
 
-        <!-- Capacité Poids -->
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Capacité poids (kg)</mat-label>
-          <input matInput type="number" formControlName="capacitePoids"  />
-          <mat-error *ngIf="contenantForm.get('capacitePoids')?.hasError('required')">Requis</mat-error>
-        </mat-form-field>
-
         <!-- Groupe capacité -->
-        <div class="dim-grid">
+        <div class="capacity-grid">
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Capacité poids (kg)</mat-label>
+            <input matInput type="number" formControlName="capacitePoids"  />
+            <mat-error *ngIf="contenantForm.get('capacitePoids')?.hasError('required')">Requis</mat-error>
+          </mat-form-field>
+
           <mat-form-field appearance="outline" class="full">
             <mat-label>Capacité volume (m³)</mat-label>
             <input matInput type="number" formControlName="capaciteVolume" readonly />
             <mat-error *ngIf="contenantForm.get('capaciteVolume')?.hasError('min')">≥ 0</mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full">
-            <mat-label>Poids max (kg)</mat-label>
-            <input matInput type="number" formControlName="capacitePoidsMax" readonly/>
-            <mat-error *ngIf="contenantForm.get('capacitePoidsMax')?.hasError('min')">≥ 0</mat-error>
           </mat-form-field>
         </div>
       </div>

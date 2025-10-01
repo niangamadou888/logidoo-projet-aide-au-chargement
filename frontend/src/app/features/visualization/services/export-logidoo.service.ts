@@ -1003,8 +1003,8 @@ export class ExportLogidooService {
    * Dessine les en-têtes du tableau
    */
   private drawTableHeaders(pdf: any, colors: any, yPos: number): number {
-    const headers = ['Couleur', 'Référence', 'Type', 'Destinataire', 'Dimensions (L×l×h)', 'Volume', 'Poids', 'Qté', 'Empilable'];
-    const colWidths = [12, 20, 18, 26, 28, 16, 14, 12, 16];
+    const headers = ['Couleur', 'Référence', 'Type', 'Destinataire', 'Dimensions (L×l×h)', 'Volume', 'Poids', 'Fragile', 'Empilable'];
+    const colWidths = [12, 20, 18, 26, 28, 16, 14, 14, 14];
     let xPos = 15;
 
     // Fond d'en-tête
@@ -1031,7 +1031,7 @@ export class ExportLogidooService {
    * Dessine une ligne groupée d'items dans le tableau avec quantité
    */
   private drawGroupedItemRow(pdf: any, colors: any, group: any, groupIndex: number, containerIndex: number, yPos: number): number {
-    const colWidths = [12, 20, 18, 26, 28, 16, 14, 12, 16];
+    const colWidths = [12, 20, 18, 26, 28, 16, 14, 14, 14];
     let xPos = 15;
 
     // Alternance de couleur
@@ -1053,7 +1053,7 @@ export class ExportLogidooService {
     pdf.setTextColor(colors.black);
     pdf.setFontSize(8);
 
-    // Données du tableau avec colonne quantité
+    // Données du tableau avec colonne fragile
     const rowData = [
       group.reference || group.id || `C${containerIndex + 1}-${groupIndex + 1}`,
       this.getItemRealType(group), // Type physique (carton, palette, etc.)
@@ -1061,13 +1061,21 @@ export class ExportLogidooService {
       `${group.dimensions.longueur}×${group.dimensions.largeur}×${group.dimensions.hauteur}`,
       `${group.totalVolume.toFixed(3)}m³`, // Volume total pour la quantité
       group.totalPoids > 0 ? `${group.totalPoids.toFixed(1)}kg` : 'N/A', // Poids total
-      `${group.quantity}`, // Quantité
+      group.fragile ? 'Oui' : 'Non', // Fragile
       group.gerbable !== false ? 'Oui' : 'Non' // Empilable
     ];
 
     rowData.forEach((data, i) => {
       // Coloration spéciale pour certaines colonnes
-      if (i === 7) { // Colonne Empilable (maintenant à la position 7)
+      if (i === 6) { // Colonne Fragile
+        if (data === 'Oui') {
+          pdf.setTextColor(colors.warning);
+          pdf.text('⚠ ' + data, xPos + 1, yPos + 2);
+          pdf.setTextColor(colors.black);
+        } else {
+          pdf.text(data, xPos + 1, yPos + 2);
+        }
+      } else if (i === 7) { // Colonne Empilable (maintenant à la position 7)
         if (data === 'Non') {
           pdf.setTextColor(colors.error);
           pdf.text('⚠ ' + data, xPos + 1, yPos + 2);
@@ -1081,16 +1089,6 @@ export class ExportLogidooService {
         pdf.setTextColor(this.getTypeColor(data, colors));
         pdf.text(data, xPos + 1, yPos + 2);
         pdf.setTextColor(colors.black);
-      } else if (i === 6) { // Colonne Quantité - en gras si > 1
-        if (group.quantity > 1) {
-          pdf.setFont('helvetica', 'bold');
-          pdf.setTextColor(colors.blue);
-          pdf.text(data, xPos + 1, yPos + 2);
-          pdf.setFont('helvetica', 'normal');
-          pdf.setTextColor(colors.black);
-        } else {
-          pdf.text(data, xPos + 1, yPos + 2);
-        }
       } else {
         pdf.text(data, xPos + 1, yPos + 2);
       }

@@ -62,7 +62,6 @@ export class AjouteConteneurComponent implements OnInit{
       capacitePoids: [null, [Validators.required, Validators.min(0)]],
 
       capaciteVolume: [{value:0, disabled:true}],
-      capacitePoidsMax: [null, [Validators.min(0)]],
     });
   }
 
@@ -71,13 +70,8 @@ this.contenantForm.valueChanges.subscribe(val => {
     const l = val.longueur || 0;
     const w = val.largeur || 0;
     const h = val.hauteur || 0;
- const poidsMax = val.capacitePoids || 0;
     const volume = (l * w * h) / 1000000000; // en m³ (dimensions en mm)
     this.contenantForm.get('capaciteVolume')?.setValue(volume, { emitEvent: false });
-
-    // Mettre à jour capacitePoidsMax automatiquement
-    
-    this.contenantForm.get('capacitePoidsMax')?.setValue(poidsMax, { emitEvent: false });
   });
   
     // Récupérer toutes les catégories depuis le backend
