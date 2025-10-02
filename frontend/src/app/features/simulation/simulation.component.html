@@ -1,390 +1,523 @@
 <div class="logidoo-container">
-  <!-- Header -->
-  <div class="header">
-    <button class="back-btn" routerLink="/dashboard/user">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M19 12H5M12 19l-7-7 7-7" />
-      </svg>
-    </button>
-    <div class="logo-container">
+  <!-- Header compact avec logo à gauche et stepper à droite -->
+  <div class="compact-header">
+    <div class="header-left">
+      <button class="back-btn" (click)="onBackClick()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </button>
       <div class="logo">
-        <span class="logo-text">Logid</span>
-        <span class="logo-infinity">∞</span>
+        <img src="assets/images/logo-logidoo.png" alt="Logidoo" class="logo-image">
+      </div>
+    </div>
+    
+    <!-- Stepper compact à droite -->
+    <div class="compact-stepper">
+      <div class="step-item" 
+           [class.active]="currentStep === 1" 
+           [class.completed]="currentStep > 1" 
+           (click)="goToStep(1)">
+        <div class="step-circle">1</div>
+        <span class="step-text">Colis</span>
+      </div>
+      
+      <div class="step-connector"></div>
+      
+      <div class="step-item" 
+           [class.active]="currentStep === 2" 
+           [class.completed]="currentStep > 2" 
+           [class.disabled]="listeColis.length === 0"
+           (click)="listeColis.length > 0 ? goToStep(2) : null">
+        <div class="step-circle">2</div>
+        <span class="step-text">Contenant</span>
       </div>
     </div>
   </div>
 
-  <!-- Title -->
-  <div class="title-section">
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2">
-      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-      <polyline points="9,22 9,12 15,12 15,22" />
-    </svg>
-    <h1>Aide au Chargement</h1>
-  </div>
-
-  <!-- Informations Simulation -->
-  <div class="simulation-info">
-    <form [formGroup]="simulationForm" class="simulation-form">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Nom de la simulation *</label>
-          <input type="text" formControlName="nom" placeholder="Ex: Livraison Paris - Janvier 2025"
-            class="form-control">
+  <!-- Step 1: Ajout de Colis -->
+  <div class="step-content" *ngIf="currentStep === 1">
+    <!-- Informations de la simulation -->
+    <div class="simulation-info-section">
+      <h3 class="section-title">
+        <mat-icon class="icon">edit_note</mat-icon>
+        Informations de la simulation
+      </h3>
+      <div class="simulation-inputs">
+        <div class="input-group">
+          <label for="simulationName">Nom de la simulation *</label>
+          <input 
+            type="text" 
+            id="simulationName" 
+            [(ngModel)]="simulationName"
+            placeholder="Ex: Livraison Paris - Septembre 2025"
+            class="form-input">
         </div>
-        <div class="form-group">
-          <label>Description (optionnel)</label>
-          <input type="text" formControlName="description" placeholder="Description de la simulation"
-            class="form-control">
+        <div class="input-group">
+          <label for="simulationDescription">Description</label>
+          <input 
+            type="text" 
+            id="simulationDescription" 
+            [(ngModel)]="simulationDescription"
+            placeholder="Description courte..."
+            class="form-input">
         </div>
       </div>
-    </form>
-  </div>
+    </div>
 
-  <div class="main-content">
-    <!-- Formulaire d'ajout de colis -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-icon add-icon">+</div>
-        <h2>Ajouter un colis</h2>
+    <!-- Layout en grid : Ajout manuel et Import Excel côte à côte -->
+    <div class="dual-input-grid" *ngIf="showInputForms">
+      <!-- Section Ajout Manuel -->
+      <div class="manual-section">
+        <div class="colis-form-card-compact">
+          <div class="form-header-compact">
+            <h3><mat-icon class="icon">inventory_2</mat-icon> Ajout manuel</h3>
+            <p class="subtitle">Saisissez les informations de votre colis</p>
+          </div>
+
+          <form [formGroup]="colisForm" class="ultra-compact-form">
+            <!-- Ligne 1: Type, Quantité, Fragile, Empilable, Couleur -->
+            <div class="form-row-primary">
+              <div class="form-group-mini">
+                <label>Type</label>
+                <input type="text" formControlName="type" placeholder="Carton, Palette..." class="form-control-mini">
+              </div>
+              <div class="form-group-mini quantity">
+                <label>Qté</label>
+                <input type="number" formControlName="quantite" class="form-control-mini" min="1" value="1">
+              </div>
+              <label class="checkbox-mini">
+                <input type="checkbox" formControlName="fragile" />
+                <span class="check-text">Fragile</span>
+              </label>
+              <label class="checkbox-mini">
+                <input type="checkbox" formControlName="gerbable" />
+                <span class="check-text">Empilable</span>
+              </label>
+              <div class="color-mini">
+                <label>Couleur</label>
+                <input type="color" formControlName="couleur" class="color-input-mini">
+              </div>
+            </div>
+
+            <!-- Ligne 2: Dimensions -->
+            <div class="form-row-secondary">
+              <label class="dimensions-label">Dimensions (cm) & Poids (kg)</label>
+              <div class="dimensions-inputs">
+                <input type="number" formControlName="longueur" placeholder="Longueur" class="dimension-input">
+                <span class="separator">×</span>
+                <input type="number" formControlName="largeur" placeholder="Largeur" class="dimension-input">
+                <span class="separator">×</span>
+                <input type="number" formControlName="hauteur" placeholder="Hauteur" class="dimension-input">
+                <span class="separator">|</span>
+                <input type="number" step="0.1" formControlName="poids" placeholder="Poids" class="dimension-input weight">
+              </div>
+            </div>
+
+            <!-- Section destinataire repliable (plus discrète) -->
+            <div class="collapsible-mini mb-2" *ngIf="!showDestinataireForm">
+              <button type="button" class="toggle-mini" (click)="showDestinataireForm = true">
+                + Infos destinataire (optionnel)
+              </button>
+            </div>
+
+            <div class="destinataire-section" *ngIf="showDestinataireForm">
+              <div class="destinataire-header">
+                <span>Informations destinataire</span>
+                <button type="button" class="close-mini" (click)="showDestinataireForm = false">×</button>
+              </div>
+              <div class="destinataire-form">
+                <input type="text" formControlName="nomDestinataire" placeholder="Nom" class="form-control-mini">
+                <input type="text" formControlName="adresse" placeholder="Adresse complète" class="form-control-mini">
+                <input type="tel" formControlName="telephone" placeholder="Téléphone" class="form-control-mini">
+              </div>
+            </div>
+
+            <!-- Bouton d'ajout -->
+            <button type="button" (click)="ajouterColis()" class="btn-add-compact" [disabled]="!colisForm.valid">
+              <mat-icon class="plus-icon">add_circle</mat-icon>
+              Ajouter
+            </button>
+          </form>
+        </div>
       </div>
 
-      <form [formGroup]="colisForm" class="colis-form">
-        <div class="form-group">
-          <label>Type de colis *</label>
-          <input type="text" formControlName="type" placeholder="Ex: Carton, Palette, Sac ..." class="form-control">
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Longueur (cm) *</label>
-            <input type="number" formControlName="longueur" class="form-control">
+      <!-- Section Import Excel -->
+      <div class="excel-section">
+        <div class="import-card-enhanced">
+          <div class="form-header-compact">
+            <h3><mat-icon class="icon">upload_file</mat-icon> Import Excel</h3>
+            <p class="subtitle">Importez plusieurs colis en une fois</p>
           </div>
-          <div class="form-group">
-            <label>Largeur (cm) *</label>
-            <input type="number" formControlName="largeur" class="form-control">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Hauteur (cm) *</label>
-            <input type="number" formControlName="hauteur" class="form-control">
-          </div>
-          <div class="form-group">
-            <label>Poids (kg) *</label>
-            <input type="number" step="0.1" formControlName="poids" class="form-control">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Quantité *</label>
-          <input type="number" formControlName="quantite" class="form-control">
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label><input type="checkbox" formControlName="fragile" /> Fragile</label>
-          </div>
-          <div class="form-group">
-            <label><input type="checkbox" formControlName="gerbable" /> Empilable (gerbable)</label>
-          </div>
-          <div class="form-group">
-            <label>Couleur</label>
-            <input type="color" formControlName="couleur" class="form-control" style="height:40px;padding:0;">
+          
+          <div class="import-zone">
+            <input type="file" #fileInput accept=".xlsx,.xls" (change)="importerDepuisExcel($event)" class="file-input" id="excel-file" style="display: none;">
+            
+            <div class="drop-area" 
+                 (click)="fileInput.click()"
+                 (dragover)="onDragOver($event)" 
+                 (dragleave)="onDragLeave($event)" 
+                 (drop)="onDrop($event)"
+                 [class.dragover]="isDragOver">
+              <mat-icon class="excel-icon">description</mat-icon>
+              <p class="drop-text">Glissez votre fichier Excel ici<br>ou cliquez pour choisir</p>
+            </div>
+            
+            <div class="import-actions">
+              <button class="btn-uniform btn-secondary" (click)="telechargerModele()">
+                <mat-icon class="btn-icon">download</mat-icon>
+                Télécharger modèle
+              </button>
+            </div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Champs destinataire (optionnels) -->
-        <div class="destinataire-section">
-          <h4>Informations destinataire (optionnel)</h4>
-          <div class="form-group">
-            <label>Nom Destinataire</label>
-            <input type="text" formControlName="nomDestinataire" class="form-control">
-          </div>
-          <div class="form-group">
-            <label>Adresse</label>
-            <input type="text" formControlName="adresse" class="form-control">
-          </div>
-          <div class="form-group">
-            <label>Téléphone</label>
-            <input type="tel" formControlName="telephone" class="form-control">
-          </div>
-        </div>
-
-        <button type="button" (click)="ajouterColis()" class="btn-primary full-width" [disabled]="!colisForm.valid">
-          Ajouter le colis
+    <!-- Actions après ajout de colis (manuel ou import) -->
+    <div class="post-add-actions" *ngIf="listeColis.length > 0">
+      <div class="secondary-actions">
+        <button class="btn-secondary-action" (click)="viderTousLesColis()">
+          <mat-icon class="btn-icon">delete_sweep</mat-icon>
+          Vider tout
         </button>
-      </form>
+        <button class="btn-secondary-action" (click)="ajouterAutresColis()">
+          <mat-icon class="btn-icon">add_circle</mat-icon>
+          Ajouter un autre colis
+        </button>
+      </div>
     </div>
 
-    <!-- Colonne droite: wrapper qui empile le choix conteneur + Import Excel -->
-    <div class="right-column">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">🧱</div>
-          <h2>Sélection du contenant</h2>
-          <div class="selection-mode-toggle">
-            <label [class.active]="selectionAutoOptimal">
-              <input type="checkbox" [checked]="selectionAutoOptimal" (change)="toggleSelectionMode()">
-              Sélection automatique
+    <!-- Liste compacte des colis ajoutés -->
+    <div class="compact-colis-container" *ngIf="listeColis.length > 0">
+      <div class="compact-colis-header">
+        <h3>
+          <mat-icon class="package-icon">inventory_2</mat-icon>
+          {{ listeColis.length }} colis
+        </h3>
+      </div>
+      
+      <!-- Liste compacte des colis avec pagination -->
+      <div class="compact-colis-list">
+        <!-- En-tête avec info pagination -->
+        <div class="colis-list-header" *ngIf="listeColis.length > 0">
+          <span class="colis-count">{{ listeColis.length }} colis • Page {{ currentPage }} sur {{ getTotalPages() }}</span>
+          <div class="view-controls">
+            <span class="items-per-page">Afficher:</span>
+            <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+              <option [value]="5">5</option>
+              <option [value]="10">10</option>
+              <option [value]="20">20</option>
+              <option [value]="50">50</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Liste paginée -->
+        <div *ngFor="let colis of getPaginatedColis(); let i = index" 
+             class="compact-colis-item">
+          
+          <!-- Indicateur de couleur -->
+          <div class="color-dot" [style.background]="colis.couleur"></div>
+          
+          <!-- Infos principales -->
+          <div class="colis-main-info">
+            <div class="colis-title">
+              {{ colis.type }}
+              <span class="colis-badges">
+                <span *ngIf="colis.fragile" class="badge badge-fragile" title="Fragile">Fragile</span>
+                <span *ngIf="colis.gerbable" class="badge badge-gerbable" title="Empilable">Empilable</span>
+              </span>
+            </div>
+            <div class="colis-dimensions">{{ colis.longueur }}×{{ colis.largeur }}×{{ colis.hauteur }} cm</div>
+
+            <!-- Informations destinataire -->
+            <div class="colis-owner-info" *ngIf="colis.nomDestinataire || colis.adresse || colis.telephone">
+              <div class="owner-details">
+                <small *ngIf="colis.nomDestinataire" class="owner-name">👤 {{ colis.nomDestinataire }}</small>
+                <small *ngIf="colis.adresse" class="owner-address">📍 {{ colis.adresse }}</small>
+                <small *ngIf="colis.telephone" class="owner-phone">📞 {{ colis.telephone }}</small>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Stats -->
+          <div class="colis-stats">
+            <span class="stat">{{ colis.poids }}kg</span>
+            <span class="stat">{{ (colis.longueur * colis.largeur * colis.hauteur / 1000000).toFixed(3) }}m³</span>
+            <span class="stat" *ngIf="colis.quantite > 1">×{{ colis.quantite }}</span>
+          </div>
+          
+          <!-- Actions -->
+          <div class="colis-actions">
+            <label class="checkbox-mini inline" title="Fragile">
+              <input type="checkbox" [checked]="colis.fragile" (change)="toggleFragile(getActualIndex(i))" />
+              <span class="check-label">Fragile</span>
             </label>
+
+            <label class="checkbox-mini inline" title="Empilable">
+              <input type="checkbox" [checked]="colis.gerbable" (change)="toggleGerbable(getActualIndex(i))" />
+              <span class="check-label">Empilable</span>
+            </label>
+            <input type="color" [value]="colis.couleur" 
+                   (change)="updateColisCouleur(getActualIndex(i), $any($event.target).value)"
+                   class="color-picker-mini">
+            <button class="delete-btn-mini" (click)="supprimerColis(getActualIndex(i))" title="Supprimer">
+              <mat-icon>delete</mat-icon>
+            </button>
           </div>
         </div>
 
-        <!-- Message explicatif pour le mode de sélection -->
-        <div class="selection-mode-explanation">
-          <p *ngIf="selectionAutoOptimal">
-            Mode <strong>automatique</strong> activé : le conteneur le plus optimal sera sélectionné pour vos colis
-          </p>
-          <p *ngIf="!selectionAutoOptimal">
-            Mode <strong>manuel</strong> activé : sélectionnez le conteneur de votre choix
-          </p>
-        </div>
-
-        <!-- Affichage du conteneur optimal -->
-        <div *ngIf="selectionAutoOptimal && optimalContainer" class="optimal-container-info">
-          <div class="optimal-container-card">
-            <div class="optimal-badge">
-              <span>Recommandé</span>
-            </div>
-
-            <div class="container-header">
-              <strong>{{ optimalContainer.containerType }}</strong>
-              <span class="container-category">{{ optimalContainer.containerCategory }}</span>
-            </div>
-
-            <div class="container-stats">
-              <div class="stat">
-                <div class="progress-bar">
-                  <div class="progress" [style.width]="(optimalContainer.volumeUtilization * 100) + '%'"></div>
-                </div>
-                <div class="stat-label">
-                  <span>Volume: {{ optimalContainer.volumeUtilization | percent:'1.0-0' }}</span>
-                </div>
-              </div>
-
-              <div class="stat">
-                <div class="progress-bar">
-                  <div class="progress" [style.width]="(optimalContainer.weightUtilization * 100) + '%'"></div>
-                </div>
-                <div class="stat-label">
-                  <span>Poids: {{ optimalContainer.weightUtilization | percent:'1.0-0' }}</span>
-                </div>
-              </div>
-
-              <div class="placement-info">
-                <strong>{{ optimalContainer.placedItems }}</strong> / {{ optimalContainer.totalItems }} colis placés
-              </div>
-            </div>
-
-            <div class="container-dimensions">
-              <span>{{ optimalContainer.dimensions.longueur }} × {{ optimalContainer.dimensions.largeur }} × {{
-                optimalContainer.dimensions.hauteur }} mm</span>
-              <span>Volume: {{ optimalContainer.volume }} m³</span>
-              <span>Capacité: {{ optimalContainer.capacitePoids }} kg max</span>
-            </div>
+        <!-- Pagination -->
+        <div class="pagination-controls" *ngIf="getTotalPages() > 1">
+          <button class="page-btn" 
+                  [disabled]="currentPage === 1" 
+                  (click)="goToPage(currentPage - 1)">
+            ‹ Précédent
+          </button>
+          
+          <div class="page-numbers">
+            <button *ngFor="let page of getPageNumbers()" 
+                    class="page-number" 
+                    [class.active]="page === currentPage"
+                    [class.ellipsis]="page === -1"
+                    [disabled]="page === -1"
+                    (click)="page !== -1 ? goToPage(page) : null">
+              {{ page === -1 ? '...' : page }}
+            </button>
           </div>
-        </div>
-
-        <!-- Affichage des stats du conteneur sélectionné manuellement -->
-        <div *ngIf="!selectionAutoOptimal && selectedContainerStats" class="selected-container-info">
-          <div class="selected-container-card">
-            <div class="container-header">
-              <strong>{{ selectedContainerStats.containerType }}</strong>
-              <span class="container-category">{{ selectedContainerStats.containerCategory }}</span>
-            </div>
-
-            <div class="container-stats">
-              <div class="stat">
-                <div class="progress-bar">
-                  <div class="progress" [style.width]="(selectedContainerStats.volumeUtilization * 100) + '%'"></div>
-                </div>
-                <div class="stat-label">
-                  <span>Volume: {{ selectedContainerStats.volumeUtilization | percent:'1.0-0' }}</span>
-                </div>
-              </div>
-
-              <div class="stat">
-                <div class="progress-bar">
-                  <div class="progress" [style.width]="(selectedContainerStats.weightUtilization * 100) + '%'"></div>
-                </div>
-                <div class="stat-label">
-                  <span>Poids: {{ selectedContainerStats.weightUtilization | percent:'1.0-0' }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="placement-stats">
-              <span class="placement-info">
-                <strong>{{ selectedContainerStats.placedItems }}</strong> / {{ selectedContainerStats.totalItems }}
-                colis placés
-              </span>
-              <span class="score-info" [class.good-score]="selectedContainerStats.optimalityScore > 0.7"
-                [class.medium-score]="selectedContainerStats.optimalityScore > 0.4 && selectedContainerStats.optimalityScore <= 0.7"
-                [class.low-score]="selectedContainerStats.optimalityScore <= 0.4">
-                Score d'optimalité: {{ selectedContainerStats.optimalityScore | percent:'1.0-0' }}
-              </span>
-            </div>
-
-            <div class="container-dimensions">
-              <span>{{ selectedContainerStats.dimensions.longueur }} × {{ selectedContainerStats.dimensions.largeur }} ×
-                {{ selectedContainerStats.dimensions.hauteur }} mm</span>
-              <span>Volume: {{ selectedContainerStats.volume }} m³</span>
-              <span>Capacité: {{ selectedContainerStats.capacitePoids }} kg max</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Indicateur de chargement pour l'évaluation du conteneur -->
-        <div *ngIf="evaluatingContainer" class="container-loading">
-          <div class="loading-spinner"></div>
-          <span>Évaluation du conteneur en cours...</span>
-        </div>
-
-        <!-- Liste des conteneurs disponibles -->
-        <div class="contenants-grid" [class.dimmed]="selectionAutoOptimal && optimalContainer">
-          <div *ngFor="let c of containers" class="conteneur-card" [class.selected]="c._id === selectedContainerId"
-            [class.optimal]="optimalContainer && c._id === optimalContainer.containerId"
-            (click)="selectContainer(c._id)">
-            <img *ngIf="c.images && c.images.length > 0" [src]="'https://logidoo.onrender.com' + c.images[0]"
-              [alt]="c.type" width="100">
-            <div class="conteneur-title">Type: {{ c.type }}</div>
-            <div class="conteneur-dimensions">
-              {{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm
-            </div>
-            <div class="conteneur-volume">Volume: {{ c.volume }} m³</div>
-            <div class="conteneur-poids">Capacité: {{ c.capacitePoids }} kg max</div>
-            <span class="conteneur-badge" *ngIf="c.categorie === 'conteneur'">Conteneurs</span>
-            <span class="conteneur-badge camion" *ngIf="c.categorie === 'camion'">Camions</span>
-            <div *ngIf="optimalContainer && c._id === optimalContainer.containerId" class="optimal-marker">
-              <span>Optimal</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Section Import Excel (réduite) -->
-      <div class="card compact">
-        <div class="card-header">
-          <div class="card-icon excel-icon">📊</div>
-          <h2>Import Excel</h2>
-        </div>
-        <div class="excel-actions">
-          <button (click)="telechargerModele()" class="btn-download">📥 Télécharger le modèle</button>
-          <label class="btn-import" style="margin-top: 0.75rem;">
-            📤 Importer Excel
-            <input type="file" (change)="importerDepuisExcel($event)" accept=".xlsx,.xls,.csv" style="display: none;">
-          </label>
-          <p class="excel-hint">Colonnes supportées: Type, Dimensions, Poids, Qté, Destinataire, Fragile, Gerbable,
-            Couleur.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Liste des colis -->
-  <div *ngIf="listeColis.length > 0" class="card colis-list">
-    <h3>Colis de la simulation ({{ listeColis.length }})</h3>
-    <div class="colis-summary">
-      <div class="summary-item">
-        <strong>{{ calculerNombreColisTotal() }}</strong>
-        <span>Total colis</span>
-      </div>
-      <div class="summary-item">
-        <strong>{{ calculerVolumeTotal() | number:'1.2-2' }} m³</strong>
-        <span>Volume total</span>
-      </div>
-      <div class="summary-item">
-        <strong>{{ calculerPoidsTotal() | number:'1.2-2' }} kg</strong>
-        <span>Poids total</span>
-      </div>
-    </div>
-    <div class="colis-items">
-      <div *ngFor="let colis of pagedColis; let i = index" class="colis-item">
-        <div class="colis-info">
-          <span class="colis-type">
-            <span
-              style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;"
-              [style.background]="colis.couleur || '#999999'"></span>
-            {{ colis.type }}
-          </span>
-          <span class="colis-dimensions">
-            {{ colis.longueur }}×{{ colis.largeur }}×{{ colis.hauteur }}cm - {{ colis.poids }}kg
-          </span>
-          <span *ngIf="colis.quantite > 1" class="colis-quantity">
-            Qté: {{ colis.quantite }}
-          </span>
-          <span *ngIf="colis.fragile" class="colis-flag fragile-flag" style="margin-left:8px;">Fragile</span>
-          <span *ngIf="colis.gerbable" class="colis-flag" style="margin-left:8px;">Empilable</span>
-          <div *ngIf="colis.nomDestinataire" class="colis-destinataire">
-            Destinataire: {{ colis.nomDestinataire }} - {{ colis.adresse }} - {{ colis.telephone }}
-          </div>
-        </div>
-        <div class="colis-edit" style="margin-right: 10px;">
-          <label style="font-size:12px;color:#555;margin-right:6px;">Couleur:</label>
-          <input type="color" [value]="colis.couleur || '#999999'"
-            (input)="updateColisCouleur(i, $any($event.target).value)"
-            style="width:36px;height:28px;padding:0;border:none;background:transparent;cursor:pointer;" />
-          <button type="button" (click)="randomizeColor(i)" title="Couleur aléatoire"
-            style="margin-left:6px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:4px;background:#f8fafc;cursor:pointer;">
-            🎲
+          
+          <button class="page-btn" 
+                  [disabled]="currentPage === getTotalPages()" 
+                  (click)="goToPage(currentPage + 1)">
+            Suivant ›
           </button>
         </div>
-        <div class="colis-flags" style="display:flex;gap:12px;align-items:center;margin-right:10px;">
-          <label style="font-size:12px;color:#374151;display:flex;align-items:center;gap:6px;">
-            <input type="checkbox" [checked]="!!colis.fragile" (change)="toggleFragile(i)" /> Fragile
-          </label>
-          <label style="font-size:12px;color:#374151;display:flex;align-items:center;gap:6px;">
-            <input type="checkbox" [checked]="colis.gerbable !== false" (change)="toggleGerbable(i)" /> Empilable
-          </label>
-        </div>
-        <button (click)="supprimerColis(i)" class="btn-delete">
-          Supprimer
-        </button>
       </div>
     </div>
 
-    <!-- Boutons d'action -->
-    <div class="action-buttons">
-      <button (click)="lancerSimulation()" class="btn-primary full-width"
-        *ngIf="(!simulationResultats && !simulationEnCours) && listeColis.length > 0 && (selectedContainerId || selectionAutoOptimal)"
-        [disabled]="findingOptimal">
-        {{ findingOptimal
-          ? 'Recherche du conteneur optimal...'
-          : (selectionAutoOptimal
-              ? 'Lancer la simulation (sélection auto)'
-              : 'Lancer la simulation avec le conteneur sélectionné')
-        }}
-      </button>
-      <button (click)="validerSimulation()" class="btn-validate full-width"
-        *ngIf="simulationResultats || simulationEnCours" [disabled]="!simulationForm.valid || loading">
-        {{ loading ? 'Chargement...' : 'Valider la simulation' }}
-      </button>
-      <button (click)="testVisualization()" class="btn-primary full-width"
-        *ngIf="simulationResultats && listeColis.length > 0" style="margin-top: 1rem; background: #10b981;">
-        Voir la visualisation
-      </button>
+    <div class="step-actions" *ngIf="listeColis.length === 0 || !simulationName.trim()">
+      <p class="no-colis-message" *ngIf="listeColis.length === 0">Ajoutez au moins un colis pour continuer</p>
+      <p class="no-colis-message" *ngIf="!simulationName.trim()">Donnez un nom à votre simulation pour continuer</p>
+    </div>
+    
+    <div class="step-actions" *ngIf="listeColis.length > 0 && simulationName.trim()">
+      <!-- Pagination ici -->
+      <div class="actions-right">
+        <button class="btn-primary" (click)="nextStep()" [disabled]="!canProceedFromStep1()">
+          <mat-icon class="btn-icon">view_in_ar</mat-icon>
+          Choix de contenant
+        </button>
+      </div>
     </div>
   </div>
-  <!-- Pagination -->
-<div class="pagination" *ngIf="totalPages > 1">
-  <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">◀</button>
 
-  <button *ngFor="let page of [].constructor(totalPages); let i = index"
-          (click)="goToPage(i + 1)"
-          [class.active]="currentPage === i + 1">
-    {{ i + 1 }}
-  </button>
+  <!-- Step 2: Choix de Contenant - Style Figma -->
+  <div class="step-content" *ngIf="currentStep === 2">
+    <div class="figma-container-selection">
+      <!-- Layout principal : conteneurs à gauche, résultats à droite -->
+      <div class="figma-main-layout">
+        
+        <!-- Section gauche : Grille des conteneurs -->
+        <div class="figma-containers-section">
+          <!-- Mode de sélection : automatique ou manuel -->
+          <div class="selection-mode-toggle">
+            <label class="mode-option">
+              <input type="radio" name="selectionMode" [value]="true" [(ngModel)]="selectionAutoOptimal" (change)="onSelectionModeChange(true)">
+              <span class="radio-custom"></span>
+              <span class="mode-text">
+                <strong>Automatique</strong>
+                <small>Le conteneur optimal sera sélectionné</small>
+              </span>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="selectionMode" [value]="false" [(ngModel)]="selectionAutoOptimal" (change)="onSelectionModeChange(false)">
+              <span class="radio-custom"></span>
+              <span class="mode-text">
+                <strong>Manuel</strong>
+                <small>Sélectionnez le conteneur de votre choix</small>
+              </span>
+            </label>
+          </div>
+          
+          <!-- Grille des conteneurs style Figma -->
+          <div class="figma-containers-grid">
+            <div *ngFor="let c of containers; let i = index" 
+                 class="figma-container-card" 
+                 [class.selected]="c._id === selectedContainerId"
+                 [class.recommended]="optimalContainer && c._id === optimalContainer.containerId"
+                 [class.dimmed]="selectionAutoOptimal && optimalContainer && c._id !== optimalContainer.containerId"
+                 (click)="c._id && selectContainer(c._id)">
+              
+              <!-- Image du conteneur -->
+              <div class="figma-container-image">
+                <img *ngIf="c.images && c.images.length > 0" 
+                     [src]="'https://logidoo-projet-aide-au-chargement-7.onrender.com' + c.images[0]"
+                     [alt]="c.type">
+                <div *ngIf="!c.images || c.images.length === 0" class="figma-placeholder-image">
+                  <mat-icon class="container-icon">inbox</mat-icon>
+                </div>
+              </div>
+              
+              <!-- Badge recommandé -->
+              <div *ngIf="optimalContainer && c._id === optimalContainer.containerId" 
+                   class="figma-recommended-badge">
+                Recommandé
+              </div>
+              
+              <!-- Informations du conteneur -->
+              <div class="figma-container-info">
+                <h4 class="figma-container-title">{{ c.type }}</h4>
+                <div class="figma-container-matricule">Matricule: {{ c.matricule || 'Non défini' }}</div>
+                <div class="figma-container-category">{{ c.categorie }}</div>
+                <div class="figma-container-dimensions">
+                  {{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm
+                </div>
+                <div class="figma-container-specs">
+                  <span>Volume: {{ c.volume }} m³</span>
+                  <span>Max: {{ c.capacitePoids }} kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Section droite : Résultats de simulation (style Figma) -->
+        <div class="figma-results-panel" *ngIf="selectedContainerId || selectedContainerStats || optimalContainer || findingOptimal">
 
-  <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">▶</button>
-</div>
+          <!-- Indicateur de chargement pendant la recherche -->
+          <div *ngIf="findingOptimal" class="figma-loading-state">
+            <div class="figma-spinner"></div>
+            <h3>Recherche du conteneur optimal...</h3>
+            <p>Analyse des colis et calcul de la meilleure solution</p>
+          </div>
 
+          <!-- Résultats normaux -->
+          <div *ngIf="!findingOptimal && (selectedContainerId || selectedContainerStats || optimalContainer)" class="figma-results-content">
+            <div class="figma-results-header">
+              <h3>Résultats de la simulation</h3>
+              <div class="figma-results-number">1</div>
+            </div>
+          
+          <!-- Informations du contenant sélectionné -->
+          <div class="figma-container-info">
+            <h4>Contenant utilisé</h4>
+            <div class="figma-container-name">{{ getSelectedContainerType() }}</div>
+            <div class="figma-container-matricule">Matricule: {{ getSelectedContainerMatricule() }}</div>
+            <div class="figma-container-dims">{{ getSelectedContainerDimensions() }}</div>
+            <div class="figma-container-capacity">
+              <span>Volume : {{ getSelectedContainerVolume() | number:'1.2-2' }} m³</span>
+              <span>Poids max : {{ getSelectedContainerWeight() | number:'1.0-0' }} kg</span>
+            </div>
+          </div>
+          
+          <!-- Statistiques d'utilisation -->
+          <div class="figma-utilization-stats">
+            <h4>Taux d'utilisation</h4>
+            
+            <div class="figma-stat-item">
+              <div class="figma-stat-header">
+                <span class="figma-stat-label">Volume utilisé</span>
+                <span class="figma-stat-value">{{ (selectedContainerStats?.volumeUtilization || optimalContainer?.volumeUtilization || 0) | percent:'1.0-0' }}</span>
+              </div>
+              <div class="figma-stat-details">
+                {{ calculerVolumeTotal() | number:'1.2-2' }} m³ / {{ getSelectedContainerVolume() | number:'1.2-2' }} m³
+              </div>
+            </div>
+            
+            <div class="figma-stat-item">
+              <div class="figma-stat-header">
+                <span class="figma-stat-label">Poids utilisé</span>
+                <span class="figma-stat-value">{{ (selectedContainerStats?.weightUtilization || optimalContainer?.weightUtilization || 0) | percent:'1.0-0' }}</span>
+              </div>
+              <div class="figma-stat-details">
+                {{ calculerPoidsTotal() | number:'1.0-0' }} kg / {{ getSelectedContainerWeight() | number:'1.0-0' }} kg
+              </div>
+            </div>
+            
+            <div class="figma-stat-item">
+              <div class="figma-stat-header">
+                <span class="figma-stat-label">Colis placés</span>
+                <span class="figma-stat-value">{{ (selectedContainerStats?.placedItems || optimalContainer?.placedItems || 0) }} / {{ calculerNombreColisTotal() }}</span>
+              </div>
+              <div class="figma-stat-details">
+                {{ calculerNombreColisTotal() - (selectedContainerStats?.placedItems || optimalContainer?.placedItems || 0) }} colis non placés
+              </div>
+            </div>
+          </div>
+          
+          <!-- Barres de progression style Figma -->
+          <div class="figma-progress-section">
+            <div class="figma-progress-item">
+              <div class="figma-progress-header">
+                <span class="figma-progress-label">Volume - {{ (selectedContainerStats?.volumeUtilization || optimalContainer?.volumeUtilization || 0) * 100 | number:'1.0-0' }}%</span>
+              </div>
+              <div class="figma-progress-bar">
+                <div class="figma-progress-fill volume" 
+                     [style.width]="((selectedContainerStats?.volumeUtilization || optimalContainer?.volumeUtilization || 0) * 100) + '%'"></div>
+              </div>
+            </div>
+            
+            <div class="figma-progress-item">
+              <div class="figma-progress-header">
+                <span class="figma-progress-label">Poids - {{ (selectedContainerStats?.weightUtilization || optimalContainer?.weightUtilization || 0) * 100 | number:'1.0-0' }}%</span>
+              </div>
+              <div class="figma-progress-bar">
+                <div class="figma-progress-fill weight" 
+                     [style.width]="((selectedContainerStats?.weightUtilization || optimalContainer?.weightUtilization || 0) * 100) + '%'"></div>
+              </div>
+            </div>
+            
+            <!-- Informations sur les colis placés -->
+            <div class="figma-placement-info">
+              <span class="figma-placement-text">{{ (selectedContainerStats?.placedItems || optimalContainer?.placedItems || 0) }} / {{ calculerNombreColisTotal() }} colis placés</span>
+              <div class="figma-placement-dimensions">
+                {{ calculerNombreColisTotal() > 0 ? '600 x 2400 x 2600 mm' : '- x - x - mm' }}
+              </div>
+              <div class="figma-placement-specs">
+                Volume : {{ calculerVolumeTotal() | number:'1.2-2' }} m³
+                <br>
+                Capacité : {{ calculerPoidsTotal() | number:'1.2-2' }} kg max
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions en bas -->
+    <div class="step-actions">
+      <button class="btn-secondary" (click)="prevStep()">Précédent</button>
+      
+      <!-- Si on n'a pas encore de résultats, proposer de lancer la simulation -->
+      <div *ngIf="listeColis.length > 0 && (selectedContainerId || selectionAutoOptimal) && !simulationResultats" class="simulation-required">
+        <button class="btn-primary btn-pulse" (click)="nextStep()" [disabled]="findingOptimal">
+          <mat-icon class="btn-icon">rocket_launch</mat-icon>
+          Lancer la simulation
+          <small class="btn-subtitle">Calculer l'optimisation</small>
+        </button>
+      </div>
+      
+      <!-- Si on a des résultats, proposer validation et visualisation -->
+      <div class="action-buttons-group" *ngIf="listeColis.length > 0 && (selectedContainerId || selectionAutoOptimal) && simulationResultats">
+        <button class="btn-success" (click)="validerSimulation()" [disabled]="findingOptimal">
+          <mat-icon class="btn-icon">save</mat-icon>
+          Valider la simulation
+        </button>
+
+        <button class="btn-primary" (click)="ouvrirVisualisationComplete()" [disabled]="findingOptimal">
+          <mat-icon class="btn-icon">3d_rotation</mat-icon>
+          Lancer la visualisation
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Résultats de la simulation -->
   <div *ngIf="simulationResultats" class="card simulation-results">
     <div class="card-header">
-      <div class="card-icon">📈</div>
+      <mat-icon class="card-icon">analytics</mat-icon>
       <h2>Résultats de la simulation</h2>
       <div class="execution-time" *ngIf="previewTime">
         Temps d'exécution: {{ previewTime | number:'1.0-0' }}ms
@@ -404,9 +537,8 @@
         <strong>{{ simulationResultats.stats.avgWeightUtilization | percent:'1.0-2' }}</strong>
         <span>Utilisation poids</span>
       </div>
-      <div class="stats-item" [class.warning]="simulationResultats.unplacedItems.length > 0">
-        <strong>{{ simulationResultats.stats.placedCount }} / {{ simulationResultats.stats.placedCount +
-          simulationResultats.stats.unplacedCount }}</strong>
+      <div class="stats-item" [class.warning]="simulationResultats.unplacedItems && simulationResultats.unplacedItems.length > 0">
+        <strong>{{ simulationResultats.stats.placedCount }} / {{ simulationResultats.stats.placedCount + simulationResultats.stats.unplacedCount }}</strong>
         <span>Colis placés</span>
       </div>
     </div>
@@ -418,80 +550,13 @@
       <div class="containers-grid">
         <div *ngFor="let container of simulationResultats.containers" class="container-result-card">
           <div class="container-header">
+            <div class="container-matricule">{{ container.matricule || 'Non défini' }}</div>
             <strong>{{ container.type }}</strong>
             <span class="container-category">{{ container.categorie }}</span>
-          </div>
-
-          <div class="container-stats">
-            <div class="stat">
-              <div class="progress-bar">
-                <div class="progress" [style.width]="container.utilization.volume + '%'"></div>
-              </div>
-              <div class="stat-label">
-                <span>Volume: {{ container.utilization.volume | number:'1.0-0' }}%</span>
-                <span class="secondary">{{ container.used.volume | number:'1.2-2' }}m³ / {{ container.capacity.volume |
-                  number:'1.2-2' }}m³</span>
-              </div>
-            </div>
-
-            <div class="stat">
-              <div class="progress-bar">
-                <div class="progress" [style.width]="container.utilization.poids + '%'"></div>
-              </div>
-              <div class="stat-label">
-                <span>Poids: {{ container.utilization.poids | number:'1.0-0' }}%</span>
-                <span class="secondary">{{ container.used.poids | number:'1.0-0' }}kg / {{ container.capacity.poids |
-                  number:'1.0-0' }}kg</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="container-items">
-            <h4>Colis ({{ container.items.length }})</h4>
-            <div class="items-list">
-              <div *ngFor="let item of container.items" class="item">
-                <span class="item-dot" [style.background]="item.couleur || '#999999'"></span>
-                <span>{{ item.type }} - {{ item.longueur }}×{{ item.largeur }}×{{ item.hauteur }}cm</span>
-                <span *ngIf="item.fragile" class="item-flag-small">Fragile</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Colis non placés -->
-    <div *ngIf="simulationResultats.unplacedItems.length > 0" class="unplaced-items">
-      <h3 class="warning-title">⚠️ Colis non placés</h3>
-      <p>Les colis suivants n'ont pas pu être placés. Considérez l'utilisation de contenants plus grands ou la division
-        en lots.</p>
-
-      <div class="unplaced-list">
-        <div *ngFor="let item of simulationResultats.unplacedItems" class="unplaced-item">
-          <div class="item-info">
-            <span class="item-type">{{ item.type }}</span>
-            <span class="item-dimensions">{{ item.longueur }}×{{ item.largeur }}×{{ item.hauteur }}cm</span>
-            <span class="item-weight">{{ item.poids }}kg</span>
-            <span *ngIf="item.fragile" class="item-flag">Fragile</span>
-            <span *ngIf="!item.gerbable" class="item-flag">Non empilable</span>
-          </div>
-          <div class="item-error">
-            <span class="error-code" [ngSwitch]="item.error">
-              <ng-container *ngSwitchCase="'DIMENSIONS_TROP_GRANDES'">Dimensions trop grandes</ng-container>
-              <ng-container *ngSwitchCase="'POIDS_DEPASSE'">Poids trop élevé</ng-container>
-              <ng-container *ngSwitchCase="'VOLUME_DEPASSE'">Volume trop important</ng-container>
-              <ng-container *ngSwitchCase="'COLIS_FRAGILE'">Impossible de placer (fragile)</ng-container>
-              <ng-container *ngSwitchCase="'COLIS_NON_GERBABLE'">Impossible d'empiler</ng-container>
-              <ng-container *ngSwitchDefault>Placement impossible</ng-container>
-            </span>
           </div>
         </div>
       </div>
     </div>
   </div>
+
 </div>
-
-<!-- Add these styles to your component's scss file or styles.scss -->
-<!-- <style>
-
-</style> -->

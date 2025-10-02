@@ -156,9 +156,8 @@ function getPlacementErrorReason(item, container) {
     return 'COLIS_FRAGILE';
   }
   
-  if (!item.gerbable && container.needsItemsBelow) {
-    return 'COLIS_NON_GERBABLE';
-  }
+  // Les colis non-gerbables peuvent maintenant être placés partout
+  // car ils sont triés pour être chargés en dernier (près du sommet)
   
   // Si aucune raison spécifique n'a été identifiée
   return 'PLACEMENT_IMPOSSIBLE';
@@ -318,11 +317,9 @@ function canPlaceInOpenContainer(item, open) {
   }
 
   if (!item.gerbable) {
-    // Les colis non-gerbables doivent être au sol ou sur une couche stable
-    const groundLevel = bestOrientation.dimensions.hauteur;
-    if (open.currentLevel > 0 && !open.hasStableLayer) {
-      return false;
-    }
+    // Les colis non-gerbables peuvent être placés partout maintenant
+    // car ils sont triés pour être chargés en dernier (près du sommet)
+    // Pas de contrainte spéciale de placement - ils peuvent être placés à n'importe quel niveau
   }
 
   return true;
@@ -521,6 +518,7 @@ function evaluateContainerFit(container, expandedItems) {
   
   return {
     containerId: container._id,
+    matricule: container.matricule,
     containerType: container.type,
     containerCategory: container.categorie,
     dimensions: container.dimensions,
@@ -560,11 +558,7 @@ async function findOptimalContainer(items) {
   
   // Tri optimisé pour maximiser l'utilisation de l'espace
   expandedItems.sort((a, b) => {
-    // 1. Priorité aux colis non-gerbables (doivent être à la base)
-    if (!a.gerbable && b.gerbable) return -1;
-    if (a.gerbable && !b.gerbable) return 1;
-
-    // 2. Ensuite par densité (poids/volume) décroissante pour optimiser l'espace
+    // 1. D'abord par densité (poids/volume) décroissante pour optimiser l'espace
     const densityA = (a.poids || 0) / Math.max(1, a.longueur * a.largeur * a.hauteur);
     const densityB = (b.poids || 0) / Math.max(1, b.longueur * b.largeur * b.hauteur);
 
@@ -572,7 +566,7 @@ async function findOptimalContainer(items) {
       return densityB - densityA;
     }
 
-    // 3. Ensuite par compacité (ratio hauteur/base) croissante
+    // 2. Ensuite par compacité (ratio hauteur/base) croissante
     const compactA = a.hauteur / Math.max(1, Math.sqrt(a.longueur * a.largeur));
     const compactB = b.hauteur / Math.max(1, Math.sqrt(b.longueur * b.largeur));
 
@@ -580,7 +574,7 @@ async function findOptimalContainer(items) {
       return compactA - compactB;
     }
 
-    // 4. Enfin par volume décroissant
+    // 3. Ensuite par volume décroissant
     const va = a.longueur * a.largeur * a.hauteur;
     const vb = b.longueur * b.largeur * b.hauteur;
 
@@ -588,9 +582,13 @@ async function findOptimalContainer(items) {
       return vb - va;
     }
 
-    // 5. Les colis fragiles en dernier s'ils ont des caractéristiques similaires
+    // 4. Les colis fragiles en dernier s'ils ont des caractéristiques similaires
     if (a.fragile && !b.fragile) return 1;
     if (!a.fragile && b.fragile) return -1;
+
+    // 5. Priorité aux colis non-gerbables EN DERNIER (pour qu'ils soient près du sommet)
+    if (!a.gerbable && b.gerbable) return 1;
+    if (a.gerbable && !b.gerbable) return -1;
 
     return 0;
   });
@@ -652,15 +650,20 @@ async function simulateOptimalPlacement(items, options = {}) {
     // On place d'abord les colis non-fragiles
     if (a.fragile && !b.fragile) return 1; // Colis fragile va à la fin
     if (!a.fragile && b.fragile) return -1; // Colis non-fragile va au début
-    
-    // Puis on trie par gerbabilité (non-gerbable d'abord)
-    if (!a.gerbable && b.gerbable) return -1;
-    if (a.gerbable && !b.gerbable) return 1;
-    
+
     // Ensuite par volume décroissant
     const va = a.longueur * a.largeur * a.hauteur;
     const vb = b.longueur * b.largeur * b.hauteur;
-    return vb - va;
+
+    if (Math.abs(va - vb) > 1000) {
+      return vb - va;
+    }
+
+    // Puis on trie par gerbabilité (non-gerbable EN DERNIER pour qu'ils soient près du sommet)
+    if (!a.gerbable && b.gerbable) return 1;
+    if (a.gerbable && !b.gerbable) return -1;
+
+    return 0;
   });
 
   // Si un conteneur spécifique est imposé

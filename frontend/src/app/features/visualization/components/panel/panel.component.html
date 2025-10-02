@@ -26,6 +26,10 @@
       <div class="container-info" *ngIf="getCurrentContainer() as container">
         <h4>Conteneur actuel</h4>
         <div class="info-item">
+          <span class="label">Matricule:</span>
+          <span class="value">{{ container.matricule }}</span>
+        </div>
+        <div class="info-item">
           <span class="label">Type:</span>
           <span class="value">{{ container.type || 'N/A' }}</span>
         </div>
@@ -89,9 +93,9 @@
             </div>
             
             <div class="item-destination" *ngIf="item.nomDestinataire || item.adresse">
-              <small *ngIf="item.nomDestinataire">👤 {{ item.nomDestinataire }}</small>
-              <small *ngIf="item.adresse">📍 {{ item.adresse }}</small>
-              <small *ngIf="item.telephone">📞 {{ item.telephone }}</small>
+              <small *ngIf="item.nomDestinataire"><mat-icon inline>person</mat-icon> {{ item.nomDestinataire }}</small>
+              <small *ngIf="item.adresse"><mat-icon inline>location_on</mat-icon> {{ item.adresse }}</small>
+              <small *ngIf="item.telephone"><mat-icon inline>phone</mat-icon> {{ item.telephone }}</small>
             </div>
           </div>
         </div>

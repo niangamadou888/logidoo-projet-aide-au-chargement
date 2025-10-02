@@ -1,0 +1,24 @@
+# Render.yaml
+# Configuration pour le déploiement sur Render.com
+
+services:
+  - type: web
+    name: logidoo-aide-au-chargement
+    env: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false # À configurer via le dashboard Render
+      - key: JWT_SECRET
+        sync: false # À configurer via le dashboard Render
+      - key: JWT_EXPIRES_IN
+        value: 24h
+      - key: FRONTEND_URL
+        sync: false # URL de votre frontend déployé
+    healthCheckPath: /health

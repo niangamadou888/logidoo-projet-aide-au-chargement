@@ -1,0 +1,540 @@
+// ===== COLIS CARDS MODERNES AVEC PAGINATION =====
+
+.modern-colis-container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  margin-top: 2rem;
+  border: 1px solid var(--logidoo-gray-100);
+}
+
+.modern-colis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--logidoo-gray-800);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    
+    .package-icon {
+      font-size: 1.75rem;
+      color: var(--logidoo-primary);
+    }
+    
+    .count-badge {
+      background: linear-gradient(135deg, var(--logidoo-primary), #1e40af);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+  }
+  
+  .view-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    
+    .view-toggle {
+      display: flex;
+      background: var(--logidoo-gray-100);
+      border-radius: 12px;
+      padding: 0.25rem;
+      
+      .view-btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        background: none;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: var(--logidoo-gray-600);
+        
+        &.active {
+          background: var(--logidoo-primary);
+          color: white;
+          box-shadow: 0 2px 8px rgba(9, 43, 139, 0.3);
+        }
+        
+        &:hover:not(.active) {
+          background: var(--logidoo-gray-200);
+          color: var(--logidoo-gray-800);
+        }
+      }
+    }
+    
+    .items-per-page {
+      select {
+        padding: 0.5rem 1rem;
+        border: 2px solid var(--logidoo-gray-200);
+        border-radius: 8px;
+        background: white;
+        font-size: 0.875rem;
+        color: var(--logidoo-gray-700);
+        cursor: pointer;
+        
+        &:focus {
+          outline: none;
+          border-color: var(--logidoo-primary);
+          box-shadow: 0 0 0 3px rgba(9, 43, 139, 0.1);
+        }
+      }
+    }
+  }
+}
+
+// Grille des colis avec scroll optimisé
+.modern-colis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  max-height: 600px; // Limite la hauteur pour éviter les scrolls excessifs
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  
+  // Scrollbar customisée
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--logidoo-primary), #1e40af);
+    border-radius: 4px;
+    
+    &:hover {
+      background: linear-gradient(135deg, #1e40af, #1e3a8a);
+    }
+  }
+  
+  .modern-colis-card {
+    animation: fadeInScale 0.5s ease-out;
+  }
+  
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  // Vue liste
+  &.list-view {
+    grid-template-columns: 1fr;
+    
+    .modern-colis-card {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      
+      .card-visual {
+        width: 60px;
+        height: 50px;
+        margin-right: 1rem;
+        margin-bottom: 0;
+      }
+      
+      .card-header {
+        flex: 1;
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+// Card individuelle
+.modern-colis-card {
+  background: white;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  padding: 1.25rem;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--colis-color, var(--logidoo-primary));
+  }
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    border-color: var(--colis-color, var(--logidoo-primary));
+  }
+  
+  .color-indicator {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--colis-color, var(--logidoo-primary));
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card-header {
+    margin-bottom: 1rem;
+    
+    .card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+      
+      .card-number {
+        background: linear-gradient(135deg, var(--logidoo-gray-100), var(--logidoo-gray-200));
+        color: var(--logidoo-gray-700);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+      
+      .card-actions {
+        display: flex;
+        gap: 0.5rem;
+        
+        .color-picker-btn {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          border: 2px solid white;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+          cursor: pointer;
+          position: relative;
+          transition: all 0.3s ease;
+          
+          &:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+          }
+          
+          input[type="color"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0;
+          }
+        }
+        
+        .delete-btn {
+          background: linear-gradient(135deg, #fecaca, #fca5a5);
+          border: none;
+          border-radius: 50%;
+          width: 28px;
+          height: 28px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          
+          &:hover {
+            background: linear-gradient(135deg, #fca5a5, #f87171);
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(248, 113, 113, 0.4);
+          }
+          
+          .delete-icon {
+            font-size: 0.875rem;
+          }
+        }
+      }
+    }
+    
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--logidoo-gray-800);
+      margin-bottom: 0.25rem;
+      line-height: 1.3;
+    }
+    
+    .card-subtitle {
+      font-size: 0.75rem;
+      color: var(--logidoo-gray-500);
+      line-height: 1.4;
+    }
+  }
+  
+  .card-visual {
+    width: 100px;
+    height: 70px;
+    margin: 0 auto 0.75rem;
+    background: linear-gradient(135deg, var(--colis-color, var(--logidoo-primary)), rgba(0,0,0,0.1));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    
+    .package-3d {
+      font-size: 2.5rem;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    }
+    
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+    }
+  }
+  
+  .card-dimensions {
+    background: var(--logidoo-gray-50);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    
+    .dimensions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      text-align: center;
+      
+      .dimension-item {
+        .label {
+          font-size: 0.625rem;
+          color: var(--logidoo-gray-500);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 0.25rem;
+          font-weight: 600;
+        }
+        
+        .value {
+          font-size: 0.875rem;
+          font-weight: 700;
+          color: var(--logidoo-gray-800);
+        }
+      }
+    }
+  }
+  
+  .card-properties {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    
+    .property-tag {
+      background: var(--logidoo-gray-100);
+      color: var(--logidoo-gray-700);
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      
+      &.fragile {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: #92400e;
+      }
+      
+      &.gerbable {
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        color: #065f46;
+      }
+    }
+  }
+  
+  .card-volume {
+    text-align: center;
+    
+    .volume-label {
+      font-size: 0.625rem;
+      color: var(--logidoo-gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+    
+    .volume-value {
+      font-size: 1.25rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--logidoo-primary), #1e40af);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+}
+
+// ===== PAGINATION MODERNE =====
+.modern-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 16px;
+  border: 1px solid var(--logidoo-gray-100);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  
+  .pagination-info {
+    color: var(--logidoo-gray-700);
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 20px;
+    border: 1px solid #bae6fd;
+    
+    .highlight {
+      color: var(--logidoo-primary);
+      font-weight: 700;
+    }
+  }
+  
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    .pagination-btn {
+      min-width: 44px;
+      height: 44px;
+      border: 2px solid transparent;
+      background: white;
+      color: var(--logidoo-gray-600);
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      
+      &:hover:not(:disabled):not(.active) {
+        border-color: var(--logidoo-primary);
+        color: var(--logidoo-primary);
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(9, 43, 139, 0.2);
+      }
+      
+      &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        background: var(--logidoo-gray-50);
+        color: var(--logidoo-gray-400);
+        transform: none;
+        box-shadow: none;
+      }
+      
+      &.active {
+        background: linear-gradient(135deg, var(--logidoo-primary), #1e40af);
+        color: white;
+        border-color: var(--logidoo-primary);
+        box-shadow: 0 6px 20px rgba(9, 43, 139, 0.4);
+        transform: translateY(-1px);
+        
+        &::after {
+          content: '';
+          position: absolute;
+          inset: -2px;
+          border-radius: 14px;
+          background: linear-gradient(135deg, var(--logidoo-primary), #1e40af);
+          z-index: -1;
+          opacity: 0.2;
+          animation: pulse 2s ease-in-out infinite;
+        }
+      }
+      
+      &.nav-btn {
+        padding: 0 1rem;
+        min-width: 50px;
+        font-size: 0.875rem;
+        
+        .btn-arrow {
+          font-size: 1.1rem;
+          transition: transform 0.3s ease;
+        }
+        
+        &:hover .btn-arrow {
+          transform: scale(1.2);
+        }
+        
+        &.prev .btn-arrow {
+          margin-right: 4px;
+        }
+        
+        &.next .btn-arrow {
+          margin-left: 4px;
+        }
+      }
+      
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 0.2;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+  
+  // Responsive design
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    
+    .pagination-info {
+      order: 2;
+    }
+    
+    .pagination-controls {
+      order: 1;
+      
+      .pagination-btn {
+        min-width: 40px;
+        height: 40px;
+        
+        &.nav-btn {
+          min-width: 45px;
+        }
+      }
+    }
+  }
+}

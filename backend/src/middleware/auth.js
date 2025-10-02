@@ -42,4 +42,17 @@ const authorize = (...roles) => {
   };
 };
 
-module.exports = { authenticate, authorize }; 
+// Admin authorization middleware
+const authorizeAdmin = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ success: false, message: 'Authentication required' });
+  }
+
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Access denied: admin privileges required' });
+  }
+
+  next();
+};
+
+module.exports = { authenticate, authorize, authorizeAdmin }; 

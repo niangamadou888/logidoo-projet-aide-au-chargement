@@ -15,8 +15,15 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   currentTestimonial = 0;
   testimonialDots = [0, 1, 2];
   isMobileMenuOpen = false;
+  activeFaq: number | null = null;
   private intervalId: any;
   private isBrowser: boolean;
+
+  // Animated counters
+  animatedFillRate = 0;
+  animatedCostReduction = 0;
+  animatedExperts = 0;
+  private hasAnimated = false;
 
   constructor(
     public authService: AuthService,
@@ -29,6 +36,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     if (this.isBrowser) {
       this.startAutoSlide();
       this.setupSwipeGestures();
+      this.setupScrollAnimation();
     }
   }
 
@@ -142,5 +150,62 @@ export class LandingPageComponent implements OnInit, OnDestroy {
         });
       }
     }
+  }
+
+  toggleFaq(index: number) {
+    this.activeFaq = this.activeFaq === index ? null : index;
+  }
+
+  setupScrollAnimation() {
+    if (this.isBrowser) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !this.hasAnimated) {
+            this.animateCounters();
+            this.hasAnimated = true;
+          }
+        });
+      }, { threshold: 0.5 });
+
+      const heroStats = document.querySelector('.hero-stats');
+      if (heroStats) {
+        observer.observe(heroStats);
+      }
+    }
+  }
+
+  animateCounters() {
+    this.animateCounter('fillRate', 85, 2000);
+    this.animateCounter('costReduction', 30, 2000);
+    this.animateCounter('experts', 21, 2000);
+  }
+
+  private animateCounter(type: 'fillRate' | 'costReduction' | 'experts', target: number, duration: number) {
+    const startTime = performance.now();
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      const currentValue = Math.floor(easeOutQuart * target);
+
+      switch (type) {
+        case 'fillRate':
+          this.animatedFillRate = currentValue;
+          break;
+        case 'costReduction':
+          this.animatedCostReduction = currentValue;
+          break;
+        case 'experts':
+          this.animatedExperts = currentValue;
+          break;
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
   }
 }

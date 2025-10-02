@@ -1,0 +1,24 @@
+{
+  "routes": {
+    "/": {},
+    "/auth": {},
+    "/auth/forgot-password": {},
+    "/auth/login": {},
+    "/auth/register": {},
+    "/auth/reset-password": {},
+    "/container": {},
+    "/dashboard": {},
+    "/dashboard/admin": {},
+    "/dashboard/admin/conteneurs": {},
+    "/dashboard/admin/profile": {},
+    "/dashboard/admin/users": {},
+    "/dashboard/user": {},
+    "/dashboard/user/history": {},
+    "/dashboard/user/profile": {},
+    "/history": {},
+    "/simulation": {},
+    "/test-logger": {},
+    "/unauthorized": {},
+    "/visualization": {}
+  }
+}

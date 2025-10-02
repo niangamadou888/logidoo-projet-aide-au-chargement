@@ -35,6 +35,7 @@ export interface VisualizationItem {
 export interface VisualizationContainer {
   id: string;
   ref?: string;
+  matricule: string;
   type: string;
   categorie: 'camion' | 'conteneur';
   dimensions: Dimensions3D;
@@ -84,7 +85,7 @@ export interface VisualizationConfig {
   showDestinations: boolean;
   showFragileItems: boolean;
   highlightNonGerbable: boolean;
-  colorMode: 'type' | 'weight' | 'fragile' | 'destination' | 'custom';
+  colorMode: 'type' | 'weight' | 'destination' | 'custom';
   animationEnabled: boolean;
   animationDuration: number;
   showTooltips: boolean;
@@ -104,6 +105,5 @@ export interface LayerInfo {
   items: VisualizationItem[];
   maxWeight: number;
   canStack: boolean;
-  hasFragileItems: boolean;
   spaceUtilization: number;
 }

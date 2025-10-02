@@ -99,11 +99,11 @@ const login = async (req, res) => {
 const getCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
-    
+
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
-    
+
     res.status(200).json({
       success: true,
       user: {
@@ -119,6 +119,33 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+// Get all users (admin only)
+const getAllUsers = async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Access denied. Admin only.' });
+    }
+
+    const users = await User.find().select('-password -resetPasswordToken -resetPasswordExpires');
+
+    res.status(200).json({
+      success: true,
+      users: users.map(user => ({
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        active: user.active,
+        createdAt: user.createdAt
+      }))
+    });
+  } catch (error) {
+    console.error('Get all users error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get users', error: error.message });
+  }
+};
+
 // Helper function to generate JWT
 const generateToken = (user) => {
   return jwt.sign(
@@ -131,7 +158,8 @@ const generateToken = (user) => {
 module.exports = {
   register,
   login,
-  getCurrentUser
+  getCurrentUser,
+  getAllUsers
 };
 
 // Password reset: request reset link

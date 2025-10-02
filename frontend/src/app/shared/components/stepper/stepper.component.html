@@ -1,0 +1,87 @@
+<div class="logidoo-stepper" [class.vertical]="orientation === 'vertical'">
+  <div class="stepper-header">
+    <div class="steps-navigation">
+      <div 
+        *ngFor="let step of steps; let i = index" 
+        class="step-item"
+        [class.active]="step.active"
+        [class.completed]="step.completed"
+        [class.disabled]="step.disabled"
+        (click)="onStepClick(i)"
+      >
+        <!-- Circle indicator -->
+        <div class="step-circle">
+          <div *ngIf="step.completed && !step.active" class="step-check">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20,6 9,17 4,12"></polyline>
+            </svg>
+          </div>
+          <div *ngIf="step.icon && !step.completed && !step.active" class="step-icon">
+            {{ step.icon }}
+          </div>
+          <div *ngIf="!step.completed && !step.icon" class="step-number">
+            {{ i + 1 }}
+          </div>
+          <div *ngIf="step.active" class="step-active-indicator"></div>
+        </div>
+
+        <!-- Step content -->
+        <div class="step-content">
+          <div class="step-title">{{ step.title }}</div>
+          <div *ngIf="step.description" class="step-description">{{ step.description }}</div>
+        </div>
+
+        <!-- Connector line -->
+        <div *ngIf="i < steps.length - 1" class="step-connector" 
+             [class.completed]="step.completed"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step Content Area -->
+  <div class="stepper-content">
+    <ng-content></ng-content>
+  </div>
+
+  <!-- Navigation Buttons -->
+  <div class="stepper-navigation">
+    <button 
+      type="button" 
+      class="btn-secondary" 
+      (click)="previousStep()"
+      [disabled]="!canGoToPrevious()"
+      *ngIf="canGoToPrevious()"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15,18 9,12 15,6"></polyline>
+      </svg>
+      Précédent
+    </button>
+
+    <div class="spacer"></div>
+
+    <button 
+      type="button" 
+      class="btn-primary" 
+      (click)="nextStep()"
+      [disabled]="!canProceedToNext()"
+      *ngIf="canProceedToNext()"
+    >
+      Suivant
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9,18 15,12 9,6"></polyline>
+      </svg>
+    </button>
+
+    <button 
+      type="button" 
+      class="btn-success" 
+      *ngIf="currentStepIndex === steps.length - 1"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20,6 9,17 4,12"></polyline>
+      </svg>
+      Terminer
+    </button>
+  </div>
+</div>

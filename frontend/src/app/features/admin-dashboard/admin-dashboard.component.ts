@@ -6,6 +6,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/models/user.model';
+import { AdminService, AdminStatistics } from '../../services/admin.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -22,50 +23,58 @@ import { User } from '../../core/models/user.model';
 })
 export class AdminDashboardComponent implements OnInit {
   currentUser: User | null = null;
-  
-  // Admin dashboard statistics
-  dashboardStats = {
-    totalUsers: 126,
-    totalSimulations: 854,
-    topUsers: [
-      { name: 'John Doe', simulations: 78 },
-      { name: 'Sarah Smith', simulations: 65 },
-      { name: 'Robert Johnson', simulations: 52 }
-    ],
+  isLoading: boolean = true;
+
+  // Admin dashboard statistics - initialized with defaults
+  dashboardStats: AdminStatistics = {
+    totalUsers: 0,
+    activeUsers: 0,
+    totalSimulations: 0,
+    topUsers: [],
     avgFillRate: {
-      volume: 86,
-      weight: 79
+      volume: 0,
+      weight: 0
     },
     simulationsByPeriod: {
-      day: 24,
-      week: 135,
-      month: 425
+      day: 0,
+      week: 0,
+      month: 0
     },
-    mostUsedContainers: [
-      { type: "Container 20'", count: 312, percentage: 37 },
-      { type: "Container 40'", count: 267, percentage: 31 },
-      { type: 'Truck', count: 198, percentage: 23 },
-      { type: 'Other', count: 77, percentage: 9 }
-    ],
-    countriesData: [
-      { country: 'Sénégal', users: 58, simulations: 410 },
-      { country: 'Maroc', users: 42, simulations: 328 },
-      { country: 'Other', users: 26, simulations: 116 }
-    ]
+    mostUsedContainers: []
   };
-  
+
   constructor(
     private authService: AuthService,
+    private adminService: AdminService,
     private router: Router
   ) {}
-  
+
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
-      
+
       // Redirect if not admin
       if (user && user.role !== 'admin') {
         this.router.navigate(['/dashboard/user']);
+      } else if (user && user.role === 'admin') {
+        // Load statistics when user is confirmed as admin
+        this.loadStatistics();
+      }
+    });
+  }
+
+  loadStatistics(): void {
+    this.isLoading = true;
+    this.adminService.getStatistics().subscribe({
+      next: (response) => {
+        if (response.success && response.statistics) {
+          this.dashboardStats = response.statistics;
+        }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading admin statistics:', error);
+        this.isLoading = false;
       }
     });
   }

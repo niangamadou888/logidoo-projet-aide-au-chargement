@@ -49,19 +49,19 @@ export class AjouteConteneurComponent implements OnInit{
     private conteneurService: ConteneurService
   ) {
     this.contenantForm = this.fb.group({
-    categorie: ['', Validators.required],
-  type: ['', Validators.required],
-  modele: [''],
-  disponible: [true],
+      matricule: ['', Validators.required],
+      categorie: ['', Validators.required],
+      type: ['', Validators.required],
+      modele: [''],
+      disponible: [true],
 
-  longueur: [null, [Validators.required, Validators.min(0)]],
-  largeur: [null, [Validators.required, Validators.min(0)]],
-  hauteur: [null, [Validators.required, Validators.min(0)]],
+      longueur: [null, [Validators.required, Validators.min(0)]],
+      largeur: [null, [Validators.required, Validators.min(0)]],
+      hauteur: [null, [Validators.required, Validators.min(0)]],
 
-  capacitePoids: [null, [Validators.required, Validators.min(0)]],
+      capacitePoids: [null, [Validators.required, Validators.min(0)]],
 
-  capaciteVolume: [{value:0, disabled:true}],
-  capacitePoidsMax: [null, [Validators.min(0)]],
+      capaciteVolume: [{value:0, disabled:true}],
     });
   }
 
@@ -70,13 +70,8 @@ this.contenantForm.valueChanges.subscribe(val => {
     const l = val.longueur || 0;
     const w = val.largeur || 0;
     const h = val.hauteur || 0;
- const poidsMax = val.capacitePoids || 0;
-    const volume = (l * w * h) / 1000000; // en m³
+    const volume = (l * w * h) / 1000000000; // en m³ (dimensions en mm)
     this.contenantForm.get('capaciteVolume')?.setValue(volume, { emitEvent: false });
-
-    // Mettre à jour capacitePoidsMax automatiquement
-    
-    this.contenantForm.get('capacitePoidsMax')?.setValue(poidsMax, { emitEvent: false });
   });
   
     // Récupérer toutes les catégories depuis le backend
@@ -106,17 +101,18 @@ this.contenantForm.valueChanges.subscribe(val => {
     };
 
     const nouveauContenant: Contenant = {
-  categorie: formValues.categorie,
-  type: formValues.type,
-  modele: formValues.modele,
-  dimensions: {
-    longueur: formValues.longueur,
-    largeur: formValues.largeur,
-    hauteur: formValues.hauteur
-  },
-  capacitePoids: formValues.capacitePoids,
-  disponible: formValues.disponible
-};
+      matricule: formValues.matricule,
+      categorie: formValues.categorie,
+      type: formValues.type,
+      modele: formValues.modele,
+      dimensions: {
+        longueur: formValues.longueur,
+        largeur: formValues.largeur,
+        hauteur: formValues.hauteur
+      },
+      capacitePoids: formValues.capacitePoids,
+      disponible: formValues.disponible
+    };
 
     this.conteneurService.creerContenant(nouveauContenant, this.selectedFile)
       .subscribe({

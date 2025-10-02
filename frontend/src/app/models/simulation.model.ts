@@ -28,6 +28,7 @@ export interface Simulation {
 }
 
 export interface ContainerStats {
+  matricule: string;
   containerType: string;
   containerCategory: string;
   dimensions: {

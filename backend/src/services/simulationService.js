@@ -117,6 +117,7 @@ async function preview(items) {
     const oc = {
       id: String(openContainers.length + 1),
       ref: chosen._id,
+      matricule: chosen.matricule,
       type: chosen.type,
       categorie: chosen.categorie,
       dimensions: chosen.dimensions,
@@ -152,6 +153,7 @@ async function preview(items) {
     containers: openContainers.map(c => ({
       id: c.id,
       ref: c.ref,
+      matricule: c.matricule,
       type: c.type,
       categorie: c.categorie,
       capacity: { volume: c.capacityVolume, poids: c.capacityWeight },

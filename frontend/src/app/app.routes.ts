@@ -1,5 +1,6 @@
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
 import { Routes, Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 import { AUTH_ROUTES } from './auth/auth.routes';
 import { DASHBOARD_ROUTES } from './features/dashboard.routes';
 import { authGuard } from './core/guards/auth.guard';
@@ -28,6 +29,13 @@ export const routes: Routes = [
         canActivate: [authGuard],
         resolve: {
           redirectToDashboard: () => {
+            const platformId = inject(PLATFORM_ID);
+
+            // Skip navigation during server-side rendering
+            if (!isPlatformBrowser(platformId)) {
+              return true;
+            }
+
             const authService = inject(AuthService);
             const router = inject(Router);
 

@@ -505,13 +505,37 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Texte (si assez de place) - Afficher la référence au lieu du type
-    if (width > 40 && height > 20) {
+    if (width > 15 && height > 15) {
       ctx.fillStyle = '#ffffff';
-      ctx.font = '10px Arial';
       ctx.textAlign = 'center';
+
       // Priorité : référence > ID > type
-      const displayText = item.reference || item.id || item.type;
-      ctx.fillText(displayText, x + width / 2, y + height / 2);
+      let displayText = item.reference || item.id || item.type;
+
+      // Adapter la taille de police et le texte selon l'espace disponible
+      let fontSize = 10;
+      let maxChars = Math.floor(width / 6); // Approximation: 6px par caractère
+
+      if (width < 40 || height < 20) {
+        // Petit package: réduire la taille de police et tronquer le texte
+        fontSize = Math.max(7, Math.min(10, Math.floor(height / 2.5)));
+        maxChars = Math.max(3, Math.floor(width / (fontSize * 0.6)));
+
+        // Tronquer le texte si trop long
+        if (displayText.length > maxChars) {
+          if (maxChars <= 4) {
+            // Très petit: prendre seulement les premiers caractères
+            displayText = displayText.substring(0, maxChars);
+          } else {
+            // Moyen: prendre début et fin avec "..."
+            const keepChars = Math.max(1, Math.floor((maxChars - 3) / 2));
+            displayText = displayText.substring(0, keepChars) + '...' + displayText.substring(displayText.length - keepChars);
+          }
+        }
+      }
+
+      ctx.font = `${fontSize}px Arial`;
+      ctx.fillText(displayText, x + width / 2, y + height / 2 + fontSize / 3);
     }
   }
 
@@ -660,16 +684,35 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     this.render();
   }
 
+
   private drawFragileMarkerToCtx(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
-    ctx.fillStyle = '#ff4444';
-    ctx.beginPath();
-    ctx.arc(x + width - 8, y + 8, 6, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 8px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('!', x + width - 8, y + 11);
+    // Bordure rouge pour les colis fragiles
+    ctx.strokeStyle = '#dc2626';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([]);
+    ctx.strokeRect(x - 1, y - 1, width + 2, height + 2);
+
+    // Fond semi-transparent rouge léger
+    ctx.fillStyle = 'rgba(220, 38, 38, 0.1)';
+    ctx.fillRect(x, y, width, height);
+
+    // Texte "FRAGILE" si l'item est assez grand
+    if (width > 50 && height > 25) {
+      ctx.save();
+      ctx.fillStyle = '#dc2626';
+      ctx.font = 'bold 10px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('FRAGILE', x + width / 2, y + height - 5);
+      ctx.restore();
+    } else if (width > 20 && height > 15) {
+      // Symbole "!" pour les petits items
+      ctx.save();
+      ctx.fillStyle = '#dc2626';
+      ctx.font = 'bold 12px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('!', x + width / 2, y + height / 2 + 3);
+      ctx.restore();
+    }
   }
 
   private drawNonStackableMarkerToCtx(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
@@ -720,7 +763,7 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
     // Informations de zoom dans le coin
     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
     this.ctx.fillRect(10, 10, 120, 50);
-    
+
     this.ctx.fillStyle = '#ffffff';
     this.ctx.font = '12px Arial';
     this.ctx.textAlign = 'left';
@@ -733,6 +776,91 @@ export class CanvasComponent implements OnInit, OnChanges, OnDestroy {
       : this.viewMode === 'front' ? 'Avant'
       : 'Arrière';
     this.ctx.fillText(`Vue: ${vueLabel}`, 20, 45);
+
+    // Légende des marqueurs en bas à droite
+    this.drawLegend();
+  }
+
+  private drawLegend(): void {
+    if (!this.ctx) return;
+
+    const legendX = this.containerDimensions.width - 180;
+    const legendY = this.containerDimensions.height - 120;
+    const legendWidth = 170;
+    const legendHeight = 110;
+
+    // Fond de la légende
+    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+    this.ctx.fillRect(legendX, legendY, legendWidth, legendHeight);
+
+    // Bordure de la légende
+    this.ctx.strokeStyle = '#cccccc';
+    this.ctx.lineWidth = 1;
+    this.ctx.setLineDash([]);
+    this.ctx.strokeRect(legendX, legendY, legendWidth, legendHeight);
+
+    // Titre de la légende
+    this.ctx.fillStyle = '#333333';
+    this.ctx.font = 'bold 12px Arial';
+    this.ctx.textAlign = 'left';
+    this.ctx.fillText('Légende', legendX + 10, legendY + 20);
+
+    let currentY = legendY + 40;
+
+    // Marqueur fragile
+    if (this.config?.showFragileItems ?? true) {
+      this.drawLegendItem('Fragile', legendX + 10, currentY, () => {
+        this.ctx!.strokeStyle = '#dc2626';
+        this.ctx!.lineWidth = 2;
+        this.ctx!.setLineDash([]);
+        this.ctx!.strokeRect(legendX + 15, currentY - 8, 15, 10);
+        this.ctx!.fillStyle = 'rgba(220, 38, 38, 0.1)';
+        this.ctx!.fillRect(legendX + 15, currentY - 8, 15, 10);
+        this.ctx!.fillStyle = '#dc2626';
+        this.ctx!.font = 'bold 8px Arial';
+        this.ctx!.textAlign = 'center';
+        this.ctx!.fillText('!', legendX + 22.5, currentY - 1);
+      });
+      currentY += 20;
+    }
+
+    // Marqueur non empilable
+    if (this.config?.highlightNonGerbable ?? true) {
+      this.drawLegendItem('Non empilable', legendX + 10, currentY, () => {
+        this.ctx!.strokeStyle = '#ff8800';
+        this.ctx!.lineWidth = 2;
+        this.ctx!.setLineDash([3, 3]);
+        this.ctx!.strokeRect(legendX + 15, currentY - 8, 15, 10);
+      });
+      currentY += 20;
+    }
+
+    // Marqueur sélectionné
+    this.drawLegendItem('Sélectionné', legendX + 10, currentY, () => {
+      this.ctx!.strokeStyle = 'rgba(59, 130, 246, 0.6)';
+      this.ctx!.lineWidth = 3;
+      this.ctx!.setLineDash([]);
+      this.ctx!.strokeRect(legendX + 15, currentY - 8, 15, 10);
+      this.ctx!.strokeStyle = '#3b82f6';
+      this.ctx!.lineWidth = 1;
+      this.ctx!.setLineDash([3, 2]);
+      this.ctx!.strokeRect(legendX + 15, currentY - 8, 15, 10);
+    });
+  }
+
+  private drawLegendItem(label: string, x: number, y: number, drawMarker: () => void): void {
+    if (!this.ctx) return;
+
+    // Dessiner le marqueur
+    this.ctx.save();
+    drawMarker();
+    this.ctx.restore();
+
+    // Dessiner le label
+    this.ctx.fillStyle = '#333333';
+    this.ctx.font = '11px Arial';
+    this.ctx.textAlign = 'left';
+    this.ctx.fillText(label, x + 35, y);
   }
 
   private darkenColor(hex: string, percent: number): string {
