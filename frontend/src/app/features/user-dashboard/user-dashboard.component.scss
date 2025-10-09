@@ -4,116 +4,147 @@ $logidoo-yellow: #F8CB0E;
 // Dashboard Layout
 .dashboard-layout {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
+  padding: 32px;
+  gap: 32px;
+  background: #d9d9d9;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
 }
 
 // Sidebar
 .sidebar {
-  width: 280px;
-  background: #ffffff;
-  border-right: 1px solid rgba($logidoo-blue, 0.08);
+  width: 320px;
+  display: flex;
+  align-items: stretch;
+}
+
+.sidebar-inner {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  box-shadow: 4px 0 12px rgba($logidoo-blue, 0.05);
+  gap: 24px;
+  background: #ffffff;
+  border-radius: 26px;
+  padding: 28px 24px 32px;
+  box-shadow: 0 24px 52px rgba($logidoo-blue, 0.12);
 }
 
 .logo-section {
-  padding: 24px 20px;
-  border-bottom: 1px solid rgba($logidoo-blue, 0.08);
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba($logidoo-blue, 0.12);
   
   .logo {
-    width: 120px;
+    width: 148px;
     height: auto;
   }
 }
 
-.navigation {
-  flex: 1;
-  padding: 20px 0;
+.navigation-card {
+  background: #ffffff;
+  border: 2px solid $logidoo-blue;
+  border-radius: 34px;
+  padding: 28px 18px 32px;
+  box-shadow: 10px 14px 0 rgba($logidoo-blue, 0.08);
 }
 
-.nav-section-title {
-  padding: 16px 20px 8px;
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba($logidoo-blue, 0.55);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   padding: 12px 20px;
-  color: #6b7280;
+  border-radius: 999px;
+  color: #1f2937;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  background: transparent;
   border: none;
-  border-left: 3px solid transparent;
-  background: none;
+  font: inherit;
   width: 100%;
   text-align: left;
-  font: inherit;
-  appearance: none;
-  
-  &:hover {
-    background-color: rgba($logidoo-blue, 0.08);
+
+  &:hover:not(.logout):not(.active) {
     color: $logidoo-blue;
   }
-  
+
   &.active {
-    background-color: rgba($logidoo-blue, 0.1);
-    color: $logidoo-blue;
-    border-left-color: $logidoo-yellow;
-    box-shadow: inset 4px 0 0 0 $logidoo-yellow;
+    background: $logidoo-blue;
+    color: #ffffff;
+    box-shadow: 0 14px 30px rgba($logidoo-blue, 0.32);
+  }
+  
+  &.active .nav-icon-wrapper {
+    color: inherit;
+  }
+  
+  .nav-icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    transition: inherit;
   }
   
   .nav-icon {
-    font-size: 24px;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 20px;
+    line-height: 1;
   }
   
   .nav-text {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 15px;
+  }
+}
+
+.nav-section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px 0;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(#1f2937, 0.58);
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(#111827, 0.15);
   }
 }
 
 .nav-item.logout {
-  color: #dc2626;
-  border-left: none;
-  box-shadow: none;
-  
-  .nav-icon {
-    color: inherit;
-  }
-  
+  color: #e11d48;
+  margin-top: 4px;
+
   &:hover {
-    background-color: transparent;
-    color: #b91c1c;
-    
-    .nav-icon {
-      color: inherit;
-    }
+    color: #b3123a;
   }
 }
 
 // Main Content
 .main-content {
   flex: 1;
-  background: linear-gradient(180deg, #f5f7ff 0%, #f9fbff 100%);
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 30px;
+  box-shadow: 0 24px 52px rgba($logidoo-blue, 0.08);
+  overflow: hidden;
 }
 
 // Header
@@ -125,6 +156,7 @@ $logidoo-yellow: #F8CB0E;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 8px 24px rgba($logidoo-blue, 0.25);
+  border-radius: 30px 30px 0 0;
 }
 
 .avatar-section {
@@ -175,12 +207,16 @@ $logidoo-yellow: #F8CB0E;
 
 // Dashboard Grid
 .dashboard-grid {
+  flex: 1;
   padding: 32px;
   display: grid;
   grid-template-columns: 1fr 300px;
   grid-template-rows: auto 1fr;
   gap: 24px;
-  height: calc(100vh - 120px);
+  background: linear-gradient(180deg, #f5f7ff 0%, #f9fbff 100%);
+  border-radius: 0 0 30px 30px;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 // New Simulation Card
@@ -376,46 +412,54 @@ $logidoo-yellow: #F8CB0E;
 
 // Responsive Design
 @media (max-width: 1024px) {
+  .dashboard-layout {
+    padding: 24px;
+    gap: 24px;
+  }
+
   .dashboard-grid {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto 1fr;
   }
   
   .sidebar {
-    width: 240px;
+    width: 280px;
   }
 }
 
 @media (max-width: 768px) {
   .dashboard-layout {
     flex-direction: column;
+    padding: 16px;
+    gap: 16px;
   }
   
   .sidebar {
     width: 100%;
     min-height: auto;
-    border-right: none;
-    border-bottom: 1px solid rgba($logidoo-blue, 0.08);
-    box-shadow: none;
   }
-  
-  .navigation {
-    display: flex;
-    overflow-x: auto;
-    padding: 12px 0;
+
+  .sidebar-inner {
+    border-radius: 22px;
+    padding: 24px 20px;
+    box-shadow: 0 16px 40px rgba($logidoo-blue, 0.12);
   }
-  
+
+  .navigation-card {
+    padding: 24px 16px 28px;
+    box-shadow: 6px 8px 0 rgba($logidoo-blue, 0.08);
+  }
+
   .nav-item {
-    white-space: nowrap;
-    min-width: fit-content;
+    padding: 10px 16px;
   }
-  
+
   .dashboard-grid {
-    padding: 16px;
+    padding: 24px;
   }
-  
+
   .welcome-header {
-    padding: 16px 20px;
-    border-radius: 0;
+    padding: 20px 24px;
+    border-radius: 24px 24px 0 0;
   }
 }
