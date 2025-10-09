@@ -28,14 +28,11 @@
         <mat-icon class="nav-icon">settings</mat-icon>
         <span class="nav-text">Paramètres</span>
       </a>
-    </nav>
-    
-    <div class="logout-section">
-      <button class="logout-btn" (click)="logout()">
-        <mat-icon class="logout-icon">power_settings_new</mat-icon>
-        <span class="logout-text">Log Out</span>
+      <button type="button" class="nav-item logout" (click)="logout()">
+        <mat-icon class="nav-icon">logout</mat-icon>
+        <span class="nav-text">Se déconnecter</span>
       </button>
-    </div>
+    </nav>
   </aside>
 
   <!-- Main Content -->
@@ -51,11 +48,11 @@
           <mat-icon class="user-avatar">account_circle</mat-icon>
         </button>
         <mat-menu #userMenu="matMenu">
-          <button mat-menu-item (click)="logout()">
-            <mat-icon>exit_to_app</mat-icon>
-            <span>Logout</span>
-          </button>
-        </mat-menu>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Se déconnecter</span>
+        </button>
+      </mat-menu>
       </div>
     </header>
 
@@ -182,8 +179,8 @@
       </button>
       <mat-menu #userMenu="matMenu">
         <button mat-menu-item (click)="logout()">
-          <mat-icon>exit_to_app</mat-icon>
-          <span>Logout</span>
+          <mat-icon>logout</mat-icon>
+          <span>Se déconnecter</span>
         </button>
       </mat-menu>
     </div>

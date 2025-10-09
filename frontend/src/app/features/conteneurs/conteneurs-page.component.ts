@@ -83,4 +83,8 @@ export class ConteneursPageComponent implements OnInit {
       }
     });
   }
+
+  logout(): void {
+    this.authService.logout();
+  }
 }

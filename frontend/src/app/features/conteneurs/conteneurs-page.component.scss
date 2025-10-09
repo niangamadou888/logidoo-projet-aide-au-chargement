@@ -1,3 +1,6 @@
+$logidoo-blue: #092B8B;
+$logidoo-yellow: #F8CB0E;
+
 // Dashboard Layout
 .dashboard-layout {
   display: flex;
@@ -9,15 +12,16 @@
 .sidebar {
   width: 280px;
   background: #ffffff;
-  border-right: 1px solid #e5e7eb;
+  border-right: 1px solid rgba($logidoo-blue, 0.08);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  box-shadow: 4px 0 12px rgba($logidoo-blue, 0.05);
 }
 
 .logo-section {
   padding: 24px 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid rgba($logidoo-blue, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,7 +41,7 @@
   padding: 16px 20px 8px;
   font-size: 11px;
   font-weight: 600;
-  color: #9ca3af;
+  color: rgba($logidoo-blue, 0.55);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -51,16 +55,24 @@
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: none;
+  border-left: 3px solid transparent;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  appearance: none;
   
   &:hover {
-    background-color: #f9fafb;
-    color: #374151;
+    background-color: rgba($logidoo-blue, 0.08);
+    color: $logidoo-blue;
   }
   
   &.active {
-    background-color: #e0e7ff;
-    color: #4338ca;
-    border-right: 3px solid #4338ca;
+    background-color: rgba($logidoo-blue, 0.1);
+    color: $logidoo-blue;
+    border-left-color: $logidoo-yellow;
+    box-shadow: inset 4px 0 0 0 $logidoo-yellow;
   }
   
   .nav-icon {
@@ -78,52 +90,41 @@
   }
 }
 
-.logout-section {
-  padding: 20px;
-  border-top: 1px solid #e5e7eb;
-}
-
-.logout-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 10px 16px;
-  background: #dc2626;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+.nav-item.logout {
+  color: #dc2626;
+  border-left: none;
+  box-shadow: none;
   
-  &:hover {
-    background: #b91c1c;
+  .nav-icon {
+    color: inherit;
   }
   
-  .logout-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
+  &:hover {
+    background-color: transparent;
+    color: #b91c1c;
+    
+    .nav-icon {
+      color: inherit;
+    }
   }
 }
 
 // Main Content
 .main-content {
   flex: 1;
-  background: #f8fafc;
+  background: linear-gradient(180deg, #f5f7ff 0%, #f9fbff 100%);
   overflow-y: auto;
 }
 
 // Header
 .welcome-header {
-  background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
+  background: linear-gradient(135deg, $logidoo-blue 0%, darken($logidoo-blue, 8%) 100%);
   color: white;
   padding: 24px 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 8px 24px rgba($logidoo-blue, 0.25);
 }
 
 .avatar-section {
@@ -134,13 +135,13 @@
   .avatar {
     width: 40px;
     height: 40px;
-    background: #fbbf24;
+    background: $logidoo-yellow;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 28px;
-    color: white;
+    color: $logidoo-blue;
   }
   
   .welcome-text {
@@ -151,7 +152,7 @@
 
 .user-menu {
   .user-menu-btn {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.12);
     color: white;
     border: none;
     border-radius: 50%;
@@ -160,6 +161,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
     
     .user-avatar {
       font-size: 24px;
@@ -189,7 +195,7 @@
   h2 {
     font-size: 24px;
     font-weight: 600;
-    color: #1f2937;
+    color: $logidoo-blue;
     margin: 0;
   }
 }
@@ -199,9 +205,9 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: white;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  background: $logidoo-blue;
+  color: white;
+  border: none;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
@@ -209,8 +215,9 @@
   transition: all 0.2s ease;
   
   &:hover {
-    background: #f9fafb;
-    border-color: #9ca3af;
+    background: darken($logidoo-blue, 6%);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba($logidoo-blue, 0.2);
   }
   
   mat-icon {
@@ -229,7 +236,8 @@
   
   .loading-spinner {
     font-size: 18px;
-    color: #6b7280;
+    color: $logidoo-blue;
+    font-weight: 500;
   }
 }
 
@@ -251,13 +259,13 @@
     height: 80px;
     margin-bottom: 16px;
     opacity: 0.6;
-    color: #6b7280;
+    color: rgba($logidoo-blue, 0.45);
   }
   
   .empty-title {
     font-size: 20px;
     font-weight: 600;
-    color: #374151;
+    color: $logidoo-blue;
     margin-bottom: 8px;
   }
   
@@ -280,11 +288,12 @@
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba($logidoo-blue, 0.08);
   transition: all 0.2s ease;
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 16px 32px rgba($logidoo-blue, 0.18);
   }
 }
 
@@ -309,7 +318,7 @@
 .card-badge {
   padding: 4px 12px;
   border-radius: 999px;
-  background: rgba(30, 64, 175, 0.9);
+  background: linear-gradient(135deg, $logidoo-blue 0%, darken($logidoo-blue, 10%) 100%);
   color: white;
   font-size: 12px;
   font-weight: 600;
@@ -317,7 +326,8 @@
   letter-spacing: 0.5px;
   
   &.camion {
-    background: rgba(220, 38, 38, 0.9);
+    background: linear-gradient(135deg, $logidoo-yellow 0%, darken($logidoo-yellow, 12%) 100%);
+    color: $logidoo-blue;
   }
 }
 
@@ -335,7 +345,7 @@
 .card-title {
   font-size: 18px;
   font-weight: 600;
-  color: #1f2937;
+  color: $logidoo-blue;
   margin: 0;
 }
 
@@ -369,6 +379,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  color: #4b5563;
 }
 
 .detail-icon {
@@ -378,12 +389,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #4338ca;
+  color: $logidoo-blue;
 }
 
 .detail-text {
   font-size: 14px;
-  color: #6b7280;
+  color: #4b5563;
 }
 
 .card-actions {
@@ -406,20 +417,21 @@
   transition: all 0.2s ease;
   
   &.edit-btn {
-    background: #f3f4f6;
-    color: #374151;
+    background: rgba($logidoo-blue, 0.08);
+    color: $logidoo-blue;
+    border: 1px solid rgba($logidoo-blue, 0.2);
     
     &:hover {
-      background: #e5e7eb;
+      background: rgba($logidoo-blue, 0.15);
     }
   }
   
   &.delete-btn {
-    background: #fee2e2;
+    background: rgba(#ef4444, 0.12);
     color: #dc2626;
     
     &:hover {
-      background: #fecaca;
+      background: rgba(#ef4444, 0.18);
     }
   }
   
@@ -436,6 +448,7 @@
   border-radius: 16px;
   padding: 32px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba($logidoo-blue, 0.08);
 }
 
 .section-header {
@@ -444,7 +457,7 @@
   h2 {
     font-size: 20px;
     font-weight: 600;
-    color: #1f2937;
+    color: $logidoo-blue;
     margin: 0 0 8px 0;
   }
   
@@ -479,7 +492,8 @@
     width: 100%;
     min-height: auto;
     border-right: none;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid rgba($logidoo-blue, 0.08);
+    box-shadow: none;
   }
   
   .navigation {
@@ -491,10 +505,6 @@
   .nav-item {
     white-space: nowrap;
     min-width: fit-content;
-  }
-  
-  .logout-section {
-    display: none;
   }
   
   .page-content {

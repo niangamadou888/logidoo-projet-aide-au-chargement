@@ -10,7 +10,7 @@
         <mat-icon class="nav-icon">dashboard</mat-icon>
         <span class="nav-text">Dashboard Admin</span>
       </a>
-      <a class="nav-item">
+      <a class="nav-item" [routerLink]="['/dashboard/admin/users']">
         <mat-icon class="nav-icon">group</mat-icon>
         <span class="nav-text">Utilisateurs</span>
       </a>
@@ -27,14 +27,11 @@
         <mat-icon class="nav-icon">settings</mat-icon>
         <span class="nav-text">Paramètres</span>
       </a>
-    </nav>
-    
-    <div class="logout-section">
-      <button class="logout-btn">
-        <mat-icon class="logout-icon">power_settings_new</mat-icon>
-        <span class="logout-text">Log Out</span>
+      <button type="button" class="nav-item logout" (click)="logout()">
+        <mat-icon class="nav-icon">logout</mat-icon>
+        <span class="nav-text">Se déconnecter</span>
       </button>
-    </div>
+    </nav>
   </aside>
 
   <!-- Main Content -->
@@ -54,6 +51,10 @@
             <mat-icon>dashboard</mat-icon>
             <span>Dashboard</span>
           </a>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Se déconnecter</span>
+          </button>
         </mat-menu>
       </div>
     </header>
