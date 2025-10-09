@@ -26,6 +26,7 @@ a {
 
 .landing-container {
   overflow-x: hidden;
+  padding-top: 85px; // Add padding to account for fixed header height
 }
 
 // Smooth scrolling animations
@@ -145,10 +146,28 @@ a {
   background: rgba(255,255,255,0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0,0,0,0.1);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 1000;
   transition: all 0.3s ease;
+
+  &.scrolled {
+    padding: 12px 8%;
+    background: rgba(255,255,255,0.98);
+    box-shadow: 0 12px 30px rgba(26,58,138,0.12);
+    border-bottom-color: transparent;
+
+    .logo {
+      height: 38px;
+    }
+
+    .desktop-nav ul li a {
+      color: $dark;
+    }
+  }
 
   .logo {
     height: 45px;
@@ -911,7 +930,7 @@ a {
 
     .feature-card {
       background: $white;
-      padding: 35px 25px;
+      padding: 25px 25px 20px;
       border-radius: 20px;
       text-align: center;
       box-shadow: 0 5px 20px rgba(0,0,0,0.08);
@@ -960,6 +979,7 @@ a {
         color: #64748b;
         line-height: 1.5;
         font-size: 0.95rem;
+        margin-bottom: 0;
       }
     }
   }

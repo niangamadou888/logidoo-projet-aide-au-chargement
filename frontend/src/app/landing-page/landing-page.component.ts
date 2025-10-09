@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
@@ -16,6 +16,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   testimonialDots = [0, 1, 2];
   isMobileMenuOpen = false;
   activeFaq: number | null = null;
+  isHeaderScrolled = false;
   private intervalId: any;
   private isBrowser: boolean;
 
@@ -37,6 +38,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
       this.startAutoSlide();
       this.setupSwipeGestures();
       this.setupScrollAnimation();
+      this.updateHeaderState();
     }
   }
 
@@ -45,6 +47,17 @@ export class LandingPageComponent implements OnInit, OnDestroy {
       this.stopAutoSlide();
       this.removeSwipeGestures();
     }
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    if (this.isBrowser) {
+      this.updateHeaderState();
+    }
+  }
+
+  private updateHeaderState() {
+    this.isHeaderScrolled = window.scrollY > 10;
   }
 
   private touchStartX = 0;

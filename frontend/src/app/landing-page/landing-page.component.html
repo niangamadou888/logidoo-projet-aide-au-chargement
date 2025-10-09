@@ -3,7 +3,7 @@
   <!--------------------->
   <!-- HEADER -->
   <!--------------------->
-  <header class="header">
+  <header class="header" [class.scrolled]="isHeaderScrolled">
     <img src="assets/images/logo-logidoo.png" alt="Logidoo Logo" class="logo">
 
     <!-- Desktop Navigation -->
@@ -89,7 +89,7 @@
         <img src="assets/images/airSene.png" alt="Aérien">
         <div class="overlay"></div>
         <div class="service-text">
-          <div class="icon"><img src="assets/images/65.png" alt="Client"></div>
+          <div class="icon"><img src="assets/images/icon1.svg" alt="Client"></div>
           <h3>Aérien</h3>
           <p>Hubs de consolidation, flexibilité et options de fret, service express innovant.</p>
         </div>
@@ -99,7 +99,7 @@
         <img src="assets/images/bateau.png" alt="Maritime">
         <div class="overlay"></div>
         <div class="service-text">
-          <div class="icon"><img src="assets/images/60.png" alt="Client"></div>
+          <div class="icon"><img src="assets/images/icon2.svg" alt="Client"></div>
           <h3>Maritime</h3>
           <p>Transport complet, expertise et infrastructure, transport en groupage maritime.</p>
         </div>
@@ -109,7 +109,7 @@
         <img src="assets/images/routier.png" alt="Routier">
         <div class="overlay"></div>
         <div class="service-text">
-          <div class="icon">       <img src="assets/images/61.png" alt="Client"></div>
+          <div class="icon">       <img src="assets/images/icon3.svg" alt="Client"></div>
           <h3>Routier</h3>
           <p>Affrètement camion, équipements spéciaux, groupage routier intra-africain.</p>
         </div>
@@ -125,17 +125,17 @@
     <h2>Nos avantages</h2>
     <div class="advantages-grid">
       <div class="adv-card">
-        <div class="img"><img src="assets/images/Alarm-r.png" alt="Client"></div>
+        <div class="img"><img src="assets/images/Alarm-r.svg" alt="Client"></div>
         <h3>Gain de temps immédiat</h3>
         <p>Fini les démarches complexes. Organisez vos envois en quelques clics.</p>
       </div>
       <div class="adv-card">
-        <div class="img"><img src="assets/images/Vector (2).png" alt="Client"></div>
+        <div class="img"><img src="assets/images/BracketsCurly-r.svg" alt="Client"></div>
         <h3>Optimisation intelligente</h3>
         <p>Remplissez vos camions et conteneurs de manière optimale.</p>
       </div>
       <div class="adv-card">
-        <div class="img"><img src="assets/images/GitFork-r.png" alt="Client"></div>
+        <div class="img"><img src="assets/images/GitFork-r.svg" alt="Client"></div>
         <h3>Algorithmes intelligents</h3>
         <p>Bénéficiez de l'IA pour prévoir, analyser et optimiser vos opérations.</p>
       </div>
@@ -149,14 +149,14 @@
     <h2>Fonctionnalités puissantes pour <span class="highlight">optimiser vos chargements</span></h2>
     <p>Notre module d'aide au chargement vous offre tous les outils nécessaires pour une logistique efficace et rentable.</p>
     <div class="features-grid">
-      <div class="feature-card"><div class="feature-icon"><img src="assets/images/Calculator-r (1).png" alt="Client"></div><h3>Calcul automatique</h3><p>Volume, poids et plans calculés avec précision.</p></div>
-      <div class="feature-card"><div class="feature-icon"><img src="assets/images/Eye-r (1).png" alt="Client"></div><h3>Visualisation 3D</h3><p>Schémas 3D interactifs pour vos chargements.</p></div>
-      <div class="feature-card"><div class="feature-icon"><img src="assets/images/FileMinus-r (1).png" alt="Client"></div><h3>Import/Export Excel</h3><p>Importez et exportez vos données facilement.</p></div>
-      <div class="feature-card"><div class="feature-icon"><img src="assets/images/Vector (3).png" alt="Client"></div><h3>Suggestion véhicules</h3><p>Recommandations adaptées à vos besoins.</p></div>
-      <div class="feature-card"><div class="feature-icon"><img src="assets/images/Vector (1).png" alt="Client"></div><h3>Optimisation intelligente</h3><p>Algorithmes puissants pour maximiser l’espace.</p></div>
-      <div class="feature-card"><div class="feature-icon"><img src="assets/images/ShieldCheck-r (1).png" alt="Client"></div><h3>Contrôle sécurisé</h3><p>Prévention des surcharges et respect des poids.</p></div>
-      <div class="feature-card"><div class="feature-icon"><img src="assets/images/ChartLine-r.png" alt="Client"></div><h3>Analyse prédictive</h3><p>Anticipez vos futurs besoins logistiques.</p></div>
-      <div class="feature-card"><div class="feature-icon"><img src="assets/images/Vector.png" alt="Client"></div><h3>Intégration native</h3><p>Connexion avec vos systèmes existants.</p></div>
+      <div class="feature-card"><div class="feature-icon"><img src="assets/images/Calculator-r.svg" alt="Client"></div><h3>Calcul automatique</h3><p>Volume, poids et plans calculés avec précision.</p></div>
+      <div class="feature-card"><div class="feature-icon"><img src="assets/images/Eye-r.svg" alt="Client"></div><h3>Visualisation 3D</h3><p>Schémas 3D interactifs pour vos chargements.</p></div>
+      <div class="feature-card"><div class="feature-icon"><img src="assets/images/FileMinus-r.svg" alt="Client"></div><h3>Import/Export Excel</h3><p>Importez et exportez vos données facilement.</p></div>
+      <div class="feature-card"><div class="feature-icon"><img src="assets/images/mini-camion.svg" alt="Client"></div><h3>Suggestion véhicules</h3><p>Recommandations adaptées à vos besoins.</p></div>
+      <div class="feature-card"><div class="feature-icon"><img src="assets/images/WaveSawtooth-r.svg" alt="Client"></div><h3>Optimisation intelligente</h3><p>Algorithmes puissants pour maximiser l’espace.</p></div>
+      <div class="feature-card"><div class="feature-icon"><img src="assets/images/ShieldCheck-r.svg" alt="Client"></div><h3>Contrôle sécurisé</h3><p>Prévention des surcharges et respect des poids.</p></div>
+      <div class="feature-card"><div class="feature-icon"><img src="assets/images/ChartLine-r.svg" alt="Client"></div><h3>Analyse prédictive</h3><p>Anticipez vos futurs besoins logistiques.</p></div>
+      <div class="feature-card"><div class="feature-icon"><img src="assets/images/Code-r.svg" alt="Client"></div><h3>Intégration native</h3><p>Connexion avec vos systèmes existants.</p></div>
     </div>
   </section>
 
@@ -266,7 +266,7 @@
         <div class="step-card">
           <div class="step-icon-wrapper">
             <div class="step-icon">
-              <img src="assets/images/FileMinus-r (1).png" alt="Import">
+              <img src="assets/images/FileMinus-r.svg" alt="Import">
             </div>
           </div>
           <div class="step-content">
@@ -288,7 +288,7 @@
         <div class="step-card">
           <div class="step-icon-wrapper">
             <div class="step-icon">
-              <img src="assets/images/Calculator-r (1).png" alt="Calculate">
+              <img src="assets/images/Calculator-r.svg" alt="Calculate">
             </div>
           </div>
           <div class="step-content">
@@ -310,7 +310,7 @@
         <div class="step-card">
           <div class="step-icon-wrapper">
             <div class="step-icon">
-              <img src="assets/images/ChartLine-r.png" alt="Visualize">
+              <img src="assets/images/ChartLine-r.svg" alt="Visualize">
             </div>
           </div>
           <div class="step-content">
