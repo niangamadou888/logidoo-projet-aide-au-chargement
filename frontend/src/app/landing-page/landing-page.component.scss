@@ -497,12 +497,12 @@ a {
 // ---------- HERO ----------
 .hero {
   position: relative;
-  height: 90vh;
+  min-height: 90vh;
   display: flex;
   align-items: center;
   color: $white;
   text-align: left;
-  padding: 0 10%;
+  padding: 80px 10%;
   overflow: hidden;
 
   .hero-background {
@@ -2137,7 +2137,7 @@ a {
   }
 
   .hero.mobile-hero {
-    padding: 10px 5% 10px !important;
+    padding: 80px 5% 80px !important;
     min-height: 100vh !important;
     display: flex !important;
     align-items: center !important;
