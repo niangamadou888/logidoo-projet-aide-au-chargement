@@ -1,37 +1,70 @@
 <div class="dashboard-layout">
   <!-- Sidebar -->
   <aside class="sidebar">
-    <div class="logo-section">
-      <img src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo">
+    <div class="sidebar-inner">
+      <div class="logo-section">
+        <img src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo">
+      </div>
+
+      <div class="navigation-card">
+        <nav class="navigation">
+          <a
+            class="nav-item"
+            routerLink="/dashboard/admin"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            <span class="nav-icon-wrapper">
+              <mat-icon class="nav-icon" fontSet="material-icons-outlined">grid_view</mat-icon>
+            </span>
+            <span class="nav-text">Tableau de bord</span>
+          </a>
+
+          <a
+            class="nav-item"
+            routerLink="/dashboard/admin/users"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            <span class="nav-icon-wrapper">
+              <mat-icon class="nav-icon" fontSet="material-icons-outlined">group</mat-icon>
+            </span>
+            <span class="nav-text">Utilisateurs</span>
+          </a>
+
+          <a
+            class="nav-item"
+            routerLink="/dashboard/admin/conteneurs"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            <span class="nav-icon-wrapper">
+              <mat-icon class="nav-icon" fontSet="material-icons-outlined">inventory_2</mat-icon>
+            </span>
+            <span class="nav-text">Conteneurs</span>
+          </a>
+
+          <div class="nav-section-title">
+            <span>Administration</span>
+          </div>
+
+          <a
+            class="nav-item"
+            routerLink="/dashboard/admin/profile"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            <span class="nav-icon-wrapper">
+              <mat-icon class="nav-icon" fontSet="material-icons-outlined">settings</mat-icon>
+            </span>
+            <span class="nav-text">Paramètres</span>
+          </a>
+
+          <button type="button" class="nav-item logout" (click)="logout()">
+            <span class="nav-icon-wrapper">
+              <mat-icon class="nav-icon" fontSet="material-icons-outlined">logout</mat-icon>
+            </span>
+            <span class="nav-text">Se déconnecter</span>
+          </button>
+        </nav>
+      </div>
     </div>
-    
-    <nav class="navigation">
-      <a class="nav-item" [routerLink]="['/dashboard/admin']">
-        <mat-icon class="nav-icon">dashboard</mat-icon>
-        <span class="nav-text">Dashboard Admin</span>
-      </a>
-      <a class="nav-item" [routerLink]="['/dashboard/admin/users']">
-        <mat-icon class="nav-icon">group</mat-icon>
-        <span class="nav-text">Utilisateurs</span>
-      </a>
-      <a class="nav-item" [routerLink]="['/dashboard/admin/conteneurs']">
-        <mat-icon class="nav-icon">inventory_2</mat-icon>
-        <span class="nav-text">Conteneurs</span>
-      </a>
-      <div class="nav-section-title">ADMINISTRATION</div>
-      <a class="nav-item active" [routerLink]="['/dashboard/admin/profile']">
-        <mat-icon class="nav-icon">person</mat-icon>
-        <span class="nav-text">Profil</span>
-      </a>
-      <a class="nav-item">
-        <mat-icon class="nav-icon">settings</mat-icon>
-        <span class="nav-text">Paramètres</span>
-      </a>
-      <button type="button" class="nav-item logout" (click)="logout()">
-        <mat-icon class="nav-icon">logout</mat-icon>
-        <span class="nav-text">Se déconnecter</span>
-      </button>
-    </nav>
   </aside>
 
   <!-- Main Content -->
@@ -40,7 +73,7 @@
     <header class="welcome-header">
       <div class="avatar-section">
         <mat-icon class="avatar">admin_panel_settings</mat-icon>
-        <span class="welcome-text">Profil Administrateur</span>
+        <span class="welcome-text">Paramètres administrateur</span>
       </div>
       <div class="user-menu">
         <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
@@ -65,10 +98,10 @@
             </div>
             <div class="profile-info">
               <h2 class="profile-name">{{ user.username }}</h2>
-              <p class="profile-role">Administrateur Système</p>
+              <p class="profile-role">Administrateur système</p>
             </div>
           </div>
-          
+
           <div class="profile-details">
             <div class="detail-section">
               <h3>Informations administrateur</h3>
@@ -106,36 +139,36 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="detail-section">
-              <h3>Actions administrateur</h3>
+              <h3>Actions</h3>
               <div class="action-buttons">
                 <button class="action-btn primary">
-                  <mat-icon>edit</mat-icon>
+                  <mat-icon fontSet="material-icons-outlined">edit</mat-icon>
                   <span>Modifier le profil</span>
                 </button>
                 <button class="action-btn secondary">
-                  <mat-icon>security</mat-icon>
+                  <mat-icon fontSet="material-icons-outlined">security</mat-icon>
                   <span>Changer le mot de passe</span>
                 </button>
                 <button class="action-btn secondary">
-                  <mat-icon>admin_panel_settings</mat-icon>
-                  <span>Paramètres admin</span>
+                  <mat-icon fontSet="material-icons-outlined">admin_panel_settings</mat-icon>
+                  <span>Paramètres avancés</span>
                 </button>
                 <button class="action-btn secondary">
-                  <mat-icon>people</mat-icon>
+                  <mat-icon fontSet="material-icons-outlined">people</mat-icon>
                   <span>Gérer les utilisateurs</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
-        
+
         <ng-template #noUser>
           <div class="no-user-state">
             <mat-icon class="no-user-icon">person_off</mat-icon>
             <div class="no-user-title">Aucun administrateur connecté</div>
-            <div class="no-user-description">Veuillez vous connecter avec un compte administrateur</div>
+            <div class="no-user-description">Veuillez vous connecter avec un compte administrateur pour accéder aux paramètres</div>
           </div>
         </ng-template>
       </div>

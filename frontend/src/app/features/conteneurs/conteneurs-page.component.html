@@ -1,37 +1,70 @@
 <div class="dashboard-layout">
   <!-- Sidebar -->
   <aside class="sidebar">
-    <div class="logo-section">
-      <img src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo">
+    <div class="sidebar-inner">
+      <div class="logo-section">
+        <img src="/assets/images/logo-logidoo.svg" alt="Logidoo Logo" class="logo">
+      </div>
+
+      <div class="navigation-card">
+        <nav class="navigation">
+          <a
+            class="nav-item"
+            routerLink="/dashboard/admin"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            <span class="nav-icon-wrapper">
+              <mat-icon class="nav-icon" fontSet="material-icons-outlined">grid_view</mat-icon>
+            </span>
+            <span class="nav-text">Tableau de bord</span>
+          </a>
+
+          <a
+            class="nav-item"
+            routerLink="/dashboard/admin/users"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            <span class="nav-icon-wrapper">
+              <mat-icon class="nav-icon" fontSet="material-icons-outlined">group</mat-icon>
+            </span>
+            <span class="nav-text">Utilisateurs</span>
+          </a>
+
+          <a
+            class="nav-item"
+            routerLink="/dashboard/admin/conteneurs"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            <span class="nav-icon-wrapper">
+              <mat-icon class="nav-icon" fontSet="material-icons-outlined">inventory_2</mat-icon>
+            </span>
+            <span class="nav-text">Conteneurs</span>
+          </a>
+
+          <div class="nav-section-title">
+            <span>Administration</span>
+          </div>
+
+          <a
+            class="nav-item"
+            routerLink="/dashboard/admin/profile"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            <span class="nav-icon-wrapper">
+              <mat-icon class="nav-icon" fontSet="material-icons-outlined">settings</mat-icon>
+            </span>
+            <span class="nav-text">Paramètres</span>
+          </a>
+
+          <button type="button" class="nav-item logout" (click)="logout()">
+            <span class="nav-icon-wrapper">
+              <mat-icon class="nav-icon" fontSet="material-icons-outlined">logout</mat-icon>
+            </span>
+            <span class="nav-text">Se déconnecter</span>
+          </button>
+        </nav>
+      </div>
     </div>
-    
-    <nav class="navigation">
-      <a class="nav-item" [routerLink]="['/dashboard/admin']">
-        <mat-icon class="nav-icon">dashboard</mat-icon>
-        <span class="nav-text">Dashboard Admin</span>
-      </a>
-      <a class="nav-item" [routerLink]="['/dashboard/admin/users']">
-        <mat-icon class="nav-icon">group</mat-icon>
-        <span class="nav-text">Utilisateurs</span>
-      </a>
-      <a class="nav-item active" [routerLink]="['/dashboard/admin/conteneurs']">
-        <mat-icon class="nav-icon">inventory_2</mat-icon>
-        <span class="nav-text">Conteneurs</span>
-      </a>
-      <div class="nav-section-title">ADMINISTRATION</div>
-      <a class="nav-item" [routerLink]="['/dashboard/admin/profile']">
-        <mat-icon class="nav-icon">person</mat-icon>
-        <span class="nav-text">Profil</span>
-      </a>
-      <a class="nav-item">
-        <mat-icon class="nav-icon">settings</mat-icon>
-        <span class="nav-text">Paramètres</span>
-      </a>
-      <button type="button" class="nav-item logout" (click)="logout()">
-        <mat-icon class="nav-icon">logout</mat-icon>
-        <span class="nav-text">Se déconnecter</span>
-      </button>
-    </nav>
   </aside>
 
   <!-- Main Content -->
@@ -47,10 +80,6 @@
           <mat-icon class="user-avatar">account_circle</mat-icon>
         </button>
         <mat-menu #userMenu="matMenu">
-          <a mat-menu-item [routerLink]="['/dashboard/admin']">
-            <mat-icon>dashboard</mat-icon>
-            <span>Dashboard</span>
-          </a>
           <button mat-menu-item (click)="logout()">
             <mat-icon>logout</mat-icon>
             <span>Se déconnecter</span>
@@ -61,81 +90,99 @@
 
     <!-- Content -->
     <div class="page-content">
-      <div class="conteneurs-container">
-        <!-- Action Bar -->
-        <div class="action-bar">
-          <h2>Conteneurs existants</h2>
-          <button class="refresh-btn" (click)="fetchContenants()">
-            <mat-icon>refresh</mat-icon>
-            <span>Rafraîchir</span>
-          </button>
-        </div>
-
-        <!-- Loading State -->
-        <div *ngIf="loading" class="loading-state">
-          <div class="loading-spinner">Chargement des conteneurs...</div>
-        </div>
-
-        <!-- Empty State -->
-        <div *ngIf="!loading && contenants.length === 0" class="empty-state">
-          <mat-icon class="empty-icon">inbox</mat-icon>
-          <div class="empty-title">Aucun conteneur trouvé</div>
-          <div class="empty-description">Commencez par ajouter votre premier conteneur</div>
-        </div>
-
-        <!-- Conteneurs Grid -->
-        <div class="conteneurs-grid" *ngIf="!loading && contenants.length > 0">
-          <div class="conteneur-card" *ngFor="let c of contenants">
-            <div class="card-image">
-              <img *ngIf="c.images && c.images.length > 0" [src]="'https://logidoo-projet-aide-au-chargement-7.onrender.com' + c.images[0]" [alt]="c.type" />
-              <div class="card-overlay">
-                <div class="card-badge" [class.camion]="c.categorie === 'camion'">{{ c.categorie | titlecase }}</div>
-              </div>
+      <div class="conteneurs-page">
+        <div class="overview-card">
+          <div class="overview-header">
+            <div>
+              <h2>Pilotage des conteneurs</h2>
+              <p>Surveillez la disponibilité, mettez à jour les capacités et organisez vos ressources logistiques.</p>
             </div>
-            
-            <div class="card-content">
-              <div class="card-header">
-                <h3 class="card-title">{{ c.type }}</h3>
-                <div class="status-indicator" [class.disponible]="c.disponible" [class.indisponible]="!c.disponible">
-                  {{ c.disponible ? 'Disponible' : 'Indisponible' }}
-                </div>
-              </div>
+            <span class="badge">Total: {{ contenants.length }}</span>
+          </div>
+          <div class="overview-actions">
+            <button class="action-btn primary" (click)="fetchContenants()">
+              <mat-icon fontSet="material-icons-outlined">refresh</mat-icon>
+              Rafraîchir la liste
+            </button>
+            <button class="action-btn secondary" (click)="addContainerSection.scrollIntoView({ behavior: 'smooth' })">
+              <mat-icon fontSet="material-icons-outlined">add_box</mat-icon>
+              Ajouter un conteneur
+            </button>
+          </div>
+        </div>
 
-              <div class="card-details">
-                <div class="detail-row">
-                  <mat-icon class="detail-icon">label</mat-icon>
-                  <span class="detail-text">Matricule: {{ c.matricule || 'Non défini' }}</span>
-                </div>
-                <div class="detail-row">
-                  <mat-icon class="detail-icon">straighten</mat-icon>
-                  <span class="detail-text">{{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm</span>
-                </div>
-                <div class="detail-row">
-                  <mat-icon class="detail-icon">view_in_ar</mat-icon>
-                  <span class="detail-text">Volume: {{ c.volume ?? ((c.dimensions.longueur*c.dimensions.largeur*c.dimensions.hauteur)/1000000) | number:'1.2-2' }} m³</span>
-                </div>
-                <div class="detail-row">
-                  <mat-icon class="detail-icon">scale</mat-icon>
-                  <span class="detail-text">Capacité: {{ c.capacitePoids }} kg</span>
+        <div class="conteneurs-area">
+          <div class="data-card loading-card" *ngIf="loading">
+            <div class="loading-spinner">Chargement des conteneurs...</div>
+          </div>
+
+          <div class="data-card empty-card" *ngIf="!loading && contenants.length === 0">
+            <mat-icon fontSet="material-icons-outlined">inbox</mat-icon>
+            <h3>Aucun conteneur trouvé</h3>
+            <p>Ajoutez votre premier conteneur pour suivre vos ressources.</p>
+            <button class="action-btn primary" (click)="addContainerSection.scrollIntoView({ behavior: 'smooth' })">
+              <mat-icon fontSet="material-icons-outlined">add_circle</mat-icon>
+              Créer un conteneur
+            </button>
+          </div>
+
+          <div class="conteneurs-grid" *ngIf="!loading && contenants.length > 0">
+            <div class="conteneur-card" *ngFor="let c of contenants">
+              <div class="card-image" *ngIf="c.images && c.images.length > 0; else placeholder">
+                <img [src]="'https://logidoo-projet-aide-au-chargement-7.onrender.com' + c.images[0]" [alt]="c.type" />
+                <div class="card-overlay">
+                  <div class="card-badge" [class.camion]="c.categorie === 'camion'">{{ c.categorie | titlecase }}</div>
                 </div>
               </div>
-              
-              <div class="card-actions">
-                <button class="action-btn edit-btn">
-                  <mat-icon>edit</mat-icon>
-                  <span>Modifier</span>
-                </button>
-                <button class="action-btn delete-btn" (click)="deleteContenant(c._id)">
-                  <mat-icon>delete</mat-icon>
-                  <span>Supprimer</span>
-                </button>
+              <ng-template #placeholder>
+                <div class="card-placeholder">
+                  <mat-icon fontSet="material-icons-outlined">inventory_2</mat-icon>
+                </div>
+              </ng-template>
+
+              <div class="card-content">
+                <div class="card-header">
+                  <h3 class="card-title">{{ c.type }}</h3>
+                  <div class="status-indicator" [class.disponible]="c.disponible" [class.indisponible]="!c.disponible">
+                    {{ c.disponible ? 'Disponible' : 'Indisponible' }}
+                  </div>
+                </div>
+
+                <div class="card-details">
+                  <div class="detail-row">
+                    <mat-icon class="detail-icon">label</mat-icon>
+                    <span class="detail-text">Matricule: {{ c.matricule || 'Non défini' }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <mat-icon class="detail-icon">straighten</mat-icon>
+                    <span class="detail-text">{{ c.dimensions.longueur }} × {{ c.dimensions.largeur }} × {{ c.dimensions.hauteur }} mm</span>
+                  </div>
+                  <div class="detail-row">
+                    <mat-icon class="detail-icon">view_in_ar</mat-icon>
+                    <span class="detail-text">Volume: {{ c.volume ?? ((c.dimensions.longueur*c.dimensions.largeur*c.dimensions.hauteur)/1000000) | number:'1.2-2' }} m³</span>
+                  </div>
+                  <div class="detail-row">
+                    <mat-icon class="detail-icon">scale</mat-icon>
+                    <span class="detail-text">Capacité: {{ c.capacitePoids }} kg</span>
+                  </div>
+                </div>
+
+                <div class="card-actions">
+                  <button class="action-btn secondary">
+                    <mat-icon fontSet="material-icons-outlined">edit</mat-icon>
+                    Modifier
+                  </button>
+                  <button class="action-btn danger" (click)="deleteContenant(c._id)">
+                    <mat-icon fontSet="material-icons-outlined">delete</mat-icon>
+                    Supprimer
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Add Container Section -->
-        <div class="add-container-section">
+        <div class="add-container-section" #addContainerSection>
           <app-ajoute-conteneur></app-ajoute-conteneur>
         </div>
       </div>
