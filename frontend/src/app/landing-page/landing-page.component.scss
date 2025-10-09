@@ -2290,14 +2290,27 @@ a {
       }
 
       .hero-stats {
-        flex-direction: column;
-        gap: 15px;
-        align-items: center;
+        flex-direction: row;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
 
         .stat-item {
-          width: 100%;
-          max-width: 280px;
-          margin-bottom: 0;
+          flex: 0 1 auto;
+          min-width: fit-content;
+
+          .stat-icon {
+            margin-bottom: 8px;
+
+            img {
+              width: 40px;
+              height: 40px;
+            }
+          }
+
+          strong {
+            font-size: 1.8rem;
+          }
         }
       }
 
@@ -2699,13 +2712,26 @@ a {
       }
 
       .hero-stats {
-        gap: 12px;
+        flex-direction: row;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
 
         .stat-item {
-          padding: 12px 15px;
+          flex: 0 1 auto;
+          min-width: fit-content;
+
+          .stat-icon {
+            margin-bottom: 6px;
+
+            img {
+              width: 35px;
+              height: 35px;
+            }
+          }
 
           strong {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
           }
         }
       }
