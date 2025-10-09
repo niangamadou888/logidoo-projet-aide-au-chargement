@@ -242,7 +242,7 @@ $logidoo-yellow: #F8CB0E;
   }
   
   .start-btn {
-    background: $logidoo-yellow;
+    background: #ffffff;
     color: $logidoo-blue;
     border: none;
     padding: 12px 24px;
@@ -251,11 +251,11 @@ $logidoo-yellow: #F8CB0E;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 12px 24px rgba($logidoo-yellow, 0.25);
+    box-shadow: 0 12px 24px rgba($logidoo-blue, 0.15);
     
     &:hover {
       transform: translateY(-1px);
-      box-shadow: 0 16px 30px rgba($logidoo-yellow, 0.3);
+      box-shadow: 0 16px 30px rgba($logidoo-blue, 0.2);
     }
   }
 }
