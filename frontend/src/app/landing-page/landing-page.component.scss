@@ -516,7 +516,7 @@ a {
   .hero-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(135deg, rgba(26, 58, 138, 0.8), rgba(0, 0, 0, 0.6));
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 40%, rgba(26, 58, 138, 0.6) 100%);
     z-index: 2;
   }
 
@@ -565,21 +565,38 @@ a {
 
       .stat-item {
         text-align: center;
-        padding: 15px;
-        background: rgba(255,255,255,0.1);
-        border-radius: 12px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.2);
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
+        backdrop-filter: none;
+        border: none;
         transition: all 0.3s ease;
 
         &:hover {
-          background: rgba(255,255,255,0.2);
           transform: translateY(-5px);
+
+          .stat-icon img {
+            transform: scale(1.1);
+          }
+        }
+
+        .stat-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 10px;
+
+          img {
+            width: 50px;
+            height: 50px;
+            filter: brightness(0) saturate(100%) invert(82%) sepia(61%) saturate(1829%) hue-rotate(12deg) brightness(103%) contrast(101%);
+            transition: transform 0.3s ease;
+          }
         }
 
         strong {
           font-size: 2.2rem;
-          color: $secondary;
+          color: $white;
           display: block;
           font-weight: 800;
           margin-bottom: -15px;
