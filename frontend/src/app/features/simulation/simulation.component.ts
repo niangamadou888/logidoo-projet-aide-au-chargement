@@ -175,16 +175,34 @@ export class SimulationComponent implements OnInit {
     this.resetResultats();
     this.listeColis = [];
     this.simulationForm.reset();
-    this.colisForm.reset();
+    this.colisForm.reset({
+      type: '',
+      longueur: '',
+      largeur: '',
+      hauteur: '',
+      poids: '',
+      quantite: 1,
+      container: '',
+      camions: '',
+      volume: '',
+      nomDestinataire: '',
+      adresse: '',
+      telephone: '',
+      fragile: false,
+      gerbable: true,
+      couleur: '#999999'
+    });
     this.selectedContainerId = null;
     this.currentStep = 1;
     this.currentPage = 1;
-    
+
     // Nettoyer les données de visualisation
-    try {
-      sessionStorage.removeItem('simulationData');
-    } catch (error) {
-      console.warn('Impossible de nettoyer sessionStorage:', error);
+    if (this.isBrowser && typeof sessionStorage !== 'undefined') {
+      try {
+        sessionStorage.removeItem('simulationData');
+      } catch (error) {
+        console.warn('Impossible de nettoyer sessionStorage:', error);
+      }
     }
     
     this.snackBar.open('Nouvelle simulation initialisée !', 'OK', {
@@ -1063,10 +1081,12 @@ export class SimulationComponent implements OnInit {
     console.log('Navigation vers visualisation avec:', simulationData);
 
     // Sauvegarder en sessionStorage pour la visualisation
-    try {
-      sessionStorage.setItem('simulationData', JSON.stringify(simulationData));
-    } catch (error) {
-      console.warn('Impossible de sauvegarder en sessionStorage:', error);
+    if (this.isBrowser && typeof sessionStorage !== 'undefined') {
+      try {
+        sessionStorage.setItem('simulationData', JSON.stringify(simulationData));
+      } catch (error) {
+        console.warn('Impossible de sauvegarder en sessionStorage:', error);
+      }
     }
 
     // Navigation vers la visualisation

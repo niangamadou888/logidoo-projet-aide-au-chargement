@@ -96,7 +96,7 @@
               </label>
               <div class="color-mini">
                 <label>Couleur</label>
-                <input type="color" formControlName="couleur" class="color-input-mini">
+                <input type="color" formControlName="couleur" [value]="colisForm.get('couleur')?.value || '#999999'" class="color-input-mini">
               </div>
             </div>
 
@@ -510,51 +510,6 @@
           <mat-icon class="btn-icon">3d_rotation</mat-icon>
           Lancer la visualisation
         </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Résultats de la simulation -->
-  <div *ngIf="simulationResultats" class="card simulation-results">
-    <div class="card-header">
-      <mat-icon class="card-icon">analytics</mat-icon>
-      <h2>Résultats de la simulation</h2>
-      <div class="execution-time" *ngIf="previewTime">
-        Temps d'exécution: {{ previewTime | number:'1.0-0' }}ms
-      </div>
-    </div>
-
-    <div class="results-stats">
-      <div class="stats-item">
-        <strong>{{ simulationResultats.stats.containersCount }}</strong>
-        <span>Contenants utilisés</span>
-      </div>
-      <div class="stats-item">
-        <strong>{{ simulationResultats.stats.avgVolumeUtilization | percent:'1.0-2' }}</strong>
-        <span>Utilisation volume</span>
-      </div>
-      <div class="stats-item">
-        <strong>{{ simulationResultats.stats.avgWeightUtilization | percent:'1.0-2' }}</strong>
-        <span>Utilisation poids</span>
-      </div>
-      <div class="stats-item" [class.warning]="simulationResultats.unplacedItems && simulationResultats.unplacedItems.length > 0">
-        <strong>{{ simulationResultats.stats.placedCount }} / {{ simulationResultats.stats.placedCount + simulationResultats.stats.unplacedCount }}</strong>
-        <span>Colis placés</span>
-      </div>
-    </div>
-
-    <!-- Liste des contenants utilisés -->
-    <div class="containers-used">
-      <h3>Contenants utilisés</h3>
-
-      <div class="containers-grid">
-        <div *ngFor="let container of simulationResultats.containers" class="container-result-card">
-          <div class="container-header">
-            <div class="container-matricule">{{ container.matricule || 'Non défini' }}</div>
-            <strong>{{ container.type }}</strong>
-            <span class="container-category">{{ container.categorie }}</span>
-          </div>
-        </div>
       </div>
     </div>
   </div>
