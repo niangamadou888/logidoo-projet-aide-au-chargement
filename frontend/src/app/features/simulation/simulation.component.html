@@ -50,6 +50,7 @@
             type="text" 
             id="simulationName" 
             [(ngModel)]="simulationName"
+            (ngModelChange)="onSimulationNameChange($event)"
             placeholder="Ex: Livraison Paris - Septembre 2025"
             class="form-input">
         </div>
@@ -59,6 +60,7 @@
             type="text" 
             id="simulationDescription" 
             [(ngModel)]="simulationDescription"
+            (ngModelChange)="onSimulationDescriptionChange($event)"
             placeholder="Description courte..."
             class="form-input">
         </div>
