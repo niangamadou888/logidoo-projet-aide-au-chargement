@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $logidoo-blue: #092B8B;
 $logidoo-yellow: #F8CB0E;
 
@@ -152,7 +154,7 @@ $logidoo-yellow: #F8CB0E;
 
 // Header
 .welcome-header {
-  background: linear-gradient(135deg, $logidoo-blue 0%, darken($logidoo-blue, 8%) 100%);
+  background: linear-gradient(135deg, $logidoo-blue 0%, color.adjust($logidoo-blue, $lightness: -8%) 100%);
   color: white;
   padding: 24px 32px;
   display: flex;
@@ -224,7 +226,7 @@ $logidoo-yellow: #F8CB0E;
 
 // Overview Card
 .overview-card {
-  background: linear-gradient(135deg, $logidoo-blue 0%, darken($logidoo-blue, 10%) 100%);
+  background: linear-gradient(135deg, $logidoo-blue 0%, color.adjust($logidoo-blue, $lightness: -10%) 100%);
   color: white;
   padding: 32px;
   border-radius: 16px;
@@ -435,7 +437,7 @@ $logidoo-yellow: #F8CB0E;
 .user-rank {
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, $logidoo-blue 0%, darken($logidoo-blue, 10%) 100%);
+  background: linear-gradient(135deg, $logidoo-blue 0%, color.adjust($logidoo-blue, $lightness: -10%) 100%);
   color: white;
   border-radius: 50%;
   display: flex;

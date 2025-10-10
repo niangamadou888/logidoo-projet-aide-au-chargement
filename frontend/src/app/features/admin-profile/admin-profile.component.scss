@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $logidoo-blue: #092B8B;
 $logidoo-yellow: #F8CB0E;
 
@@ -145,7 +147,7 @@ $logidoo-yellow: #F8CB0E;
 
 // Header
 .welcome-header {
-  background: linear-gradient(135deg, $logidoo-blue 0%, darken($logidoo-blue, 8%) 100%);
+  background: linear-gradient(135deg, $logidoo-blue 0%, color.adjust($logidoo-blue, $lightness: -8%) 100%);
   color: white;
   padding: 24px 32px;
   display: flex;
@@ -225,7 +227,7 @@ $logidoo-yellow: #F8CB0E;
 }
 
 .profile-header {
-  background: linear-gradient(135deg, $logidoo-blue 0%, darken($logidoo-blue, 10%) 100%);
+  background: linear-gradient(135deg, $logidoo-blue 0%, color.adjust($logidoo-blue, $lightness: -10%) 100%);
   color: white;
   padding: 32px;
   display: flex;

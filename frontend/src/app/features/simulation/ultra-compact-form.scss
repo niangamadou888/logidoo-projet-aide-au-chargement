@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 // ===== SHARED FORM HEADER STYLE =====
 .form-header-compact {
   margin-bottom: 1.25rem;
@@ -723,7 +725,7 @@
     color: white;
 
     &:hover {
-      background: darken(#092B8B, 5%);
+      background: color.adjust(#092B8B, $lightness: -5%);
     }
   }
 
