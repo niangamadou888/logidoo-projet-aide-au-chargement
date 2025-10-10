@@ -72,16 +72,16 @@
     <!-- Header -->
     <header class="welcome-header">
       <div class="avatar-section">
-        <mat-icon class="avatar">admin_panel_settings</mat-icon>
+        <mat-icon class="avatar" fontSet="material-icons">admin_panel_settings</mat-icon>
         <span class="welcome-text">Paramètres administrateur</span>
       </div>
       <div class="user-menu">
         <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
-          <mat-icon class="user-avatar">account_circle</mat-icon>
+          <mat-icon class="user-avatar" fontSet="material-icons">account_circle</mat-icon>
         </button>
         <mat-menu #userMenu="matMenu">
           <button mat-menu-item (click)="logout()">
-            <mat-icon>logout</mat-icon>
+            <mat-icon fontSet="material-icons-outlined">logout</mat-icon>
             <span>Se déconnecter</span>
           </button>
         </mat-menu>
@@ -94,7 +94,7 @@
         <div class="profile-card" *ngIf="user; else noUser">
           <div class="profile-header">
             <div class="profile-avatar">
-              <mat-icon class="avatar-icon">admin_panel_settings</mat-icon>
+              <mat-icon class="avatar-icon" fontSet="material-icons">admin_panel_settings</mat-icon>
             </div>
             <div class="profile-info">
               <h2 class="profile-name">{{ user.username }}</h2>
@@ -107,7 +107,7 @@
               <h3>Informations administrateur</h3>
               <div class="detail-grid">
                 <div class="detail-item">
-                  <mat-icon class="detail-icon">badge</mat-icon>
+                  <mat-icon class="detail-icon" fontSet="material-icons-outlined">badge</mat-icon>
                   <div class="detail-content">
                     <div class="detail-label">Nom d'utilisateur</div>
                     <div class="detail-value">{{ user.username }}</div>
@@ -115,7 +115,7 @@
                 </div>
 
                 <div class="detail-item">
-                  <mat-icon class="detail-icon">email</mat-icon>
+                  <mat-icon class="detail-icon" fontSet="material-icons-outlined">email</mat-icon>
                   <div class="detail-content">
                     <div class="detail-label">Email</div>
                     <div class="detail-value">{{ user.email }}</div>
@@ -123,7 +123,7 @@
                 </div>
 
                 <div class="detail-item">
-                  <mat-icon class="detail-icon">shield</mat-icon>
+                  <mat-icon class="detail-icon" fontSet="material-icons-outlined">shield</mat-icon>
                   <div class="detail-content">
                     <div class="detail-label">Rôle</div>
                     <div class="detail-value">{{ user.role | titlecase }}</div>
@@ -131,7 +131,7 @@
                 </div>
 
                 <div class="detail-item" *ngIf="user.id">
-                  <mat-icon class="detail-icon">fingerprint</mat-icon>
+                  <mat-icon class="detail-icon" fontSet="material-icons-outlined">fingerprint</mat-icon>
                   <div class="detail-content">
                     <div class="detail-label">ID Administrateur</div>
                     <div class="detail-value">{{ user.id }}</div>
@@ -166,7 +166,7 @@
 
         <ng-template #noUser>
           <div class="no-user-state">
-            <mat-icon class="no-user-icon">person_off</mat-icon>
+            <mat-icon class="no-user-icon" fontSet="material-icons-outlined">person_off</mat-icon>
             <div class="no-user-title">Aucun administrateur connecté</div>
             <div class="no-user-description">Veuillez vous connecter avec un compte administrateur pour accéder aux paramètres</div>
           </div>
