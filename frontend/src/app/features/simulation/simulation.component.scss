@@ -235,6 +235,7 @@
         transition: all 0.2s ease;
         flex-shrink: 0;
         border: 2px solid rgba(255, 255, 255, 0.5);
+        margin-bottom: 0;
       }
 
       .step-text {
@@ -489,7 +490,7 @@
           cursor: pointer;
           color: #dc2626;
           font-size: 1rem;
-          line-height: 1;
+          line-height: 0;
           transition: all 0.2s ease;
 
           &:hover {
@@ -499,7 +500,12 @@
 
           mat-icon {
             font-size: 16px;
+            width: 16px;
+            height: 16px;
             line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
         }
       }
@@ -5157,14 +5163,19 @@
   .section-title {
     display: flex;
     align-items: center;
-    margin-bottom: 1rem;
-    color: var(--logidoo-gray-800);
-    font-size: 1.1rem;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    color: var(--logidoo-blue);
+    font-size: 1.125rem;
     font-weight: 600;
+    text-align: center;
 
     .icon {
-      margin-right: 0.5rem;
-      font-size: 1.2rem;
+      font-size: 1.5rem;
+      width: 24px;
+      height: 24px;
+      color: var(--logidoo-primary);
     }
   }
 
