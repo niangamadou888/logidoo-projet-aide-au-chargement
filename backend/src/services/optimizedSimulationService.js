@@ -91,19 +91,31 @@ function summarize(items) {
   let fragilesCount = 0;
   let nonGerbablesCount = 0;
   let colisCount = 0;
-  
+
+  // Handle null or undefined items
+  if (!items || !Array.isArray(items)) {
+    return {
+      totalVolume: 0,
+      totalWeight: 0,
+      count: 0,
+      colisCount: 0,
+      fragilesCount: 0,
+      nonGerbablesCount: 0
+    };
+  }
+
   items.forEach(it => {
     const q = it.quantite || 1;
     colisCount += q;
     totalVolume += ((it.longueur * it.largeur * it.hauteur) / 1_000_000) * q;
     totalWeight += (it.poids || 0) * q;
-    
+
     if (it.fragile) fragilesCount += q;
     if (!it.gerbable) nonGerbablesCount += q;
   });
-  
-  return { 
-    totalVolume, 
+
+  return {
+    totalVolume,
     totalWeight,
     count: items.length,
     colisCount,
