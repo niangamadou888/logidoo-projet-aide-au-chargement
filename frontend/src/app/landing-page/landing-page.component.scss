@@ -1,7 +1,7 @@
 @use 'sass:color';
 
-$primary: #1a3a8a;
-$secondary: #f7b500;
+$primary: #092B8B;
+$secondary: #F8CB0E;
 $dark: #111;
 $light-bg: #f4f6fb;
 $white: #fff;
@@ -26,6 +26,7 @@ a {
 
 .landing-container {
   overflow-x: hidden;
+  padding-top: 85px; // Add padding to account for fixed header height
 }
 
 // Smooth scrolling animations
@@ -145,10 +146,28 @@ a {
   background: rgba(255,255,255,0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0,0,0,0.1);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 1000;
   transition: all 0.3s ease;
+
+  &.scrolled {
+    padding: 12px 8%;
+    background: rgba(255,255,255,0.98);
+    box-shadow: 0 12px 30px rgba(9, 43, 139,0.12);
+    border-bottom-color: transparent;
+
+    .logo {
+      height: 38px;
+    }
+
+    .desktop-nav ul li a {
+      color: $dark;
+    }
+  }
 
   .logo {
     height: 45px;
@@ -224,6 +243,7 @@ a {
       border-radius: 25px;
       font-weight: 600;
       transition: all 0.3s ease;
+      text-transform: none;
 
       &:hover {
         background: $dark;
@@ -237,7 +257,7 @@ a {
   .mobile-menu-toggle {
     display: none;
     flex-direction: column;
-    background: rgba(26, 58, 138, 0.1);
+    background: rgba(9, 43, 139, 0.1);
     border: none;
     cursor: pointer;
     padding: 12px;
@@ -247,7 +267,7 @@ a {
     position: relative;
 
     &:hover {
-      background: rgba(26, 58, 138, 0.15);
+      background: rgba(9, 43, 139, 0.15);
       transform: scale(1.05);
 
       .hamburger-line {
@@ -257,7 +277,7 @@ a {
 
     &:active {
       transform: scale(0.95);
-      background: rgba(26, 58, 138, 0.2);
+      background: rgba(9, 43, 139, 0.2);
     }
 
     .hamburger-line {
@@ -381,13 +401,13 @@ a {
         position: relative;
 
         &:active {
-          background: rgba(26, 58, 138, 0.1);
+          background: rgba(9, 43, 139, 0.1);
           transform: scale(0.98);
         }
 
         &:hover,
         &:focus {
-          background: rgba(26, 58, 138, 0.05);
+          background: rgba(9, 43, 139, 0.05);
           color: $primary;
           border-left-color: $secondary;
           padding-left: 30px;
@@ -457,6 +477,7 @@ a {
         border: 2px solid $dark;
         color: $dark;
         padding: 12px 20px;
+        text-transform: none;
 
         &:hover,
         &:focus {
@@ -476,12 +497,12 @@ a {
 // ---------- HERO ----------
 .hero {
   position: relative;
-  height: 90vh;
+  min-height: 90vh;
   display: flex;
   align-items: center;
   color: $white;
   text-align: left;
-  padding: 0 10%;
+  padding: 80px 10%;
   overflow: hidden;
 
   .hero-background {
@@ -495,7 +516,7 @@ a {
   .hero-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(135deg, rgba(26, 58, 138, 0.8), rgba(0, 0, 0, 0.6));
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 40%, rgba(9, 43, 139, 0.6) 100%);
     z-index: 2;
   }
 
@@ -512,7 +533,7 @@ a {
       text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
       .highlight {
         color: $secondary;
-        background: linear-gradient(135deg, $secondary, #ffcc00);
+        background: linear-gradient(135deg, $secondary, #F8CB0E);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -544,21 +565,38 @@ a {
 
       .stat-item {
         text-align: center;
-        padding: 15px;
-        background: rgba(255,255,255,0.1);
-        border-radius: 12px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.2);
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
+        backdrop-filter: none;
+        border: none;
         transition: all 0.3s ease;
 
         &:hover {
-          background: rgba(255,255,255,0.2);
           transform: translateY(-5px);
+
+          .stat-icon img {
+            transform: scale(1.1);
+          }
+        }
+
+        .stat-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 10px;
+
+          img {
+            width: 50px;
+            height: 50px;
+            filter: brightness(0) saturate(100%) invert(82%) sepia(61%) saturate(1829%) hue-rotate(12deg) brightness(103%) contrast(101%);
+            transition: transform 0.3s ease;
+          }
         }
 
         strong {
           font-size: 2.2rem;
-          color: $secondary;
+          color: $white;
           display: block;
           font-weight: 800;
           margin-bottom: -15px;
@@ -571,15 +609,15 @@ a {
 
 // ---------- BUTTONS ----------
 .btn-primary {
-  background: linear-gradient(135deg, $secondary, #ffcc00);
-  color: $dark;
+  background: linear-gradient(135deg, $primary, #092B8B);
+  color: $white;
   padding: 16px 32px;
-  border-radius: 50px;
+  border-radius: 8px;
   font-weight: 700;
   font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 6px 20px rgba(247, 181, 0, 0.4);
+  box-shadow: 0 6px 20px rgba(9, 43, 139, 0.4);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
   overflow: hidden;
@@ -598,8 +636,8 @@ a {
 
   &:hover {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 12px 30px rgba(247, 181, 0, 0.5);
-    background: linear-gradient(135deg, #ffcc00, $secondary);
+    box-shadow: 0 12px 30px rgba(9, 43, 139, 0.5);
+    background: linear-gradient(135deg, #092B8B, $primary);
     border-color: rgba(255,255,255,0.3);
 
     &::before {
@@ -616,7 +654,7 @@ a {
   border: 3px solid rgba(255,255,255,0.9);
   color: $white;
   padding: 14px 32px;
-  border-radius: 50px;
+  border-radius: 8px;
   font-weight: 700;
   font-size: 1rem;
   text-transform: uppercase;
@@ -659,7 +697,7 @@ a {
   border: 3px solid $dark;
   color: $dark;
   padding: 14px 32px;
-  border-radius: 50px;
+  border-radius: 8px;
   font-weight: 700;
   font-size: 1rem;
   text-transform: uppercase;
@@ -718,7 +756,7 @@ a {
       transform: translateX(-50%);
       width: 80px;
       height: 4px;
-      background: linear-gradient(135deg, $secondary, #ffcc00);
+      background: linear-gradient(135deg, $secondary, #F8CB0E);
       border-radius: 2px;
     }
   }
@@ -728,70 +766,116 @@ a {
     gap: 30px;
 
     .service-card {
-      position: relative;
       flex: 1;
       border-radius: 20px;
       overflow: hidden;
-      height: 400px;
+      background: $white;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
 
       &:hover {
         transform: translateY(-10px);
         box-shadow: 0 20px 40px rgba(0,0,0,0.2);
 
-        .overlay {
-          background: rgba(26, 58, 138, 0.7);
+        .service-icon {
+          transform: scale(1.1);
+          box-shadow: 0 8px 25px rgba(9, 43, 139, 0.4);
         }
 
-        .service-text {
-          transform: translateY(-10px);
+        .service-link {
+          color: $secondary;
+          padding-left: 8px;
+
+          &::after {
+            transform: translateX(5px);
+          }
         }
       }
 
-      img {
+      .service-image-container {
+        position: relative;
         width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: all 0.3s ease;
-      }
+        height: 280px;
+        overflow: visible;
 
-      .overlay {
-        position: absolute;
-        inset: 0;
-        background: rgba(0,0,0,0.5);
-        transition: all 0.3s ease;
-      }
-
-      .service-text {
-        position: absolute;
-        bottom: 30px;
-        left: 30px;
-        right: 30px;
-        color: $white;
-        text-align: left;
-        transition: all 0.3s ease;
-
-        .icon {
-          background: linear-gradient(135deg, $secondary, #ffcc00);
-          color: $dark;
-          border-radius: 50%;
-          padding: 12px;
-          display: inline-block;
-          margin-bottom: 15px;
-          box-shadow: 0 4px 15px rgba(247, 181, 0, 0.3);
+        .service-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: all 0.3s ease;
+          border-radius: 20px 20px 0 0;
         }
+
+        .service-icon {
+          position: absolute;
+          bottom: -40px;
+          right: 25px;
+          width: 80px;
+          height: 80px;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+          transition: all 0.3s ease;
+          z-index: 10;
+
+          img {
+            width: 45px;
+            height: 45px;
+            filter: brightness(0) saturate(100%) invert(27%) sepia(100%) saturate(1729%) hue-rotate(213deg) brightness(89%) contrast(92%);
+          }
+        }
+      }
+
+      .service-content {
+        padding: 50px 30px 30px;
+        text-align: left;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        z-index: 1;
 
         h3 {
-          margin-bottom: 10px;
-          font-size: 1.4rem;
-          font-weight: 600;
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: $dark;
+          margin-bottom: 15px;
         }
 
         p {
           font-size: 0.95rem;
-          line-height: 1.5;
-          opacity: 0.9;
+          line-height: 1.6;
+          color: #64748b;
+          margin-bottom: 20px;
+          flex: 1;
+        }
+
+        .service-link {
+          color: $primary;
+          font-weight: 600;
+          font-size: 1rem;
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          transition: all 0.3s ease;
+          position: relative;
+
+          &::after {
+            content: '→';
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+          }
+
+          &:hover {
+            color: $secondary;
+            padding-left: 5px;
+          }
         }
       }
     }
@@ -801,7 +885,7 @@ a {
 // ---------- AVANTAGES ----------
 .advantages {
   padding: 100px 10%;
-  background: linear-gradient(135deg, $primary, #2563eb);
+  background: linear-gradient(135deg, $primary, #092B8B);
   text-align: center;
   color: $white;
 
@@ -820,7 +904,7 @@ a {
       transform: translateX(-50%);
       width: 80px;
       height: 4px;
-      background: linear-gradient(135deg, $secondary, #ffcc00);
+      background: linear-gradient(135deg, $secondary, #F8CB0E);
       border-radius: 2px;
     }
   }
@@ -888,7 +972,7 @@ a {
 
     .highlight {
       color: $secondary;
-      background: linear-gradient(135deg, $secondary, #ffcc00);
+      background: linear-gradient(135deg, $secondary, #F8CB0E);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -911,7 +995,7 @@ a {
 
     .feature-card {
       background: $white;
-      padding: 35px 25px;
+      padding: 25px 25px 20px;
       border-radius: 20px;
       text-align: center;
       box-shadow: 0 5px 20px rgba(0,0,0,0.08);
@@ -925,7 +1009,7 @@ a {
 
         .feature-icon {
           transform: scale(1.1);
-          background: linear-gradient(135deg, $secondary, #ffcc00);
+          background: linear-gradient(135deg, $secondary, #F8CB0E);
         }
       }
 
@@ -935,7 +1019,7 @@ a {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, $primary, #2563eb);
+        background: linear-gradient(135deg, $primary, #092B8B);
         color: $white;
         border-radius: 20px;
         margin: 0 auto 20px;
@@ -960,6 +1044,7 @@ a {
         color: #64748b;
         line-height: 1.5;
         font-size: 0.95rem;
+        margin-bottom: 0;
       }
     }
   }
@@ -968,7 +1053,7 @@ a {
 // ---------- TESTIMONIALS ----------
 .testimonials {
   padding: 100px 10%;
-  background: linear-gradient(135deg, $primary, #2563eb);
+  background: linear-gradient(135deg, $primary, #092B8B);
   color: $white;
   text-align: center;
 
@@ -987,7 +1072,7 @@ a {
       transform: translateX(-50%);
       width: 80px;
       height: 4px;
-      background: linear-gradient(135deg, $secondary, #ffcc00);
+      background: linear-gradient(135deg, $secondary, #F8CB0E);
       border-radius: 2px;
     }
   }
@@ -1095,7 +1180,7 @@ a {
       margin-top: 40px;
 
       .carousel-btn {
-        background: linear-gradient(135deg, $secondary, #ffcc00);
+        background: linear-gradient(135deg, $secondary, #F8CB0E);
         color: $dark;
         border: none;
         width: 50px;
@@ -1200,7 +1285,7 @@ a {
     left: -5%;
     width: 110%;
     height: 160%;
-    background: radial-gradient(ellipse at center, rgba(247, 181, 0, 0.08) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, rgba(248, 203, 14, 0.08) 0%, transparent 70%);
     animation: pulse 8s ease-in-out infinite;
   }
 
@@ -1219,7 +1304,7 @@ a {
 
       .highlight {
         color: $secondary;
-        background: linear-gradient(135deg, $secondary, #ffcc00);
+        background: linear-gradient(135deg, $secondary, #F8CB0E);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -1232,7 +1317,7 @@ a {
           left: 0;
           right: 0;
           height: 3px;
-          background: linear-gradient(135deg, $secondary, #ffcc00);
+          background: linear-gradient(135deg, $secondary, #F8CB0E);
           border-radius: 2px;
           animation: expandWidth 2s ease-out 1s both;
         }
@@ -1272,7 +1357,7 @@ a {
         left: 0;
         height: 100%;
         width: 0;
-        background: linear-gradient(90deg, $secondary, #ffcc00);
+        background: linear-gradient(90deg, $secondary, #F8CB0E);
         border-radius: 2px;
         animation: lineProgress 3s ease-out 1.5s both;
       }
@@ -1320,15 +1405,15 @@ a {
 
         .step-circle {
           transform: scale(1.1);
-          background: linear-gradient(135deg, $secondary, #ffcc00);
-          box-shadow: 0 15px 30px rgba(247, 181, 0, 0.4);
+          background: linear-gradient(135deg, $secondary, #F8CB0E);
+          box-shadow: 0 15px 30px rgba(248, 203, 14, 0.4);
         }
       }
 
       .step-circle {
         flex: 0 0 80px;
         height: 80px;
-        background: linear-gradient(135deg, $primary, #2563eb);
+        background: linear-gradient(135deg, $primary, #092B8B);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -1336,7 +1421,7 @@ a {
         position: relative;
         z-index: 5;
         transition: all 0.3s ease;
-        box-shadow: 0 10px 25px rgba(26, 58, 138, 0.3);
+        box-shadow: 0 10px 25px rgba(9, 43, 139, 0.3);
         border: 5px solid $white;
         margin-top: 110px;
 
@@ -1379,13 +1464,13 @@ a {
           .step-icon {
             width: 70px;
             height: 70px;
-            background: linear-gradient(135deg, rgba(26, 58, 138, 0.1), rgba(37, 99, 235, 0.1));
+            background: linear-gradient(135deg, rgba(9, 43, 139, 0.1), rgba(9, 43, 139, 0.1));
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            border: 2px solid rgba(26, 58, 138, 0.1);
+            border: 2px solid rgba(9, 43, 139, 0.1);
 
             img {
               width: 35px;
@@ -1397,7 +1482,7 @@ a {
         }
 
         &:hover .step-icon {
-          background: linear-gradient(135deg, $secondary, #ffcc00);
+          background: linear-gradient(135deg, $secondary, #F8CB0E);
           border-color: $secondary;
           transform: scale(1.05);
 
@@ -1431,17 +1516,17 @@ a {
             flex-wrap: wrap;
 
             .detail-item {
-              background: linear-gradient(135deg, rgba(26, 58, 138, 0.05), rgba(37, 99, 235, 0.05));
+              background: linear-gradient(135deg, rgba(9, 43, 139, 0.05), rgba(9, 43, 139, 0.05));
               padding: 6px 12px;
               border-radius: 15px;
               font-size: 0.8rem;
               font-weight: 600;
               color: $primary;
-              border: 1px solid rgba(26, 58, 138, 0.1);
+              border: 1px solid rgba(9, 43, 139, 0.1);
               transition: all 0.3s ease;
 
               &:hover {
-                background: linear-gradient(135deg, $secondary, #ffcc00);
+                background: linear-gradient(135deg, $secondary, #F8CB0E);
                 color: $dark;
                 border-color: $secondary;
                 transform: translateY(-1px);
@@ -1472,16 +1557,20 @@ a {
     }
 
     .btn-primary {
+      background: linear-gradient(135deg, $secondary, #F8CB0E);
+      color: $dark;
       padding: 16px 40px;
       font-size: 1.1rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      box-shadow: 0 10px 25px rgba(247, 181, 0, 0.3);
+      box-shadow: 0 10px 25px rgba(248, 203, 14, 0.3);
+      border: 2px solid transparent;
 
       &:hover {
         transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 15px 35px rgba(247, 181, 0, 0.4);
+        box-shadow: 0 15px 35px rgba(248, 203, 14, 0.4);
+        background: linear-gradient(135deg, #F8CB0E, $secondary);
       }
     }
   }
@@ -1520,7 +1609,7 @@ a {
       transform: translateX(-50%);
       width: 80px;
       height: 4px;
-      background: linear-gradient(135deg, $secondary, #ffcc00);
+      background: linear-gradient(135deg, $secondary, #F8CB0E);
       border-radius: 2px;
     }
   }
@@ -1556,11 +1645,11 @@ a {
 
       &.active {
         border-color: $primary;
-        box-shadow: 0 10px 30px rgba(26, 58, 138, 0.15);
+        box-shadow: 0 10px 30px rgba(9, 43, 139, 0.15);
 
         .faq-question {
-          background: linear-gradient(135deg, rgba(26, 58, 138, 0.05), rgba(37, 99, 235, 0.05));
-          border-bottom: 1px solid rgba(26, 58, 138, 0.1);
+          background: linear-gradient(135deg, rgba(9, 43, 139, 0.05), rgba(9, 43, 139, 0.05));
+          border-bottom: 1px solid rgba(9, 43, 139, 0.1);
 
           h3 {
             color: $primary;
@@ -1618,12 +1707,12 @@ a {
           font-weight: 600;
           color: $primary;
           transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-          border: 2px solid rgba(26, 58, 138, 0.1);
+          border: 2px solid rgba(9, 43, 139, 0.1);
         }
 
         &:hover {
           .faq-toggle {
-            background: linear-gradient(135deg, $secondary, #ffcc00);
+            background: linear-gradient(135deg, $secondary, #F8CB0E);
             color: $dark;
             transform: scale(1.05);
             border-color: $secondary;
@@ -1658,7 +1747,7 @@ a {
 .cta {
   padding: 120px 10%;
   text-align: center;
-  background: linear-gradient(135deg, $primary, #2563eb);
+  background: linear-gradient(135deg, $primary, #092B8B);
   color: $white;
   position: relative;
   overflow: hidden;
@@ -1670,7 +1759,7 @@ a {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle at center, rgba(247, 181, 0, 0.1) 0%, transparent 50%);
+    background: radial-gradient(circle at center, rgba(248, 203, 14, 0.1) 0%, transparent 50%);
     animation: pulse 6s ease-in-out infinite;
   }
 
@@ -1692,7 +1781,7 @@ a {
       transform: translateX(-50%);
       width: 120px;
       height: 4px;
-      background: linear-gradient(135deg, $secondary, #ffcc00);
+      background: linear-gradient(135deg, $secondary, #F8CB0E);
       border-radius: 2px;
       animation: expandWidth 1.5s ease-out 0.5s both;
     }
@@ -1751,10 +1840,10 @@ a {
       }
 
       &.btn-primary {
-        background: linear-gradient(135deg, $secondary, #ffcc00);
+        background: linear-gradient(135deg, $secondary, #F8CB0E);
         color: $dark;
         padding: 18px 40px;
-        border-radius: 50px;
+        border-radius: 8px;
         font-weight: 700;
         font-size: 1.1rem;
         text-transform: uppercase;
@@ -1762,7 +1851,7 @@ a {
         border: 3px solid transparent;
 
         &:hover {
-          background: linear-gradient(135deg, #ffcc00, $secondary);
+          background: linear-gradient(135deg, #F8CB0E, $secondary);
           border-color: rgba(255,255,255,0.3);
         }
       }
@@ -1771,7 +1860,7 @@ a {
         border: 3px solid rgba(255,255,255,0.8);
         color: $white;
         padding: 16px 40px;
-        border-radius: 50px;
+        border-radius: 8px;
         font-weight: 700;
         font-size: 1.1rem;
         text-transform: uppercase;
@@ -1797,7 +1886,7 @@ a {
     right: 10%;
     width: 100px;
     height: 100px;
-    background: linear-gradient(135deg, rgba(247, 181, 0, 0.2), transparent);
+    background: linear-gradient(135deg, rgba(248, 203, 14, 0.2), transparent);
     border-radius: 50%;
     animation: float 4s ease-in-out infinite;
   }
@@ -1914,10 +2003,28 @@ a {
 @media (max-width: 992px) {
   .services .services-grid {
     flex-direction: column;
-    gap: 20px;
+    gap: 30px;
 
     .service-card {
-      height: 300px;
+      .service-image-container {
+        height: 240px;
+
+        .service-icon {
+          width: 70px;
+          height: 70px;
+          bottom: -35px;
+          right: 20px;
+
+          img {
+            width: 40px;
+            height: 40px;
+          }
+        }
+      }
+
+      .service-content {
+        padding: 45px 25px 25px;
+      }
     }
   }
 
@@ -1952,7 +2059,7 @@ a {
           flex: 0 0 80px !important;
           height: 80px !important;
           width: 80px !important;
-          background: linear-gradient(135deg, $primary, #2563eb) !important;
+          background: linear-gradient(135deg, $primary, #092B8B) !important;
           border-radius: 50% !important;
           display: flex !important;
           align-items: center !important;
@@ -1960,7 +2067,7 @@ a {
           position: relative !important;
           z-index: 5 !important;
           transition: all 0.3s ease;
-          box-shadow: 0 10px 25px rgba(26, 58, 138, 0.3) !important;
+          box-shadow: 0 10px 25px rgba(9, 43, 139, 0.3) !important;
           border: 5px solid $white !important;
           margin-bottom: 30px;
           margin-top: 0;
@@ -2034,7 +2141,7 @@ a {
   }
 
   .hero.mobile-hero {
-    padding: 10px 5% 10px !important;
+    padding: 80px 5% 80px !important;
     min-height: 100vh !important;
     display: flex !important;
     align-items: center !important;
@@ -2072,7 +2179,7 @@ a {
           flex: 0 0 65px !important;
           height: 65px !important;
           width: 65px !important;
-          background: linear-gradient(135deg, $primary, #2563eb) !important;
+          background: linear-gradient(135deg, $primary, #092B8B) !important;
           border-radius: 50% !important;
           display: flex !important;
           align-items: center !important;
@@ -2080,7 +2187,7 @@ a {
           position: relative !important;
           z-index: 5 !important;
           transition: all 0.3s ease;
-          box-shadow: 0 8px 20px rgba(26, 58, 138, 0.3) !important;
+          box-shadow: 0 8px 20px rgba(9, 43, 139, 0.3) !important;
           border: 4px solid $white !important;
           margin-bottom: 20px;
           margin-top: 0;
@@ -2187,14 +2294,27 @@ a {
       }
 
       .hero-stats {
-        flex-direction: column;
-        gap: 15px;
-        align-items: center;
+        flex-direction: row;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
 
         .stat-item {
-          width: 100%;
-          max-width: 280px;
-          margin-bottom: 0;
+          flex: 0 1 auto;
+          min-width: fit-content;
+
+          .stat-icon {
+            margin-bottom: 8px;
+
+            img {
+              width: 40px;
+              height: 40px;
+            }
+          }
+
+          strong {
+            font-size: 1.8rem;
+          }
         }
       }
 
@@ -2287,6 +2407,44 @@ a {
         max-width: 280px;
         padding: 16px 30px !important;
         font-size: 1rem !important;
+      }
+    }
+  }
+
+  .services .services-grid {
+    gap: 25px;
+
+    .service-card {
+      .service-image-container {
+        height: 220px;
+
+        .service-icon {
+          width: 65px;
+          height: 65px;
+          bottom: -32px;
+          right: 18px;
+
+          img {
+            width: 35px;
+            height: 35px;
+          }
+        }
+      }
+
+      .service-content {
+        padding: 42px 20px 20px;
+
+        h3 {
+          font-size: 1.3rem;
+        }
+
+        p {
+          font-size: 0.9rem;
+        }
+
+        .service-link {
+          font-size: 0.95rem;
+        }
       }
     }
   }
@@ -2396,7 +2554,7 @@ a {
           flex: 0 0 55px !important;
           height: 55px !important;
           width: 55px !important;
-          background: linear-gradient(135deg, $primary, #2563eb) !important;
+          background: linear-gradient(135deg, $primary, #092B8B) !important;
           border-radius: 50% !important;
           display: flex !important;
           align-items: center !important;
@@ -2404,7 +2562,7 @@ a {
           position: relative !important;
           z-index: 5 !important;
           transition: all 0.3s ease;
-          box-shadow: 0 6px 15px rgba(26, 58, 138, 0.3) !important;
+          box-shadow: 0 6px 15px rgba(9, 43, 139, 0.3) !important;
           border: 3px solid $white !important;
           margin-bottom: 15px;
           margin-top: 0;
@@ -2558,14 +2716,65 @@ a {
       }
 
       .hero-stats {
-        gap: 12px;
+        flex-direction: row;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
 
         .stat-item {
-          padding: 12px 15px;
+          flex: 0 1 auto;
+          min-width: fit-content;
+
+          .stat-icon {
+            margin-bottom: 6px;
+
+            img {
+              width: 35px;
+              height: 35px;
+            }
+          }
 
           strong {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
           }
+        }
+      }
+    }
+  }
+
+  .services .services-grid {
+    gap: 20px;
+
+    .service-card {
+      .service-image-container {
+        height: 200px;
+
+        .service-icon {
+          width: 60px;
+          height: 60px;
+          bottom: -30px;
+          right: 15px;
+
+          img {
+            width: 32px;
+            height: 32px;
+          }
+        }
+      }
+
+      .service-content {
+        padding: 38px 18px 18px;
+
+        h3 {
+          font-size: 1.2rem;
+        }
+
+        p {
+          font-size: 0.85rem;
+        }
+
+        .service-link {
+          font-size: 0.9rem;
         }
       }
     }
@@ -2611,6 +2820,45 @@ a {
 }
 
 @media (max-width: 375px) {
+  .services .services-grid {
+    gap: 18px;
+
+    .service-card {
+      .service-image-container {
+        height: 180px;
+
+        .service-icon {
+          width: 55px;
+          height: 55px;
+          bottom: -27px;
+          right: 12px;
+
+          img {
+            width: 28px;
+            height: 28px;
+          }
+        }
+      }
+
+      .service-content {
+        padding: 35px 15px 15px;
+
+        h3 {
+          font-size: 1.1rem;
+        }
+
+        p {
+          font-size: 0.8rem;
+          line-height: 1.5;
+        }
+
+        .service-link {
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+
   .steps {
     padding: 35px 0;
 
@@ -2641,7 +2889,7 @@ a {
           flex: 0 0 50px !important;
           height: 50px !important;
           width: 50px !important;
-          background: linear-gradient(135deg, $primary, #2563eb) !important;
+          background: linear-gradient(135deg, $primary, #092B8B) !important;
           border-radius: 50% !important;
           display: flex !important;
           align-items: center !important;
@@ -2649,7 +2897,7 @@ a {
           position: relative !important;
           z-index: 5 !important;
           transition: all 0.3s ease;
-          box-shadow: 0 5px 12px rgba(26, 58, 138, 0.3) !important;
+          box-shadow: 0 5px 12px rgba(9, 43, 139, 0.3) !important;
           border: 3px solid $white !important;
           align-self: center;
 
@@ -2729,7 +2977,7 @@ a {
     min-height: 50px !important;
     max-width: 50px !important;
     max-height: 50px !important;
-    background: linear-gradient(135deg, $primary, #2563eb) !important;
+    background: linear-gradient(135deg, $primary, #092B8B) !important;
     border-radius: 50% !important;
     display: flex !important;
     align-items: center !important;
@@ -2747,7 +2995,7 @@ a {
     min-height: 55px !important;
     max-width: 55px !important;
     max-height: 55px !important;
-    background: linear-gradient(135deg, $primary, #2563eb) !important;
+    background: linear-gradient(135deg, $primary, #092B8B) !important;
     border-radius: 50% !important;
     display: flex !important;
     align-items: center !important;
@@ -2765,7 +3013,7 @@ a {
     min-height: 65px !important;
     max-width: 65px !important;
     max-height: 65px !important;
-    background: linear-gradient(135deg, $primary, #2563eb) !important;
+    background: linear-gradient(135deg, $primary, #092B8B) !important;
     border-radius: 50% !important;
     display: flex !important;
     align-items: center !important;
@@ -2783,7 +3031,7 @@ a {
     min-height: 70px !important;
     max-width: 70px !important;
     max-height: 70px !important;
-    background: linear-gradient(135deg, $primary, #2563eb) !important;
+    background: linear-gradient(135deg, $primary, #092B8B) !important;
     border-radius: 50% !important;
     display: flex !important;
     align-items: center !important;

@@ -50,4 +50,10 @@ router.get('/colis', (req, res) => {
   res.json(colisList);
 });
 
+// Reset colis list (for testing)
+router.delete('/colis', (req, res) => {
+  colisList = [];
+  res.status(200).json({ message: 'Colis list cleared' });
+});
+
 module.exports = router;

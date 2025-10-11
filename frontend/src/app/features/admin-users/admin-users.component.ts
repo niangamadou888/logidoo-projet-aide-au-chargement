@@ -66,6 +66,10 @@ export class AdminUsersComponent implements OnInit {
     });
   }
 
+  fetchUsers(): void {
+    this.loadUsers();
+  }
+
   logout(): void {
     this.authService.logout();
   }

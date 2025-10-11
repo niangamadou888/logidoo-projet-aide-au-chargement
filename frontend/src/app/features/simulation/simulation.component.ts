@@ -62,6 +62,8 @@ export class SimulationComponent implements OnInit {
   isDragOver = false;
   
   private isBrowser = true;
+  private readonly SIMULATION_NAME_CACHE_KEY = 'simulationNameCache';
+  private readonly SIMULATION_DESCRIPTION_CACHE_KEY = 'simulationDescriptionCache';
 
   constructor(
     private fb: FormBuilder,
@@ -170,27 +172,54 @@ export class SimulationComponent implements OnInit {
     this.listeColis[index].couleur = this.getDistinctRandomColor();
   }
 
-  nouvelleSimulation() {
+  nouvelleSimulation(options: { showNotification?: boolean; clearCache?: boolean } = {}) {
+    const { showNotification = true, clearCache = true } = options;
     // Réinitialisation directe sans confirmation
     this.resetResultats();
     this.listeColis = [];
     this.simulationForm.reset();
-    this.colisForm.reset();
+    this.colisForm.reset({
+      type: '',
+      longueur: '',
+      largeur: '',
+      hauteur: '',
+      poids: '',
+      quantite: 1,
+      container: '',
+      camions: '',
+      volume: '',
+      nomDestinataire: '',
+      adresse: '',
+      telephone: '',
+      fragile: false,
+      gerbable: true,
+      couleur: '#999999'
+    });
     this.selectedContainerId = null;
     this.currentStep = 1;
     this.currentPage = 1;
-    
+
+    if (clearCache) {
+      this.simulationName = '';
+      this.simulationDescription = '';
+      this.clearSimulationMetaCache();
+    }
+
     // Nettoyer les données de visualisation
-    try {
-      sessionStorage.removeItem('simulationData');
-    } catch (error) {
-      console.warn('Impossible de nettoyer sessionStorage:', error);
+    if (this.isBrowser && typeof sessionStorage !== 'undefined') {
+      try {
+        sessionStorage.removeItem('simulationData');
+      } catch (error) {
+        console.warn('Impossible de nettoyer sessionStorage:', error);
+      }
     }
     
-    this.snackBar.open('Nouvelle simulation initialisée !', 'OK', {
-      duration: 2000,
-      panelClass: ['success-snackbar']
-    });
+    if (showNotification) {
+      this.snackBar.open('Nouvelle simulation initialisée !', 'OK', {
+        duration: 2000,
+        panelClass: ['success-snackbar']
+      });
+    }
   }
 
   toggleSelectionMode() {
@@ -844,10 +873,19 @@ export class SimulationComponent implements OnInit {
     if (restored) {
       this.listeColis = Array.isArray(restored.colis) ? restored.colis : [];
       this.simulationResultats = restored.resultats || null;
+      const restoredName = typeof restored.nom === 'string' ? restored.nom : '';
+      const restoredDescription = typeof restored.description === 'string' ? restored.description : '';
+      this.simulationName = restoredName;
+      this.simulationDescription = restoredDescription;
+
+      if (!restoredName || !restoredDescription) {
+        this.restoreSimulationMetaFromCache();
+      }
+
       this.simulationForm.patchValue({
-        nom: restored.nom || '',
-        description: restored.description || ''
-      });
+        nom: this.simulationName,
+        description: this.simulationDescription
+      }, { emitEvent: false });
       // Restore selection state if present
       if (restored.selectedContainerId) {
         this.selectedContainerId = restored.selectedContainerId;
@@ -862,8 +900,16 @@ export class SimulationComponent implements OnInit {
           this.currentStep = target;
         }
       } catch {}
+
+      this.cacheSimulationMeta();
     } else {
-      this.nouvelleSimulation();
+      this.nouvelleSimulation({ clearCache: false });
+      this.restoreSimulationMetaFromCache();
+      this.simulationForm.patchValue({
+        nom: this.simulationName,
+        description: this.simulationDescription
+      }, { emitEvent: false });
+      this.cacheSimulationMeta();
     }
 
     // Éviter les appels HTTP pendant le prerender (build statique)
@@ -1063,10 +1109,12 @@ export class SimulationComponent implements OnInit {
     console.log('Navigation vers visualisation avec:', simulationData);
 
     // Sauvegarder en sessionStorage pour la visualisation
-    try {
-      sessionStorage.setItem('simulationData', JSON.stringify(simulationData));
-    } catch (error) {
-      console.warn('Impossible de sauvegarder en sessionStorage:', error);
+    if (this.isBrowser && typeof sessionStorage !== 'undefined') {
+      try {
+        sessionStorage.setItem('simulationData', JSON.stringify(simulationData));
+      } catch (error) {
+        console.warn('Impossible de sauvegarder en sessionStorage:', error);
+      }
     }
 
     // Navigation vers la visualisation
@@ -1138,6 +1186,79 @@ export class SimulationComponent implements OnInit {
 
   getSimulationName(): string {
     return this.simulationForm.value.nom || `Simulation du ${this.dateAujourdhui.toLocaleDateString()}`;
+  }
+
+  onSimulationNameChange(value: string): void {
+    this.simulationName = value;
+    this.simulationForm.patchValue({ nom: value }, { emitEvent: false });
+    this.cacheSimulationMeta();
+  }
+
+  onSimulationDescriptionChange(value: string): void {
+    this.simulationDescription = value;
+    this.simulationForm.patchValue({ description: value }, { emitEvent: false });
+    this.cacheSimulationMeta();
+  }
+
+  private cacheSimulationMeta(): void {
+    if (!this.isBrowser || typeof sessionStorage === 'undefined') {
+      return;
+    }
+
+    try {
+      const trimmedName = this.simulationName?.trim() ?? '';
+      const trimmedDescription = this.simulationDescription?.trim() ?? '';
+
+      if (trimmedName) {
+        sessionStorage.setItem(this.SIMULATION_NAME_CACHE_KEY, trimmedName);
+      } else {
+        sessionStorage.removeItem(this.SIMULATION_NAME_CACHE_KEY);
+      }
+
+      if (trimmedDescription) {
+        sessionStorage.setItem(this.SIMULATION_DESCRIPTION_CACHE_KEY, trimmedDescription);
+      } else {
+        sessionStorage.removeItem(this.SIMULATION_DESCRIPTION_CACHE_KEY);
+      }
+    } catch (error) {
+      console.warn('Impossible de mettre en cache les informations de simulation:', error);
+    }
+  }
+
+  private restoreSimulationMetaFromCache(): void {
+    if (!this.isBrowser || typeof sessionStorage === 'undefined') {
+      return;
+    }
+
+    try {
+      const storedName = sessionStorage.getItem(this.SIMULATION_NAME_CACHE_KEY);
+      const storedDescription = sessionStorage.getItem(this.SIMULATION_DESCRIPTION_CACHE_KEY);
+
+      if (storedName) {
+        this.simulationName = storedName;
+        this.simulationForm.patchValue({ nom: storedName }, { emitEvent: false });
+      }
+
+      if (storedDescription) {
+        this.simulationDescription = storedDescription;
+        this.simulationForm.patchValue({ description: storedDescription }, { emitEvent: false });
+      }
+    } catch (error) {
+      console.warn('Impossible de restaurer les informations de simulation depuis le cache:', error);
+    }
+  }
+
+  private clearSimulationMetaCache(): void {
+    if (!this.isBrowser || typeof sessionStorage === 'undefined') {
+      return;
+    }
+
+    try {
+      sessionStorage.removeItem(this.SIMULATION_NAME_CACHE_KEY);
+      sessionStorage.removeItem(this.SIMULATION_DESCRIPTION_CACHE_KEY);
+    } catch (error) {
+      console.warn('Impossible de nettoyer le cache des informations de simulation:', error);
+    }
   }
 
   // === PAGINATION COLIS ===
