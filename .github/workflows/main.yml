@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   backend:
-    name: Backend install
+    name: Backend install and test
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -38,6 +38,8 @@ jobs:
           else
             echo "No package.json found; skipping install."
           fi
+      - name: Run tests
+        run: npm test
 
   frontend:
     name: Frontend build
